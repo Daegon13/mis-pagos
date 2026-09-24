@@ -13,7 +13,7 @@ Cada registro persistente tendrá un identificador local estable `id`. La estrat
 ### Dinero
 
 - `amountMinor` es un entero expresado en la unidad menor de la moneda.
-- Los importes del modelo son no negativos; la dirección del dinero depende del tipo de registro, no del signo.
+- `Payment.amountMinor` es siempre positivo; la dirección del dinero depende de `Payment.type`, no del signo.
 - `currencyCode` identifica la moneda de forma explícita.
 - No se realizan sumas entre monedas diferentes ni conversión automática.
 
@@ -24,69 +24,54 @@ Cada registro persistente tendrá un identificador local estable `id`. La estrat
 
 ## Entidades iniciales
 
-### Saldo disponible (`AvailableBalance`)
+### Perfil financiero (`FinancialProfile`)
 
-Representa la cantidad que el usuario declara disponible actualmente para una moneda.
+Representa la configuración financiera principal y el saldo que el usuario declara disponible actualmente. Existe un único perfil financiero y una única moneda principal en el MVP.
 
 | Campo | Tipo conceptual | Regla |
 | --- | --- | --- |
 | `id` | identificador | estable y único localmente |
-| `amountMinor` | entero | puede representar el saldo declarado; nunca float |
 | `currencyCode` | texto | moneda explícita |
-| `asOfDate` | fecha civil | día al que corresponde el saldo |
+| `availableBalanceMinor` | entero | saldo disponible en unidades monetarias menores; nunca float |
+| `balanceDate` | fecha civil | día al que corresponde el saldo |
 | `createdAt` | instante UTC | auditoría técnica |
 | `updatedAt` | instante UTC | auditoría técnica |
 
-En el MVP debe existir como máximo un saldo vigente por moneda. El mecanismo para reemplazar o historizar valores se decidirá antes de implementar persistencia.
+No se realiza conversión automática de monedas. El mecanismo para actualizar o historizar el perfil se decidirá antes de implementar persistencia.
 
 ### Pago futuro (`Payment`)
 
-Representa una salida de dinero prevista e ingresada manualmente.
+Representa cualquier movimiento financiero futuro ingresado manualmente, tanto un gasto como un ingreso.
 
 | Campo | Tipo conceptual | Regla |
 | --- | --- | --- |
 | `id` | identificador | estable y único localmente |
+| `type` | tipo | `expense` o `income` |
 | `title` | texto | descripción visible, obligatoria |
 | `amountMinor` | entero | mayor que cero; nunca float |
-| `currencyCode` | texto | moneda explícita |
 | `dueDate` | fecha civil | vencimiento elegido por el usuario |
-| `category` | categoría | gasto, servicio, suscripción, alquiler, cuota, préstamo u otro |
-| `status` | estado | inicialmente `pending` o `paid` |
+| `status` | estado | `pending`, `completed` o `cancelled` |
 | `notes` | texto opcional | información libre del usuario |
 | `createdAt` | instante UTC | auditoría técnica |
 | `updatedAt` | instante UTC | auditoría técnica |
 
-Una recurrencia o un plan de cuotas no forma parte de este registro inicial: cada obligación futura puede representarse como un pago concreto hasta que una decisión posterior defina otra cosa.
+La UI puede presentar un movimiento `expense` con estado `completed` como «Pagado» y uno `income` con estado `completed` como «Cobrado». El dominio conserva en ambos casos el único estado interno `completed`.
 
-### Ingreso previsto (`ExpectedIncome`)
-
-Representa una entrada de dinero futura e ingresada manualmente.
-
-| Campo | Tipo conceptual | Regla |
-| --- | --- | --- |
-| `id` | identificador | estable y único localmente |
-| `title` | texto | descripción visible, obligatoria |
-| `amountMinor` | entero | mayor que cero; nunca float |
-| `currencyCode` | texto | moneda explícita |
-| `expectedDate` | fecha civil | fecha esperada elegida por el usuario |
-| `status` | estado | inicialmente `expected` o `received` |
-| `notes` | texto opcional | información libre del usuario |
-| `createdAt` | instante UTC | auditoría técnica |
-| `updatedAt` | instante UTC | auditoría técnica |
+Una recurrencia o un plan de cuotas no forma parte de este registro inicial: cada movimiento futuro se representa como un pago concreto hasta que el diseño de recurrencias se defina antes de Sprint 2.
 
 ## Derivaciones, no entidades
 
 Los siguientes valores se calculan y no deben persistirse como fuente de verdad en el modelo inicial:
 
-- **total comprometido:** suma de pagos `pending` dentro del horizonte consultado y de la misma moneda;
-- **total de ingresos previstos:** suma de ingresos `expected` dentro del horizonte consultado y de la misma moneda;
-- **disponible estimado:** saldo disponible + ingresos previstos − pagos comprometidos, siempre por moneda.
+- **total comprometido:** suma de `Payment.amountMinor` con `type = expense` y `status = pending` dentro del horizonte futuro consultado;
+- **total de ingresos previstos:** suma de `Payment.amountMinor` con `type = income` y `status = pending` dentro del horizonte futuro consultado;
+- **disponible proyectado:** `FinancialProfile.availableBalanceMinor` + ingresos futuros pendientes − gastos futuros pendientes.
 
 El horizonte temporal y la inclusión exacta de los límites deberán ser explícitos en la funcionalidad que implemente el cálculo.
 
 ## Relaciones y eliminaciones
 
-Las tres entidades son independientes en el MVP. No se definen cuentas bancarias, usuarios ni relaciones remotas. La política de eliminación (física o lógica) se decidirá junto con el diseño de persistencia; no debe asumirse silenciosamente.
+`FinancialProfile` establece la moneda principal aplicable a los movimientos del MVP. No se definen cuentas bancarias, usuarios ni relaciones remotas. La política de eliminación (física o lógica) se decidirá junto con el diseño de persistencia; no debe asumirse silenciosamente.
 
 ## Fuera del modelo inicial
 
@@ -95,7 +80,7 @@ Las tres entidades son independientes en el MVP. No se definen cuentas bancarias
 - movimientos descargados;
 - sincronización y conflictos cloud;
 - tipos de cambio;
-- recurrencias automáticas;
+- recurrencias automáticas, cuyo diseño se posterga hasta antes de Sprint 2;
 - adjuntos;
 - categorías personalizables complejas;
 - analytics o agregados persistidos.

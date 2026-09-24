@@ -74,6 +74,14 @@ Nunca persistir dinero con floats. Usar unidades monetarias menores enteras; por
 
 El nombre recomendado es `amountMinor`.
 
+## Modelo financiero del MVP
+
+El modelo financiero aprobado para el MVP es `FinancialProfile` + `Payment`.
+
+`Payment` representa tanto gastos como ingresos mediante su campo `type`.
+
+No separar ingresos y gastos en entidades persistentes distintas sin una decisión arquitectónica explícita.
+
 ## Fechas
 
 Distinguir siempre entre:
