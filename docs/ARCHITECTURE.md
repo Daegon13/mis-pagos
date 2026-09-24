@@ -44,6 +44,12 @@ SQLite
 - Las dependencias avanzan hacia abajo; las capas inferiores no importan UI ni rutas.
 - La UI nunca contiene ni ejecuta SQL directamente.
 
+Este flujo no presupone repositories concretos ni separados por clase de movimiento; esos contratos se diseñarán al implementar la persistencia.
+
+## Modelo financiero del MVP
+
+El modelo aprobado se limita a `FinancialProfile` + `Payment`. `FinancialProfile` contiene el saldo disponible y la moneda principal. `Payment` representa tanto gastos como ingresos mediante su campo `type`; no existen entidades persistentes separadas para cada dirección del movimiento.
+
 ## Navegación y organización
 
 Expo Router es la estrategia de navegación aprobada. `src/app` se reserva exclusivamente para rutas, layouts y navegación asociada a rutas. Modelos de dominio, SQL, repositories, lógica financiera, utilidades generales y componentes reutilizables generales deben vivir fuera de `src/app`.
