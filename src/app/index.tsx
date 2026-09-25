@@ -1,9 +1,12 @@
+import { Stack } from "expo-router";
 import { Text, View, StyleSheet } from "react-native";
 
 export default function Index() {
   return (
     <View style={styles.container}>
-      <Text>Edit src/app/index.tsx to edit this screen.</Text>
+      <Stack.Screen options={{ headerShown: false }} />
+      <Text>Mis Pagos</Text>
+      <Text>Fundación técnica lista</Text>
     </View>
   );
 }

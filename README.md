@@ -6,7 +6,9 @@ Mis Pagos no es una aplicación bancaria: no conecta cuentas, no solicita creden
 
 ## Estado del proyecto
 
-El proyecto se encuentra en la etapa inicial del MVP. La base Expo ya existe y las decisiones de producto, arquitectura y datos están documentadas. SQLite está aprobado para una tarea futura, pero todavía no está incorporado.
+Sprint 0 complete — foundation ready for product development.
+
+La fundación incluye Expo Router, TypeScript strict, SQLite con migraciones y los modelos y repositories de `FinancialProfile` y `Payment`. La auditoría S0-T05 verificó constraints, validaciones, rollback y persistencia tras cerrar completamente y reabrir Expo Go en un emulador Android. Los datos de prueba y la instrumentación temporal fueron eliminados. Sprint 1 todavía no está iniciado.
 
 ## Stack aprobado
 
@@ -14,7 +16,7 @@ El proyecto se encuentra en la etapa inicial del MVP. La base Expo ya existe y l
 - Expo SDK 57
 - TypeScript strict
 - Expo Router
-- SQLite (pendiente de incorporación)
+- SQLite mediante `expo-sqlite`
 - npm
 - Node.js 22 LTS
 
