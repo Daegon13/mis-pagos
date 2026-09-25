@@ -2,13 +2,13 @@
 
 ## Propósito y estado
 
-Este documento define el modelo conceptual mínimo del MVP. No es un esquema SQL ni autoriza implementar SQLite. Los nombres podrán traducirse a tipos y tablas en tareas posteriores, conservando estas reglas e invariantes.
+Este documento define el modelo conceptual mínimo del MVP, implementado en tipos de dominio y tablas SQLite. El esquema SQL se define en las migraciones, conservando estas reglas e invariantes.
 
 ## Convenciones comunes
 
 ### Identidad
 
-Cada registro persistente tendrá un identificador local estable `id`. La estrategia concreta de generación se decidirá al diseñar la persistencia.
+Cada registro persistente tiene un identificador local estable `id`. `FinancialProfile` usa el identificador fijo `1`; SQLite genera el identificador entero de cada `Payment` al insertarlo.
 
 ### Dinero
 
@@ -37,7 +37,7 @@ Representa la configuración financiera principal y el saldo que el usuario decl
 | `createdAt` | instante UTC | auditoría técnica |
 | `updatedAt` | instante UTC | auditoría técnica |
 
-No se realiza conversión automática de monedas. El mecanismo para actualizar o historizar el perfil se decidirá antes de implementar persistencia.
+No se realiza conversión automática de monedas. `saveFinancialProfile()` crea o actualiza el único perfil mediante upsert, sin conservar un historial de versiones.
 
 ### Pago futuro (`Payment`)
 
@@ -71,7 +71,7 @@ El horizonte temporal y la inclusión exacta de los límites deberán ser explí
 
 ## Relaciones y eliminaciones
 
-`FinancialProfile` establece la moneda principal aplicable a los movimientos del MVP. No se definen cuentas bancarias, usuarios ni relaciones remotas. La política de eliminación (física o lógica) se decidirá junto con el diseño de persistencia; no debe asumirse silenciosamente.
+`FinancialProfile` establece la moneda principal aplicable a los movimientos del MVP. No se definen cuentas bancarias, usuarios ni relaciones remotas. Según D-018, `deletePayment()` elimina físicamente el registro (hard delete), mientras que el estado `cancelled` lo conserva. No existe soft-delete en el MVP.
 
 ## Fuera del modelo inicial
 

@@ -23,7 +23,7 @@ npm
 Node.js 22 LTS
 ```
 
-SQLite está aprobado como persistencia local, pero su incorporación, paquete, configuración, esquema y migraciones deben realizarse en una tarea posterior explícita. Este contrato no autoriza instalarlo todavía.
+SQLite está implementado como persistencia local mediante `expo-sqlite`, con configuración, esquema inicial y migraciones.
 
 ## Capas y dirección de dependencias
 
@@ -40,11 +40,11 @@ SQLite
 - La UI muestra datos, captura acciones y delega comportamiento.
 - La capa de feature/dominio contiene reglas y cálculos financieros independientes de la navegación y del motor de persistencia.
 - Los repositories representan el límite de persistencia.
-- SQLite será un detalle de infraestructura detrás de los repositories.
+- SQLite es un detalle de infraestructura detrás de los repositories.
 - Las dependencias avanzan hacia abajo; las capas inferiores no importan UI ni rutas.
 - La UI nunca contiene ni ejecuta SQL directamente.
 
-Este flujo no presupone repositories concretos ni separados por clase de movimiento; esos contratos se diseñarán al implementar la persistencia.
+La persistencia cuenta con repositories para `FinancialProfile` y `Payment`, sin separar ingresos y gastos en repositories distintos.
 
 ## Modelo financiero del MVP
 
@@ -68,8 +68,8 @@ No se aprueba Redux, Zustand ni otro gestor externo. Incorporar uno requiere dem
 
 ## Persistencia y migraciones
 
-- SQLite será la fuente persistente local cuando se incorpore.
-- El acceso se realizará mediante repositories, nunca desde componentes o rutas.
+- SQLite es la fuente persistente local.
+- El acceso se realiza mediante repositories, nunca desde componentes o rutas.
 - Las migraciones deben ser ordenadas, reproducibles y acumulativas.
 - Una migración aplicada o publicada es inmutable; una modificación del esquema exige una migración nueva.
 - No se presupone sincronización remota.

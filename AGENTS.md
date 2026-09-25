@@ -93,7 +93,7 @@ No convertir una fecha civil en un instante si el dominio no requiere una hora.
 
 ## SQLite
 
-Cuando SQLite sea incorporado, respetar este flujo:
+SQLite está incorporado como persistencia local. Respetar este flujo:
 
 ```text
 UI

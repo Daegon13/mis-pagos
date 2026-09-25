@@ -17,10 +17,10 @@ Cada entrada incluye estado, contexto, decisión y consecuencias. Estados posibl
 
 ## D-002 — SQLite local-first
 
-- **Estado:** Aceptada arquitectónicamente; implementación pendiente
+- **Estado:** Aceptada; implementada
 - **Contexto:** Los datos estructurados y los cálculos deben funcionar sin conectividad ni infraestructura remota.
-- **Decisión:** Usar SQLite como persistencia local detrás de una capa repository cuando una tarea posterior autorice su incorporación.
-- **Consecuencias:** Esta decisión no instala dependencias ni define todavía biblioteca, esquema o repositories concretos. La UI no ejecutará SQL directamente.
+- **Decisión:** Usar SQLite como persistencia local detrás de una capa repository.
+- **Consecuencias:** Implementada mediante `expo-sqlite`, con esquema inicial, migraciones y repositories de `FinancialProfile` y `Payment`. La UI no ejecuta SQL directamente.
 
 ## D-003 — TypeScript strict
 
