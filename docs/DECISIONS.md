@@ -126,3 +126,10 @@ Cada entrada incluye estado, contexto, decisión y consecuencias. Estados posibl
 - **Contexto:** El saldo disponible y la moneda principal forman la configuración financiera mínima del MVP.
 - **Decisión:** `FinancialProfile` contiene `availableBalanceMinor`, `balanceDate` y `currencyCode`, además de identidad y auditoría técnica.
 - **Consecuencias:** El saldo disponible no es una entidad independiente. Los cálculos proyectados se derivan del perfil y de los movimientos, y no se persisten como fuente de verdad.
+
+## D-018 — Explicit deletion uses hard delete
+
+- **Estado:** Aceptada
+- **Contexto:** Cancelar un compromiso financiero y eliminar un registro incorrecto o que el usuario no desea conservar son acciones distintas.
+- **Decisión:** El estado `cancelled` conserva el registro de un compromiso financiero que existió y fue cancelado. La eliminación explícita mediante `deletePayment()` elimina físicamente la fila (hard delete). No existe soft-delete en el MVP.
+- **Consecuencias:** Un registro borrado no es recuperable desde la app. La restauración y undo quedan fuera de esta etapa.
