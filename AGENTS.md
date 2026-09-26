@@ -145,3 +145,31 @@ No mezclar refactors, formateos o cambios ajenos a la tarea.
 - Ejecutar los checks solicitados antes de cerrar una tarea.
 - No hacer refactors amplios dentro de tareas no relacionadas.
 - Si una instrucción contradice `docs/DECISIONS.md`, detenerse y solicitar autorización para registrar una nueva decisión.
+
+## Context efficiency
+
+- Treat `docs/PROJECT_STATE.md` as the compact current-state reference.
+- Do not re-derive or restate settled architecture.
+- If a decision already exists in `docs/DECISIONS.md`, treat it as settled unless the current task explicitly changes it.
+- Read only files relevant to the current task.
+- Prefer targeted searches over repository-wide exploration.
+- Do not scan the entire repository unless necessary.
+- Do not summarize documentation before implementing unless requested.
+- Do not produce long implementation plans unless requested.
+- Do not narrate routine tool usage or obvious implementation steps.
+- Reuse existing utilities, components and patterns before creating new ones.
+- Keep final reports concise and focused on material changes, validation and blockers.
+- Stop only for real architectural conflicts, missing dependencies, failed gates, or scope expansion that materially changes the task.
+
+## Execution efficiency
+
+For medium or large tasks:
+
+1. read `docs/PROJECT_STATE.md`;
+2. inspect only the relevant implementation files;
+3. form a short internal plan;
+4. implement the complete coherent feature;
+5. run required checks;
+6. report only material results.
+
+Do not break a coherent feature into multiple artificial sub-tasks unless the task explicitly requires it.
