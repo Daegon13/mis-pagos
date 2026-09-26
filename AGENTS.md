@@ -10,8 +10,11 @@ Todo agente debe:
 2. inspeccionar los archivos afectados;
 3. respetar `ALLOWED FILES`;
 4. respetar `FORBIDDEN FILES`;
-5. revisar las decisiones arquitectónicas existentes en `docs/ARCHITECTURE.md` y `docs/DECISIONS.md`;
-6. no ampliar el alcance silenciosamente.
+5. leer `docs/PROJECT_STATE.md` como contexto principal;
+6. consultar `docs/ARCHITECTURE.md`, `docs/DECISIONS.md` o `docs/DATA_MODEL.md`
+   solamente cuando la tarea toque directamente una decisión arquitectónica,
+   modelo persistente, migraciones o exista un conflicto;
+7. no ampliar el alcance silenciosamente.
 
 ## Responsabilidad de `src/app`
 
@@ -141,7 +144,8 @@ No mezclar refactors, formateos o cambios ajenos a la tarea.
 
 ## Ejecución de tareas
 
-- Usar `docs/TASK_TEMPLATE.md` para definir futuras tareas.
+- Use `docs/TASK_TEMPLATE.md` for architectural, risky or unusually complex tasks.
+- For ordinary coherent feature work, a compact explicit task prompt is sufficient.
 - Ejecutar los checks solicitados antes de cerrar una tarea.
 - No hacer refactors amplios dentro de tareas no relacionadas.
 - Si una instrucción contradice `docs/DECISIONS.md`, detenerse y solicitar autorización para registrar una nueva decisión.
