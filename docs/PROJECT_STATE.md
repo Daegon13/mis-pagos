@@ -3,106 +3,307 @@
 ## Product
 
 Android local-first app initially focused on Latin America.
-Core promise: show how much money the user has, how much is committed,
+
+Core promise:
+
+Show how much money the user has,
+how much is committed,
 and how much is truly available.
+
 The app is not a bank and does not connect to financial institutions.
 
 ## Stack
 
-- React Native, Expo SDK 57, TypeScript strict, Expo Router.
-- SQLite through `expo-sqlite` (declared range `~57.0.3`).
-- npm and Node.js 22 LTS.
+- React Native
+- Expo SDK 57
+- TypeScript strict
+- Expo Router
+- SQLite through `expo-sqlite`
+- npm
+- Node.js 22 LTS
 
 ## Architecture
 
-`UI → feature/domain logic → repository → SQLite`.
-`SQLiteProvider` owns the database connection; UI never executes SQL.
+`UI → feature/domain logic → repository → SQLite`
+
+`SQLiteProvider` owns the database connection.
+
 State uses React state and hooks, with SQLite as the persistent source.
+
 `src/app` is reserved for routes, layouts and associated navigation.
-Do not introduce backend, authentication, cloud sync, ORM, Redux/Zustand,
-banking integration or AI without explicit authorization.
-Settled contracts: [ARCHITECTURE.md](ARCHITECTURE.md) and [DECISIONS.md](DECISIONS.md).
 
-## Persistent model
+Do not introduce without explicit authorization:
 
-- `FinancialProfile`: `id = 1`, `currencyCode`, `availableBalanceMinor`,
-  `balanceDate`, `createdAt`, `updatedAt`.
-- `Payment`: `id`, `type: expense | income`, `title`, `amountMinor`,
-  `dueDate`, `status: pending | completed | cancelled`, optional `notes`,
-  `createdAt`, `updatedAt`.
+- backend;
+- authentication;
+- cloud sync;
+- ORM;
+- Redux/Zustand;
+- banking integration;
+- AI.
 
-One main currency in the MVP; no automatic currency conversion.
+Settled architecture remains documented in `ARCHITECTURE.md` and `DECISIONS.md`.
+
+## Persistent financial model
+
+### FinancialProfile
+
+- id = 1
+- currencyCode
+- availableBalanceMinor
+- balanceDate
+- createdAt
+- updatedAt
+
+### Payment
+
+- id
+- type: expense | income
+- title
+- amountMinor
+- dueDate
+- status: pending | completed | cancelled
+- notes
+- createdAt
+- updatedAt
+
+One main currency in the MVP.
+
 Income and expenses are not separate persistent entities.
-Details and invariants: [DATA_MODEL.md](DATA_MODEL.md).
 
 ## Money and dates
 
-Persist money as integer minor units, never floats; `Payment.amountMinor > 0`.
-For two-decimal currencies: `10.99 → 1099`; `30000 UYU → 3000000`.
-Financial civil dates use `YYYY-MM-DD`; technical timestamps use ISO UTC.
-Do not convert civil financial dates through UTC in ways that change the day.
+Persist money as integer minor units, never floats.
+
+Financial civil dates use:
+
+`YYYY-MM-DD`
+
+Technical timestamps use ISO UTC.
+
+Do not convert civil financial dates through UTC in ways that change the selected day.
 
 ## Database and repositories
 
-- Database: `mis-pagos.db`; schema version: `1`.
-- Tables: `financial_profile`, `payments`.
-- Migrations use `PRAGMA user_version`; applied/published migrations are immutable.
-- Payment API: `createPayment`, `getPaymentById`, `listPayments`,
-  `updatePayment`, `deletePayment`.
-- Explicit deletion is hard delete; `cancelled` preserves the record.
-- FinancialProfile API: `getFinancialProfile`, `saveFinancialProfile`.
-- Profile saves upsert the singleton with `id = 1`.
+Database:
 
-## Completed and current behavior
+`mis-pagos.db`
 
-Sprint 0: COMPLETE. Foundation includes Expo, SQLite initialization,
-migrations, domain models, repositories and SQL parameter binding.
-Android persistence across restart was validated in the foundation audit.
-S1-T01: COMPLETE — financial setup and empty Home state.
-Payment creation is also implemented (`40d6fe6`).
+Current financial tables:
 
-- No profile → financial setup → save profile → Home.
-- Existing profile → Home.
-- Home → Agregar movimiento → save expense/income → Home confirmation.
-- New payments persist as `pending`; creation does not change the current balance.
-- Home currently shows the profile balance and a static empty movements state;
-  it does not yet list saved movements or calculate financial summaries.
+- `financial_profile`
+- `payments`
 
-## Current Sprint
+Migrations use `PRAGMA user_version`.
 
-Sprint 1 — Core product experience, in progress.
-Next work: Home with real movements and core financial calculations.
-Payment creation is complete, not an upcoming feature.
-README's statement that Sprint 1 has not started predates these implementations.
+Published/applied migrations are immutable.
 
-## Home product direction (pending implementation)
+Payment repository includes:
 
-Primary concept: **Disponible real**.
-`Disponible real = current available balance − pending expenses in the active horizon`.
-Do not include expected future income in Disponible real.
-`Projection = current available balance − pending expenses + pending income`.
-Use the same active horizon for the pending amounts in these summaries.
-Initial MVP horizon: next 30 days; exact boundary inclusion must be explicit
-in the task implementing the calculation, as required by DATA_MODEL.md.
+- createPayment
+- getPaymentById
+- listPayments
+- updatePayment
+- deletePayment
 
-Home hierarchy:
+FinancialProfile repository includes:
 
-1. Disponible real
-2. Hoy tenés
-3. Comprometido
-4. Ingresos previstos
-5. Proyección
-6. Próximos movimientos
-7. Agregar movimiento
+- getFinancialProfile
+- saveFinancialProfile
 
-Home should feel simple, warm, modern and non-banking; avoid dashboard overload.
+Explicit deletion is hard delete.
 
-## Product principles and execution
+`cancelled` preserves the Payment record.
 
-Priority: simplicity → stability → maintainability → sophistication.
-Answer quickly: “How much of my money is committed, and how much can I really use?”
-Full product scope: [PRODUCT.md](PRODUCT.md).
+## Completed foundation
+
+Sprint 0: COMPLETE.
+
+Includes:
+
+- Expo foundation;
+- SQLite initialization;
+- migrations;
+- domain models;
+- repositories;
+- native persistence validation;
+- financial setup;
+- Android QA.
+
+## Current implemented product
+
+Payment creation: COMPLETE.
+
+Current user flow:
+
+no FinancialProfile
+→ financial setup
+→ save profile
+→ Home
+
+existing FinancialProfile
+→ Home
+
+Home
+→ Agregar movimiento
+→ create expense/income
+→ return to refreshed Home
+
+New Payments persist as `pending`.
+
+Creating a future movement does not directly modify the current FinancialProfile balance.
+
+## Core Home implementation
+
+S1-HOME: COMPLETE.
+
+Implemented:
+
+- real Payment loading;
+- current balance;
+- committed pending expenses;
+- expected pending income;
+- Disponible real;
+- Projection;
+- next-30-days horizon;
+- 30-day boundary inclusive;
+- upcoming pending movements;
+- human relative timing;
+- empty state;
+- negative Disponible real state;
+- refresh after movement creation;
+- restart persistence.
+
+Home financial formulas:
+
+`Disponible real = current available balance - pending expenses inside the active horizon`
+
+Future expected income is not included in Disponible real.
+
+`Projection = current available balance - pending expenses + pending income`
+
+Only relevant pending movements participate in future calculations.
+
+## Current product-design direction
+
+The current Home works functionally but requires a visual/UX refinement pass.
+
+Next Home direction:
+
+- make Disponible real the strongest visual answer;
+- reduce redundant information;
+- visually explain current money vs committed money;
+- show Projection with stronger emphasis only when it adds useful information;
+- make upcoming movements more human and scannable;
+- preserve the existing settled calculations;
+- keep the Home warm, modern, simple and non-banking.
+
+Detailed Home behavior lives in:
+
+`docs/HOME_UX.md`
+
+## Engagement system direction
+
+A product engagement layer has been approved.
+
+Its purpose is to make financial organization feel:
+
+- rewarding;
+- reassuring;
+- warm;
+- worth returning to.
+
+Primary emotional target:
+
+**relief and control**
+
+supported by:
+
+- curiosity;
+- ownership;
+- gentle visual progress.
+
+The central metaphor is a persistent living personal space that evolves through useful financial organization.
+
+Core constraints:
+
+- progress never regresses because of absence;
+- never reward spending;
+- never reward artificial transaction quantity;
+- no punitive streaks;
+- no guilt-based pet/plant mechanics;
+- no financial anxiety used for retention;
+- no pay-to-win progress;
+- no advertising interrupting success/relief moments;
+- negative financial situations never damage the space;
+- the user may ignore the engagement layer without losing core financial value.
+
+Detailed contract:
+
+`docs/ENGAGEMENT_SYSTEM.md`
+
+## Roadmap direction
+
+Development now prioritizes:
+
+1. highest expected product impact;
+2. lowest reasonable implementation cost;
+3. coherent functional iterations;
+4. validation before expensive expansion.
+
+Immediate product direction:
+
+- Home UX v2;
+- immediate useful feedback;
+- contextual financial interpretation;
+- engagement MVP v0 with a simple living space;
+- persistent non-regressing progression.
+
+Then:
+
+- movement management;
+- recurrence;
+- reminders;
+- engagement expansion;
+- polish;
+- launch preparation.
+
+Detailed roadmap:
+
+`docs/PRODUCT_ROADMAP.md`
+
+## Product principles
+
+Priority:
+
+simplicity
+→ stability
+→ maintainability
+→ sophistication
+
+The product should answer quickly:
+
+> How much of my money is committed, and how much can I really use?
+
+New features do not automatically earn a place on Home.
+
+The product should optimize for recurring usefulness, not maximum time spent inside the app.
+
+## Execution strategy
+
 Prefer larger coherent feature iterations now that the foundation is stable.
+
 Do not split a feature into microtasks unless risk justifies it.
-Use high reasoning only for substantial or important iterations;
-keep routine tasks small and inexpensive.
+
+Use high reasoning for substantial or important iterations.
+
+Keep routine tasks small and inexpensive.
+
+Use:
+
+- `AGENTS.md` for permanent repository rules;
+- `docs/PROJECT_STATE.md` for compact current state;
+- specific product contracts such as `HOME_UX.md` and `ENGAGEMENT_SYSTEM.md` only when the task needs them;
+- direct task prompts for the current implementation work.
+
+Do not make Codex re-read the entire documentation set by default.
