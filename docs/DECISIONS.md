@@ -133,3 +133,10 @@ Cada entrada incluye estado, contexto, decisión y consecuencias. Estados posibl
 - **Contexto:** Cancelar un compromiso financiero y eliminar un registro incorrecto o que el usuario no desea conservar son acciones distintas.
 - **Decisión:** El estado `cancelled` conserva el registro de un compromiso financiero que existió y fue cancelado. La eliminación explícita mediante `deletePayment()` elimina físicamente la fila (hard delete). No existe soft-delete en el MVP.
 - **Consecuencias:** Un registro borrado no es recuperable desde la app. La restauración y undo quedan fuera de esta etapa.
+
+## D-019 — Progreso cosmético local independiente
+
+- **Estado:** Aceptada; autorizada por S1-HOME-V2.
+- **Contexto:** Conservar la evolución de «Tu espacio» cuando los movimientos dejan de estar pendientes requiere estado persistente independiente del modelo financiero.
+- **Decisión:** La migración forward-only `002_engagement` añade `engagement_progress` con una fila (`id = 1`) y `stage` entero entre 0 y 2. Los hitos son inicio, al menos un movimiento pendiente desde hoy, y gastos e ingresos pendientes representados simultáneamente desde hoy. Incluye fechas posteriores al horizonte de Home; no usa importes ni cantidades. Un UPDATE condicional sólo permite avanzar desde el repository.
+- **Consecuencias:** No se modifica la migración 001 ni los campos financieros. Cancelaciones, eliminación, ausencia y cambios de saldo no reducen el progreso. La única sorpresa se emite al persistir por primera vez el estado 2; no necesita otro contador ni repetirse al abrir. Si ese mensaje no llega a mostrarse por un cierre, la escena igualmente queda conservada. Un fallo cosmético no bloquea los datos financieros. Se usan tres estados porque el MVP actual no justifica más hitos sin premiar volumen artificial.

@@ -94,6 +94,9 @@ Current financial tables:
 - `financial_profile`
 - `payments`
 
+Independent cosmetic table: `engagement_progress` (singleton `stage`, 0–2).
+Schema version 2 adds it through `002_engagement`; migration 001 is unchanged.
+
 Migrations use `PRAGMA user_version`.
 
 Published/applied migrations are immutable.
@@ -186,9 +189,24 @@ Only relevant pending movements participate in future calculations.
 
 ## Current product-design direction
 
-The current Home works functionally but requires a visual/UX refinement pass.
+S1-HOME-V2: implemented. Disponible real dominates a dark-green hero, with
+current balance minus commitments beneath it. Projection appears only when
+expected income adds information. The nearest five movements use dates,
+signed amounts and relative timing; the compact Add Movement CTA stays in-flow.
 
-Next Home direction:
+Deterministic messages distinguish no planned commitments, covered commitments
+and a shortfall (with its amount). Successful creation returns to refreshed
+Home with an inline, dismissible confirmation and the updated available amount.
+Financial formulas and the inclusive 30-day horizon are unchanged.
+
+Validation: eight automated tests (five existing Home tests plus feedback,
+milestone and SQLite migration/non-regression coverage), typecheck and lint pass.
+Android API 35 QA covers empty, expense-only, income-only, mixed and shortfall
+states, creation feedback, all three scene states, restart persistence and
+financial independence, including cosmetic write failure. Original emulator
+data was restored after QA.
+
+Home direction:
 
 - make Disponible real the strongest visual answer;
 - reduce redundant information;
@@ -205,6 +223,15 @@ Detailed Home behavior lives in:
 ## Engagement system direction
 
 A product engagement layer has been approved.
+
+MVP v0 is implemented as a compact, secondary “Tu espacio” scene made with
+React Native primitives. Three persistent states: window; plant after the first
+pending movement from today onward; table/books when pending expenses and
+income are both represented. These signals include dates beyond Home's horizon.
+Progress never decreases and does not use amounts or transaction counts.
+One surprise message accompanies the first transition to the final state.
+Cosmetic persistence failures leave the financial summary usable and offer retry.
+Persistence rationale and exact milestone rules: D-019 in `DECISIONS.md`.
 
 Its purpose is to make financial organization feel:
 
@@ -251,15 +278,7 @@ Development now prioritizes:
 3. coherent functional iterations;
 4. validation before expensive expansion.
 
-Immediate product direction:
-
-- Home UX v2;
-- immediate useful feedback;
-- contextual financial interpretation;
-- engagement MVP v0 with a simple living space;
-- persistent non-regressing progression.
-
-Then:
+Next product direction:
 
 - movement management;
 - recurrence;

@@ -1,6 +1,7 @@
 import type { SQLiteDatabase } from "expo-sqlite";
 
 import { initialMigration } from "./001_initial";
+import { engagementMigration } from "./002_engagement";
 
 type Migration = {
   readonly version: number;
@@ -9,7 +10,7 @@ type Migration = {
 };
 
 // Keep migrations ordered. Applied migrations are immutable and forward-only.
-const migrations: readonly Migration[] = [initialMigration];
+const migrations: readonly Migration[] = [initialMigration, engagementMigration];
 
 export const DATABASE_VERSION = migrations[migrations.length - 1].version;
 
