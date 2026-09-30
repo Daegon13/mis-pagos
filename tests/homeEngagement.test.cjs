@@ -10,7 +10,7 @@ function load(path, requireModule = require) {
     { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText)(exports, requireModule);
   return exports;
 }
-const { calculateHome } = load('src/features/home/homeSummary.ts');
+const { calculateHome } = require('./helpers/load.cjs').load('src/features/home/homeSummary.ts');
 const { financialFeedback } = load('src/features/home/homeFeedback.ts');
 const { spaceStage } = load('src/domain/engagement.ts');
 const { advanceSpace } = load('src/data/repositories/engagementRepository.ts');

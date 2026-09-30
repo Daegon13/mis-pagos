@@ -1,4 +1,8 @@
 // This initial MVP uses two minor-unit digits for every currency offered in setup.
+export function minorToInput(amountMinor: number): string {
+  return `${amountMinor < 0 ? "-" : ""}${Math.trunc(Math.abs(amountMinor) / 100)}.${String(Math.abs(amountMinor % 100)).padStart(2, "0")}`;
+}
+
 export function parseBalanceMinor(value: string): number | null {
   const match = /^(-?)(\d+)(?:[.,](\d{1,2}))?$/.exec(value.trim());
   if (!match) return null;

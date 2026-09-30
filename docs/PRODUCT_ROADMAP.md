@@ -166,6 +166,11 @@ Validate:
 
 ## 6. Phase 2 — Core product completion
 
+Core financial scope: COMPLETE in S2-MOVEMENTS, with automated and Android QA.
+Movement lifecycle, overdue review and explicit balance reconciliation are
+implemented. Existing engagement remains unchanged; new action milestones are
+still optional future work. Next: validate repeated real use before Phase 3 design.
+
 ### Objective
 
 Make Mis Pagos genuinely usable as a recurring personal finance tool.

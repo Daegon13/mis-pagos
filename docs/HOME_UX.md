@@ -17,6 +17,7 @@ It must not behave like a generic finance dashboard.
 
 Disponible real =
 current available balance
+- all overdue pending expenses
 - pending expenses inside the active horizon
 
 Future income is NOT included.
@@ -37,13 +38,28 @@ Projection is secondary to Disponible real.
 
 Next 30 days.
 
-Use the same horizon for:
-- committed expenses;
+Use the same inclusive horizon (local civil today through today + 30 days) for:
+- future committed expenses;
 - expected income;
 - projection;
 - upcoming movements.
 
 Boundary rules must be explicit in implementation.
+
+### Overdue movements (S2-MOVEMENTS)
+
+Overdue is derived from `status = pending` and `dueDate < local civil today`,
+comparing `YYYY-MM-DD` values without converting them through UTC.
+Every overdue pending expense remains committed until resolved, regardless of age.
+Overdue pending income is excluded from expected income and Projection.
+Both require review and appear separately from ordinary upcoming movements.
+Completed and cancelled movements contribute to neither financial calculation.
+
+Home shows a calm “Requieren atención” entry when review is needed. “Ver todos”
+opens movements grouped into attention, the next 30 days and later, with separate
+completed/cancelled history. Upcoming rows open their movement detail.
+“Actualizar” beside “Hoy tenés” opens a manual balance snapshot, including zero
+or negative balances, dated with local civil today.
 
 ## Home hierarchy
 

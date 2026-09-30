@@ -8,7 +8,7 @@ import { useFinancialProfile } from "@/features/financial-profile/useFinancialPr
 
 export default function Index() {
   const router = useRouter();
-  const { paymentSaved } = useLocalSearchParams<{ paymentSaved?: string }>();
+  const { paymentSaved, balanceSaved } = useLocalSearchParams<{ paymentSaved?: string; balanceSaved?: string }>();
   const { profile, isLoading, isSaving, loadError, saveError, retry, save } = useFinancialProfile();
 
   return (
@@ -28,8 +28,11 @@ export default function Index() {
         ) : profile === null ? (
           <FinancialSetup isSaving={isSaving} error={saveError} onSave={save} />
         ) : (
-          <Home profile={profile} paymentSaved={paymentSaved}
-            onDismissFeedback={() => router.setParams({ paymentSaved: undefined })}
+          <Home profile={profile} paymentSaved={paymentSaved} balanceSaved={balanceSaved}
+            onAll={() => router.push("/payments")}
+            onOpen={id => router.push({ pathname: "/payments/[id]", params: { id: String(id) } })}
+            onBalance={() => router.push("/balance")}
+            onDismissFeedback={() => router.setParams({ paymentSaved: undefined, balanceSaved: undefined })}
             onAdd={() => router.push("/payments/new")} />
         )}
       </ScrollView>

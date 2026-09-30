@@ -1,14 +1,16 @@
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
 import { useCreatePayment } from "./useCreatePayment";
+import type { Payment } from "@/domain/payment";
 
 interface PaymentFormProps {
   currencyCode: string;
   onSaved: (id: number) => void;
+  initial?: Payment;
 }
 
-export function PaymentForm({ currencyCode, onSaved }: PaymentFormProps) {
-  const form = useCreatePayment();
+export function PaymentForm({ currencyCode, onSaved, initial }: PaymentFormProps) {
+  const form = useCreatePayment(initial);
 
   async function submit() {
     const payment = await form.save();
@@ -17,7 +19,7 @@ export function PaymentForm({ currencyCode, onSaved }: PaymentFormProps) {
 
   return (
     <View style={styles.form}>
-      <Text style={styles.description}>Registrá un gasto o ingreso previsto en {currencyCode}.</Text>
+      <Text style={styles.description}>{initial ? "Actualizá tu movimiento" : "Registrá un gasto o ingreso previsto"} en {currencyCode}.</Text>
       <View style={styles.field}>
         <Text style={styles.label}>Tipo de movimiento</Text>
         <View style={styles.types}>
@@ -103,7 +105,7 @@ export function PaymentForm({ currencyCode, onSaved }: PaymentFormProps) {
         onPress={() => { void submit(); }}
         style={({ pressed }) => [styles.button, (pressed || form.isSaving) && styles.pressed]}
       >
-        <Text style={styles.buttonText}>{form.isSaving ? "Guardando..." : "Guardar movimiento"}</Text>
+        <Text style={styles.buttonText}>{form.isSaving ? "Guardando..." : initial ? "Guardar cambios" : "Guardar movimiento"}</Text>
       </Pressable>
     </View>
   );

@@ -3,12 +3,12 @@ import { AppState } from "react-native";
 import { useFocusEffect } from "expo-router";
 import { useSQLiteContext } from "expo-sqlite";
 
-import { listPayments } from "@/data/repositories/paymentRepository";
+import { readFinancialSnapshot } from "@/data/repositories/paymentLifecycle";
 import { advanceSpace } from "@/data/repositories/engagementRepository";
 import { spaceStage, type SpaceStage } from "@/domain/engagement";
 import { calculateHome, type HomeSummary } from "./homeSummary";
 
-export function useHome(balanceMinor: number, paymentSaved?: string) {
+export function useHome(paymentSaved?: string) {
   const db = useSQLiteContext();
   const [summary, setSummary] = useState<HomeSummary | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -27,8 +27,9 @@ export function useHome(balanceMinor: number, paymentSaved?: string) {
     async function load() {
       const current = ++request;
       try {
-        const payments = await listPayments(db);
-        const next = calculateHome(balanceMinor, payments);
+        const { payments, profile } = await readFinancialSnapshot(db);
+        if (!profile) throw new Error("Missing financial profile");
+        const next = calculateHome(profile.availableBalanceMinor, payments);
         if (active && current === request) {
           setSummary(next);
           setError(null);
@@ -63,7 +64,7 @@ export function useHome(balanceMinor: number, paymentSaved?: string) {
     // Refresh the civil horizon if Home remains open past midnight.
     const interval = setInterval(() => { void load(); }, 60_000);
     return () => { active = false; subscription.remove(); clearInterval(interval); };
-  }, [db, balanceMinor, attempt, paymentSaved]));
+  }, [db, attempt, paymentSaved]));
 
   const retry = () => { setError(null); setAttempt((value) => value + 1); };
   return { summary, error, retry, stage, spaceError, surprise,

@@ -1,13 +1,7 @@
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
-const fs = require('node:fs');
-const ts = require('typescript');
-const moduleUnderTest = { exports: {} };
-new Function('exports', ts.transpileModule(
-  fs.readFileSync('src/features/home/homeSummary.ts', 'utf8'),
-  { compilerOptions: { module: ts.ModuleKind.CommonJS } },
-).outputText)(moduleUnderTest.exports);
-const { calculateHome } = moduleUnderTest.exports;
+const { load } = require('./helpers/load.cjs');
+const { calculateHome } = load('src/features/home/homeSummary.ts');
 const now = new Date(2026, 8, 26, 23, 59);
 const payment = (id, type, amountMinor, dueDate = '2026-09-26', status = 'pending') =>
   ({ id, type, amountMinor, dueDate, status, title: `Movement ${id}` });
@@ -26,7 +20,7 @@ test('empty, income only, expense only, mixed and negative balance', () => {
   assert.equal(calculateHome(-100, [], now).availableMinor, -100);
 });
 
-test('inclusive local horizon excludes past, day 31, completed and cancelled', () => {
+test('inclusive local horizon retains overdue expenses and excludes day 31, completed and cancelled', () => {
   const s = calculateHome(10000, [
     payment(1, 'expense', 100, '2026-09-26'),
     payment(2, 'expense', 200, '2026-10-26'),
@@ -35,7 +29,8 @@ test('inclusive local horizon excludes past, day 31, completed and cancelled', (
     payment(5, 'expense', 1600, '2026-09-26', 'completed'),
     payment(6, 'income', 3200, '2026-09-26', 'cancelled'),
   ], now);
-  assert.equal(s.committedMinor, 300);
+  assert.equal(s.committedMinor, 700);
+  assert.equal(s.attentionCount, 1);
   assert.equal(s.incomeMinor, 0);
   assert.deepEqual(s.upcoming.map(p => p.id), [1, 2]);
 });

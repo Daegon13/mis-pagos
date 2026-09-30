@@ -2,26 +2,10 @@ import { useRef, useState } from "react";
 import { useSQLiteContext } from "expo-sqlite";
 
 import { createPayment } from "@/data/repositories/paymentRepository";
-import type { PaymentType } from "@/domain/payment";
-import { parseBalanceMinor } from "@/features/financial-profile/money";
-
-function localToday(): string {
-  const today = new Date();
-  return [
-    String(today.getFullYear()).padStart(4, "0"),
-    String(today.getMonth() + 1).padStart(2, "0"),
-    String(today.getDate()).padStart(2, "0"),
-  ].join("-");
-}
-
-function isCivilDate(value: string): boolean {
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
-  const [year, month, day] = value.split("-").map(Number);
-  if (year < 1 || month < 1 || month > 12) return false;
-  const leapYear = year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
-  const days = [31, leapYear ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-  return day >= 1 && day <= days[month - 1];
-}
+import { editPendingPayment } from "@/data/repositories/paymentLifecycle";
+import type { Payment, PaymentType } from "@/domain/payment";
+import { isCivilDate, localCivilDate } from "@/domain/paymentTiming";
+import { minorToInput, parseBalanceMinor } from "@/features/financial-profile/money";
 
 interface FormErrors {
   title?: string;
@@ -29,13 +13,13 @@ interface FormErrors {
   dueDate?: string;
 }
 
-export function useCreatePayment() {
+export function useCreatePayment(initial?: Payment) {
   const db = useSQLiteContext();
-  const [type, setType] = useState<PaymentType>("expense");
-  const [title, setTitle] = useState("");
-  const [amount, setAmount] = useState("");
-  const [dueDate, setDueDate] = useState(localToday);
-  const [notes, setNotes] = useState("");
+  const [type, setType] = useState<PaymentType>(initial?.type ?? "expense");
+  const [title, setTitle] = useState(initial?.title ?? "");
+  const [amount, setAmount] = useState(initial ? minorToInput(initial.amountMinor) : "");
+  const [dueDate, setDueDate] = useState(initial?.dueDate ?? localCivilDate());
+  const [notes, setNotes] = useState(initial?.notes ?? "");
   const [errors, setErrors] = useState<FormErrors>({});
   const [saveError, setSaveError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
@@ -60,9 +44,8 @@ export function useCreatePayment() {
     saving.current = true;
     setIsSaving(true);
     try {
-      return await createPayment(db, {
-        type, title: title.trim(), amountMinor, dueDate, notes,
-      });
+      const input = { type, title: title.trim(), amountMinor, dueDate, notes };
+      return initial ? await editPendingPayment(db, initial.id, input) : await createPayment(db, input);
     } catch {
       setSaveError("No pudimos guardar el movimiento.");
       saving.current = false;

@@ -8,10 +8,11 @@ import { LivingSpace } from "./LivingSpace";
 
 const months = ["ENE", "FEB", "MAR", "ABR", "MAY", "JUN", "JUL", "AGO", "SEP", "OCT", "NOV", "DIC"];
 
-export function Home({ profile, onAdd, paymentSaved, onDismissFeedback }: {
+export function Home({ profile, onAdd, paymentSaved, onDismissFeedback, onAll, onOpen, onBalance, balanceSaved }: {
   profile: FinancialProfile; onAdd: () => void; paymentSaved?: string; onDismissFeedback: () => void;
+  onAll: () => void; onOpen: (id: number) => void; onBalance: () => void; balanceSaved?: string;
 }) {
-  const { summary, error, retry, stage, spaceError, surprise, feedback } = useHome(profile.availableBalanceMinor, paymentSaved);
+  const { summary, error, retry, stage, spaceError, surprise, feedback } = useHome(paymentSaved);
   const { fontScale, width } = useWindowDimensions();
   const money = (amount: number) => formatBalance(amount, profile.currencyCode);
   const interpretation = summary && financialFeedback(summary);
@@ -28,7 +29,7 @@ export function Home({ profile, onAdd, paymentSaved, onDismissFeedback }: {
       ) : summary === null ? <Text accessibilityLiveRegion="polite" style={styles.description}>Cargando movimientos...</Text> : (
         <>
           <View style={styles.hero}>
-            <Text style={styles.horizon}>PRÓXIMOS 30 DÍAS · {profile.currencyCode}</Text>
+            <Text style={styles.horizon}>{summary.overdueExpenseCount > 0 ? "VENCIDOS + PRÓXIMOS 30 DÍAS" : "PRÓXIMOS 30 DÍAS"} · {profile.currencyCode}</Text>
             <Text accessibilityRole="header" style={styles.label}>Disponible real</Text>
             <Text style={[styles.balance, summary.availableMinor < 0 && styles.negative]}>{money(summary.availableMinor)}</Text>
             <Text style={styles.heroDescription}>Lo que te queda después de tus compromisos</Text>
@@ -36,6 +37,9 @@ export function Home({ profile, onAdd, paymentSaved, onDismissFeedback }: {
               <View style={styles.fact}>
                 <Text style={styles.summaryLabel}>Hoy tenés</Text>
                 <Text style={styles.summaryAmount}>{money(summary.balanceMinor)}</Text>
+                <Pressable accessibilityRole="button" onPress={onBalance} style={styles.dismiss}>
+                  <Text style={styles.summaryAmount}>Actualizar</Text>
+                </Pressable>
               </View>
               <Text accessible={false} style={styles.minus}>−</Text>
               <View style={styles.fact}>
@@ -44,12 +48,17 @@ export function Home({ profile, onAdd, paymentSaved, onDismissFeedback }: {
               </View>
             </View>
           </View>
-          {feedback && <View accessibilityLiveRegion="polite" style={styles.confirmation}>
-            <Text style={styles.title}>Listo. Ya lo estamos teniendo en cuenta.</Text>
+          {(feedback || balanceSaved) && <View accessibilityLiveRegion="polite" style={styles.confirmation}>
+            <Text style={styles.title}>{balanceSaved ? "Saldo actualizado." : "Listo. Ya lo estamos teniendo en cuenta."}</Text>
             <Text style={styles.description}>Tu disponible real ahora es {money(summary.availableMinor)}.</Text>
             <Pressable accessibilityRole="button" accessibilityLabel="Cerrar confirmación" onPress={onDismissFeedback} style={styles.dismiss}>
               <Text style={styles.link}>Entendido</Text>
             </Pressable>
+          </View>}
+          {summary.attentionCount > 0 && <View style={styles.confirmation}>
+            <Text style={styles.title}>Requieren atención</Text>
+            <Text style={styles.description}>Tenés {summary.attentionCount} {summary.attentionCount === 1 ? "movimiento pendiente de revisar" : "movimientos pendientes de revisar"}.</Text>
+            <Pressable accessibilityRole="button" onPress={onAll} style={styles.dismiss}><Text style={styles.link}>Revisar movimientos</Text></Pressable>
           </View>}
           {interpretation && <View style={styles.section}>
             <Text style={styles.title}>{interpretation.title}</Text>
@@ -70,14 +79,17 @@ export function Home({ profile, onAdd, paymentSaved, onDismissFeedback }: {
             <Text style={styles.buttonText}>+ Agregar movimiento</Text>
           </Pressable>
           <View style={styles.section}>
-            <Text accessibilityRole="header" style={styles.heading}>Próximos movimientos</Text>
+            <View style={styles.summaryRow}>
+              <Text accessibilityRole="header" style={styles.heading}>Próximos movimientos</Text>
+              <Pressable accessibilityRole="button" onPress={onAll} style={styles.dismiss}><Text style={styles.link}>Ver todos</Text></Pressable>
+            </View>
             <Text style={styles.caption}>De hoy a dentro de 30 días, inclusive.</Text>
             {summary.upcoming.length === 0 ? (
               <View style={styles.empty}>
                 <Text style={styles.title}>No tenés movimientos previstos en estos 30 días.</Text>
               </View>
             ) : summary.upcoming.map((payment) => (
-              <View key={payment.id} style={styles.movement}>
+              <Pressable key={payment.id} accessibilityRole="button" onPress={() => onOpen(payment.id)} style={styles.movement}>
                 <View style={styles.date}>
                   <Text style={styles.day}>{payment.dueDate.slice(8)}</Text>
                   <Text style={styles.caption}>{months[Number(payment.dueDate.slice(5, 7)) - 1]}</Text>
@@ -91,7 +103,7 @@ export function Home({ profile, onAdd, paymentSaved, onDismissFeedback }: {
                   </View>
                   <Text style={styles.caption}>{payment.timing}</Text>
                 </View>
-              </View>
+              </Pressable>
             ))}
           </View>
         </>

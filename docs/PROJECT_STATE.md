@@ -118,6 +118,11 @@ Explicit deletion is hard delete.
 
 `cancelled` preserves the Payment record.
 
+`paymentLifecycle` composes existing repositories inside exclusive SQLite
+transactions for pending-only edits/cancellation, completion with optional
+balance reconciliation, manual balance updates and coherent financial reads.
+No new schema or dependency is required by S2-MOVEMENTS.
+
 ## Completed foundation
 
 Sprint 0: COMPLETE.
@@ -156,6 +161,30 @@ New Payments persist as `pending`.
 
 Creating a future movement does not directly modify the current FinancialProfile balance.
 
+## Full movement lifecycle
+
+S2-MOVEMENTS: COMPLETE.
+
+- `/payments`: pending groups and completed/cancelled history, ordered by date;
+- `/payments/[id]`: detail, shared-form pending edits, cancellation and hard delete;
+- completion explicitly offers a balance adjustment or “Ya está reflejado”;
+- status and any selected balance adjustment commit or roll back together;
+- `/balance`: exact manual balance input, including zero and negative values;
+- Home links to management, surfaces overdue review and reloads a consistent
+  balance/movements snapshot on focus, app activation and civil-date refresh.
+
+Completed/cancelled records are read-only except for deletion. Cancellation and
+deletion never adjust the balance. No reopening, schema changes or migration 003.
+Existing engagement rules and visuals remain intact; the optional first-completion
+milestone is deferred.
+
+Validation: 21 automated tests, including all eight previous Home/engagement
+tests and SQLite rollback/duplicate-resolution coverage. Typecheck, lint and
+diff checks pass. Android emulator QA covers navigation, both edits, cancellation,
+deletion, all four reconciliation choices, overdue calculations, negative/zero/
+positive manual balances, history, Home refresh and full restart persistence.
+Original financial and engagement data was restored after QA.
+
 ## Core Home implementation
 
 S1-HOME: COMPLETE.
@@ -177,15 +206,9 @@ Implemented:
 - refresh after movement creation;
 - restart persistence.
 
-Home financial formulas:
-
-`Disponible real = current available balance - pending expenses inside the active horizon`
-
-Future expected income is not included in Disponible real.
-
-`Projection = current available balance - pending expenses + pending income`
-
-Only relevant pending movements participate in future calculations.
+Current financial formulas, overdue treatment and inclusive horizon boundaries
+are defined in `HOME_UX.md`. Future expected income is not included in
+Disponible real; only relevant pending movements participate in calculations.
 
 ## Current product-design direction
 
@@ -197,7 +220,8 @@ signed amounts and relative timing; the compact Add Movement CTA stays in-flow.
 Deterministic messages distinguish no planned commitments, covered commitments
 and a shortfall (with its amount). Successful creation returns to refreshed
 Home with an inline, dismissible confirmation and the updated available amount.
-Financial formulas and the inclusive 30-day horizon are unchanged.
+S1-HOME-V2 preserved the formulas and inclusive 30-day horizon; S2-MOVEMENTS
+adds the overdue treatment specified in `HOME_UX.md`.
 
 Validation: eight automated tests (five existing Home tests plus feedback,
 milestone and SQLite migration/non-regression coverage), typecheck and lint pass.
@@ -280,7 +304,7 @@ Development now prioritizes:
 
 Next product direction:
 
-- movement management;
+- validate repeated use of movement management;
 - recurrence;
 - reminders;
 - engagement expansion;
