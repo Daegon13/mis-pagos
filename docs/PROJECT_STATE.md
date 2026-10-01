@@ -12,6 +12,30 @@ and how much is truly available.
 
 The app is not a bank and does not connect to financial institutions.
 
+## Private Android alpha (PREVIEW-01)
+
+Mis Pagos 0.1 Alpha preview configuration is ready for private dogfooding and
+alpha testers. Permanent Android package: `com.diegomarin.mispagos`.
+Current app version: `0.1.0`; Android `versionCode`: `1`. Increment versionCode
+for every future Android build. EAS uses local app versioning.
+
+EAS project: `@daegon13/mis-pagos`. `preview` produces an internal release APK;
+`production` is prepared for a future AAB. No store submission or iOS build.
+Preview APK build `ae90dec6-0011-4e77-9376-2b4946fe3838`: **FINISHED**.
+[Build / install](https://expo.dev/accounts/daegon13/projects/mis-pagos/builds/ae90dec6-0011-4e77-9376-2b4946fe3838).
+Existing Expo template icon/adaptive icon/splash assets are retained for this alpha.
+
+Validation (2026-10-01): 26 automated tests, typecheck, lint and diff check pass.
+Fresh APK installation on Android API 35 emulator passed setup/currency,
+natural money input, native dates, expense/income creation, available/projection
+calculations, overdue expense/income behavior, pending edits, cancellation,
+hard delete, explicit expense deduction/income addition and manual balance.
+Force-stop/relaunch preserved profile, pending/completed/cancelled movements
+and Tu espacio's window/plant/table/books state. Metro was stopped and Expo Go
+force-stopped throughout APK QA. No physical device was connected; physical
+dogfooding remains next. Only this fresh APK's QA data was cleared afterward.
+Tester guidance: `ALPHA_TESTING.md`. APKs and signing credentials stay out of Git.
+
 ## Stack
 
 - React Native

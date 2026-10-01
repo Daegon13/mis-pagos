@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "mis-pagos",
+    "name": "Mis Pagos",
     "slug": "mis-pagos",
-    "version": "1.0.0",
+    "version": "0.1.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "mispagos",
@@ -11,6 +11,8 @@
       "icon": "./assets/expo.icon"
     },
     "android": {
+      "package": "com.diegomarin.mispagos",
+      "versionCode": 1,
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
@@ -38,6 +40,13 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "7b930a0a-049f-4ac8-b944-6572ee4dddf3"
+      }
+    },
+    "owner": "daegon13"
   }
 }
