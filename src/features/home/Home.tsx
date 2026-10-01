@@ -36,10 +36,12 @@ export function Home({ profile, onAdd, paymentSaved, onDismissFeedback, onAll, o
             <View style={styles.breakdown}>
               <View style={styles.fact}>
                 <Text style={styles.summaryLabel}>Hoy tenés</Text>
-                <Text style={styles.summaryAmount}>{money(summary.balanceMinor)}</Text>
-                <Pressable accessibilityRole="button" onPress={onBalance} style={styles.dismiss}>
-                  <Text style={styles.summaryAmount}>Actualizar</Text>
-                </Pressable>
+                <View style={styles.balanceRow}>
+                  <Text style={styles.summaryAmount}>{money(summary.balanceMinor)}</Text>
+                  <Pressable accessibilityRole="button" accessibilityLabel="Actualizar saldo actual" onPress={onBalance} style={styles.dismiss}>
+                    <Text style={styles.balanceLink}>Actualizar</Text>
+                  </Pressable>
+                </View>
               </View>
               <Text accessible={false} style={styles.minus}>−</Text>
               <View style={styles.fact}>
@@ -55,16 +57,23 @@ export function Home({ profile, onAdd, paymentSaved, onDismissFeedback, onAll, o
               <Text style={styles.link}>Entendido</Text>
             </Pressable>
           </View>}
-          {summary.attentionCount > 0 && <View style={styles.confirmation}>
-            <Text style={styles.title}>Requieren atención</Text>
-            <Text style={styles.description}>Tenés {summary.attentionCount} {summary.attentionCount === 1 ? "movimiento pendiente de revisar" : "movimientos pendientes de revisar"}.</Text>
-            <Pressable accessibilityRole="button" onPress={onAll} style={styles.dismiss}><Text style={styles.link}>Revisar movimientos</Text></Pressable>
-          </View>}
           {interpretation && <View style={styles.section}>
             <Text style={styles.title}>{interpretation.title}</Text>
             <Text style={styles.description}>{interpretation.kind === "shortfall"
               ? `Tus compromisos superan tu saldo actual en ${money(interpretation.shortfallMinor)}.`
               : interpretation.description}</Text>
+            {interpretation.kind === "overdue" && <>
+              {summary.overdue.map(payment => <View key={payment.id} style={styles.overdue}>
+                <View style={[styles.summaryRow, (fontScale > 1.2 || width < 360) && styles.stacked]}>
+                  <Text style={styles.movementTitle}>{payment.title}</Text>
+                  <Text style={[styles.amount, payment.type === "income" && styles.income]}>
+                    {payment.type === "income" ? "+" : "−"}{money(payment.amountMinor)}
+                  </Text>
+                </View>
+                <Text style={styles.caption}>{payment.timing}</Text>
+              </View>)}
+              <Pressable accessibilityRole="button" onPress={onAll} style={styles.dismiss}><Text style={styles.link}>Revisar movimientos</Text></Pressable>
+            </>}
           </View>}
           {summary.incomeMinor > 0 ? <View style={styles.projection}>
             <View style={styles.summaryRow}>
@@ -139,6 +148,9 @@ const styles = StyleSheet.create({
   stacked: { flexDirection: "column", alignItems: "flex-start" },
   summaryLabel: { color: "#B8CFC0", fontSize: 12 },
   summaryAmount: { color: "#F6F4E9", fontSize: 16, fontWeight: "500", fontVariant: ["tabular-nums"] },
+  balanceRow: { flexDirection: "row", flexWrap: "wrap", alignItems: "center", gap: 8 },
+  balanceLink: { color: "#D2E0D4", fontSize: 12, textDecorationLine: "underline" },
+  overdue: { paddingVertical: 8, gap: 4 },
   projection: { gap: 6, paddingLeft: 14, borderLeftWidth: 3, borderColor: "#CAD9CC" },
   projectionAmount: { color: "#203D32", fontSize: 24, fontWeight: "600", fontVariant: ["tabular-nums"] },
   heading: { color: "#203D32", fontSize: 21, fontWeight: "600" },

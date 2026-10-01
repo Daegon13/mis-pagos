@@ -55,11 +55,37 @@ Overdue pending income is excluded from expected income and Projection.
 Both require review and appear separately from ordinary upcoming movements.
 Completed and cancelled movements contribute to neither financial calculation.
 
-Home shows a calm “Requieren atención” entry when review is needed. “Ver todos”
+Home shows one calm “Tenés movimientos por revisar” state when review is needed,
+with up to two oldest overdue movements (title, relative timing and signed amount)
+and one “Revisar movimientos” action. These rows never repeat in upcoming movements. “Ver todos”
 opens movements grouped into attention, the next 30 days and later, with separate
 completed/cancelled history. Upcoming rows open their movement detail.
 “Actualizar” beside “Hoy tenés” opens a manual balance snapshot, including zero
 or negative balances, dated with local civil today.
+
+### Contextual message precedence (S2.1)
+
+Render exactly one primary interpretation: overdue review first; otherwise a
+shortfall when planned commitments exceed the current balance; otherwise covered
+commitments (“Todo bajo control”). With no relevant expense commitments, retain
+the calm onboarding message, including income-only and negative opening balances.
+Overdue expense inclusion may be explained secondarily, never alongside a
+competing “Todo bajo control” headline. Expected income never covers a shortfall.
+
+### Everyday entry (S2.1)
+
+Money entry accepts exact natural formats such as `1500`, `1500,50`, `1500.50`,
+`1.500` and `1.500,50`. Validate complete grouping, reject ambiguous or malformed
+input and show the interpreted amount using the active currency. Movements stay
+strictly positive; manual balance snapshots allow positive, zero and negative.
+Keep “Actualizar” a subtle action beside the current balance and preview the new
+balance before saving.
+
+Create and edit share a human-readable date field and the platform date picker.
+Persist only the selected civil `YYYY-MM-DD`, never shift it through timezone
+conversion. The existing Expo UI Android picker encodes calendar fields as UTC
+midnight; adapt that native transport symmetrically while keeping local dates in
+the domain. Date display and manual balance dates use human Spanish wording.
 
 ## Home hierarchy
 

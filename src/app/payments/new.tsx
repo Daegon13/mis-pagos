@@ -15,7 +15,7 @@ export default function NewPayment() {
     <SafeAreaView style={styles.container}>
       <Stack.Screen options={{ headerShown: false }} />
       <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
-        <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+        <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled" keyboardDismissMode="on-drag">
           <Pressable accessibilityRole="button" accessibilityLabel="Volver a Home" onPress={() => router.dismissTo("/")} style={styles.back}>
             <Text style={styles.backText}>← Volver</Text>
           </Pressable>

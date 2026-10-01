@@ -31,10 +31,10 @@ export function useCreatePayment(initial?: Payment) {
     const nextErrors: FormErrors = {};
     if (!title.trim()) nextErrors.title = "Ingresá un nombre para el movimiento.";
     if (amountMinor === null || amountMinor <= 0) {
-      nextErrors.amount = "Ingresá un importe mayor que cero, sin separadores de miles y con hasta 2 decimales.";
+      nextErrors.amount = "Ingresá un importe mayor que cero. Por ejemplo: 1.500,50.";
     }
     if (!isCivilDate(dueDate)) {
-      nextErrors.dueDate = "Ingresá una fecha válida con formato AAAA-MM-DD.";
+      nextErrors.dueDate = "Elegí una fecha para el movimiento.";
     }
     setErrors(nextErrors);
     setSaveError(null);

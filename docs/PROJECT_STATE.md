@@ -185,6 +185,26 @@ deletion, all four reconciliation choices, overdue calculations, negative/zero/
 positive manual balances, history, Home refresh and full restart persistence.
 Original financial and engagement data was restored after QA.
 
+## Daily-use UX (S2.1)
+
+- One contextual Home message prioritizes overdue review over covered/shortfall
+  interpretations, with at most two overdue previews and one review action.
+- Natural money entry validates grouping and decimals using exact minor units;
+  active-currency previews clarify both movement amounts and manual balances.
+- Create/edit share a native date picker from the already installed `@expo/ui`,
+  human Spanish dates and a tested civil-date adapter. No new dependency.
+- Form focus, spacing, bounded notes and scroll dismissal support small screens;
+  the balance update action stays subtle beside “Hoy tenés”.
+- Financial formulas, lifecycle, horizon, schema and Tu espacio are unchanged.
+
+Automated coverage: 26 tests, including precedence, overdue previews, natural
+amounts and date roundtrips in five timezones, plus all previous lifecycle tests.
+Typecheck, lint and diff checks pass. Android API 35 QA covers the four Home
+states, all five money formats, create/edit native dates, a full restart in
+America/Montevideo, positive/zero/negative balances, keyboard/scroll at 360×640,
+edit/complete/cancel/delete and Tu espacio. Original data and viewport were
+restored; no migration or financial formula changed.
+
 ## Core Home implementation
 
 S1-HOME: COMPLETE.

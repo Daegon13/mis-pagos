@@ -8,6 +8,7 @@ import { formatBalance } from "@/features/financial-profile/money";
 import { PaymentForm } from "./PaymentForm";
 import { Action, Feedback, MovementScreen, styles } from "./MovementScreen";
 import { useMovementAction, useMovements } from "./useMovements";
+import { formatCivilDate } from "./civilDate";
 
 export function MovementDetail({ id, onBack, onDeleted }: { id: number; onBack: () => void; onDeleted: () => void }) {
   const { db, data, error, reload } = useMovements();
@@ -53,7 +54,7 @@ export function MovementDetail({ id, onBack, onDeleted }: { id: number; onBack: 
       onSaved={() => { setEditing(false); setEdited(true); reload(); }} /> : <>
       <Text style={styles.text}>{expense ? "Gasto" : "Ingreso"} · {paymentStatusLabel(payment)}</Text>
       <Text style={styles.amount}>{money(payment.amountMinor)}</Text>
-      <Text style={styles.text}>Fecha: {payment.dueDate}</Text>
+      <Text style={styles.text}>Fecha: {formatCivilDate(payment.dueDate)}</Text>
       <Text style={styles.text}>{paymentTiming(payment)}</Text>
       {payment.notes && <View style={styles.section}><Text style={styles.title}>Notas</Text><Text style={styles.text}>{payment.notes}</Text></View>}
       <Feedback message={edited ? "Cambios guardados." : action.feedback} />

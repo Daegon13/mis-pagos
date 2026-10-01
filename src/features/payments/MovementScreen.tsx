@@ -5,7 +5,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 export function MovementScreen({ title, onBack, children }: PropsWithChildren<{ title: string; onBack: () => void }>) {
   return <SafeAreaView style={styles.container}>
     <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
-      <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+      <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled" keyboardDismissMode="on-drag">
         <Action label="← Volver" onPress={onBack} />
         <Text accessibilityRole="header" style={styles.heading}>{title}</Text>
         {children}

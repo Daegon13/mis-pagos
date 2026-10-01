@@ -1,7 +1,11 @@
-import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { useRef, useState } from "react";
+import { DateTimePicker } from "@expo/ui/community/datetime-picker";
+import { Keyboard, Platform, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
 import { useCreatePayment } from "./useCreatePayment";
 import type { Payment } from "@/domain/payment";
+import { formatBalance, parseBalanceMinor } from "@/features/financial-profile/money";
+import { civilDateToPickerDate, formatCivilDate, pickerDateToCivilDate } from "./civilDate";
 
 interface PaymentFormProps {
   currencyCode: string;
@@ -11,6 +15,14 @@ interface PaymentFormProps {
 
 export function PaymentForm({ currencyCode, onSaved, initial }: PaymentFormProps) {
   const form = useCreatePayment(initial);
+  const amountInput = useRef<TextInput>(null);
+  const [showDate, setShowDate] = useState(false);
+  const amountMinor = parseBalanceMinor(form.amount);
+
+  function openDate() {
+    Keyboard.dismiss();
+    setShowDate(true);
+  }
 
   async function submit() {
     const payment = await form.save();
@@ -51,12 +63,16 @@ export function PaymentForm({ currencyCode, onSaved, initial }: PaymentFormProps
           placeholderTextColor="#697973"
           editable={!form.isSaving}
           autoCapitalize="sentences"
+          returnKeyType="next"
+          submitBehavior="submit"
+          onSubmitEditing={() => amountInput.current?.focus()}
         />
         {form.errors.title && <Text accessibilityRole="alert" accessibilityLiveRegion="polite" style={styles.error}>{form.errors.title}</Text>}
       </View>
       <View style={styles.field}>
         <Text style={styles.label}>Importe ({currencyCode})</Text>
         <TextInput
+          ref={amountInput}
           accessibilityLabel={`Importe (${currencyCode})`}
           style={[styles.input, !!form.errors.amount && styles.invalidInput]}
           value={form.amount}
@@ -65,24 +81,35 @@ export function PaymentForm({ currencyCode, onSaved, initial }: PaymentFormProps
           placeholderTextColor="#697973"
           keyboardType="decimal-pad"
           editable={!form.isSaving}
+          returnKeyType="next"
+          onSubmitEditing={openDate}
         />
-        <Text style={styles.hint}>Mayor que cero, sin separadores de miles.</Text>
+        {amountMinor !== null && amountMinor > 0 && <Text style={styles.hint}>{formatBalance(amountMinor, currencyCode)}</Text>}
         {form.errors.amount && <Text accessibilityRole="alert" accessibilityLiveRegion="polite" style={styles.error}>{form.errors.amount}</Text>}
       </View>
       <View style={styles.field}>
         <Text style={styles.label}>Fecha</Text>
-        <TextInput
-          accessibilityLabel="Fecha, AAAA-MM-DD"
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={`Fecha: ${formatCivilDate(form.dueDate)}. Cambiar fecha`}
+          accessibilityState={{ disabled: form.isSaving, expanded: showDate }}
           style={[styles.input, !!form.errors.dueDate && styles.invalidInput]}
-          value={form.dueDate}
-          onChangeText={form.setDueDate}
-          placeholder="AAAA-MM-DD"
-          placeholderTextColor="#697973"
-          autoCorrect={false}
-          autoCapitalize="none"
-          editable={!form.isSaving}
-        />
-        <Text style={styles.hint}>AAAA-MM-DD. Por ejemplo: 2026-12-31.</Text>
+          onPress={openDate}
+          disabled={form.isSaving}
+        ><Text style={styles.dateText}>{formatCivilDate(form.dueDate)}</Text></Pressable>
+        {showDate && <>
+          <DateTimePicker value={civilDateToPickerDate(form.dueDate, Platform.OS)} mode="date"
+            display={Platform.OS === "ios" ? "spinner" : "default"}
+            positiveButton={{ label: "Elegir fecha" }} negativeButton={{ label: "Volver" }}
+            onDismiss={() => setShowDate(false)}
+            onValueChange={(_, date) => {
+              form.setDueDate(pickerDateToCivilDate(date, Platform.OS));
+              if (Platform.OS !== "ios") setShowDate(false);
+            }} />
+          {Platform.OS === "ios" && <Pressable accessibilityRole="button" style={styles.dateDone} onPress={() => setShowDate(false)}>
+            <Text style={styles.label}>Listo</Text>
+          </Pressable>}
+        </>}
         {form.errors.dueDate && <Text accessibilityRole="alert" accessibilityLiveRegion="polite" style={styles.error}>{form.errors.dueDate}</Text>}
       </View>
       <View style={styles.field}>
@@ -95,6 +122,10 @@ export function PaymentForm({ currencyCode, onSaved, initial }: PaymentFormProps
           multiline
           textAlignVertical="top"
           editable={!form.isSaving}
+          placeholder="Algo que quieras recordar"
+          placeholderTextColor="#697973"
+          returnKeyType="done"
+          submitBehavior="blurAndSubmit"
         />
       </View>
       {form.saveError && <Text accessibilityRole="alert" accessibilityLiveRegion="polite" style={styles.error}>{form.saveError}</Text>}
@@ -112,7 +143,7 @@ export function PaymentForm({ currencyCode, onSaved, initial }: PaymentFormProps
 }
 
 const styles = StyleSheet.create({
-  form: { gap: 28 },
+  form: { gap: 22 },
   description: { color: "#52645C", fontSize: 17, lineHeight: 25 },
   field: { gap: 10 },
   label: { color: "#203D32", fontSize: 16, fontWeight: "600" },
@@ -123,7 +154,9 @@ const styles = StyleSheet.create({
   selectedText: { color: "#FFFFFF" },
   input: { minHeight: 56, borderWidth: 1, borderColor: "#879B90", borderRadius: 12, paddingHorizontal: 16, paddingVertical: 12, fontSize: 20, color: "#163B30", backgroundColor: "#FFFFFF" },
   invalidInput: { borderColor: "#A12D26" },
-  notes: { minHeight: 108 },
+  notes: { minHeight: 96, maxHeight: 160 },
+  dateText: { fontSize: 18, lineHeight: 28, color: "#163B30" },
+  dateDone: { minHeight: 48, justifyContent: "center", alignItems: "center" },
   hint: { fontSize: 14, lineHeight: 20, color: "#52645C" },
   error: { color: "#A12D26", fontSize: 15, lineHeight: 22 },
   button: { minHeight: 56, borderRadius: 14, padding: 16, alignItems: "center", justifyContent: "center", backgroundColor: "#163B30" },

@@ -21,6 +21,7 @@ export function calculateHome(balanceMinor: number, payments: Payment[], now = n
     balanceMinor, committedMinor, incomeMinor, availableMinor, projectionMinor,
     attentionCount: groups.attention.length,
     overdueExpenseCount: groups.attention.filter(payment => payment.type === "expense").length,
+    overdue: groups.attention.slice(0, 2).map(payment => ({ ...payment, timing: paymentTiming(payment, localCivilDate(now)) })),
     upcoming: groups.next.slice(0, 5).map(payment => ({ ...payment, timing: paymentTiming(payment, localCivilDate(now)) })),
   };
 }

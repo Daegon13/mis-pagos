@@ -161,7 +161,9 @@ test('manual balance uses exact parser, allows zero/negative and refreshes calcu
       assert.deepEqual(snapshot.payments, [p]);
       assert.equal(calculateHome(amount, snapshot.payments, now).availableMinor, amount - p.amountMinor);
     }
-    for (const value of ['1.234,56', '1.001', 'abc', '', '9007199254740992']) assert.equal(parseBalanceMinor(value), null);
+    assert.equal(parseBalanceMinor('1.234,56'), 123456);
+    assert.equal(parseBalanceMinor('1.001'), 100100);
+    for (const value of ['1.23,456', '1.0001', 'abc', '', '9007199254740992']) assert.equal(parseBalanceMinor(value), null);
     await assert.rejects(lifecycle.updateCurrentBalance(f.db, 0.5));
     const huge = await f.add('income', { amountMinor: Number.MAX_SAFE_INTEGER });
     await assert.rejects(lifecycle.completePayment(f.db, huge.id, true));
