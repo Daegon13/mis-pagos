@@ -4,8 +4,18 @@
 
 Product contract for the emotional engagement layer of Mis Pagos.
 
+The engagement MVP v0 is already implemented as a small persistent `Tu espacio`
+scene. The next product step is not to add more generic progression, but to make
+the experience feel personally recognizable through optional themes, interests,
+ambient style and modular space composition.
+
 This document defines the purpose, principles, limits and staged scope of the system.
-It is intentionally product-focused. Implementation details may evolve, but the non-negotiable constraints in this document must be preserved.
+Implementation details may evolve, but the non-negotiable constraints in this document
+must be preserved.
+
+Detailed visual-personalization rules live in:
+
+`docs/PERSONALIZATION_SYSTEM.md`
 
 ---
 
@@ -100,6 +110,33 @@ The scene evolves gradually.
 It must begin simple and become warmer and more personal over time.
 
 The first implementation does not require free-form decoration or a complex room editor.
+
+---
+
+### Personalization direction
+
+The living space should not remain one generic room shared by every user.
+
+The next evolution is a modular scene composed from reusable visual slots, influenced
+by optional user preferences such as:
+
+- selected app theme;
+- up to a small number of interests;
+- preferred atmosphere;
+- optional custom space name.
+
+Examples of interests may include nature, books, gaming, music, animals, coffee,
+travel, art, night, technology, home or minimalism.
+
+These preferences are aesthetic only.
+
+They must never be used to infer spending behavior, financial risk, purchase intent,
+financial advice or advertising targets.
+
+Personalization must increase ownership without creating a long onboarding test or
+making the financial product harder to use.
+
+See `docs/PERSONALIZATION_SYSTEM.md` for the normative personalization contract.
 
 ---
 
@@ -400,23 +437,43 @@ without explaining a complicated game system.
 
 ---
 
-## 11. First personalization
+## 11. Personalization and ownership
 
-After the concept is understood, the system may offer one small choice.
+After the basic engagement concept is understood, Mis Pagos should let the user make
+the experience feel personally theirs.
 
-Example:
+The first personalization layer should remain small and optional.
 
-> Elegí un detalle para tu espacio.
+High-impact examples:
 
-Possible choices:
+- choose a curated app color/theme;
+- select up to a few interests;
+- choose an ambient style;
+- optionally name `Tu espacio`;
+- let those choices influence reusable room details.
 
-- plant;
-- books;
-- lamp.
+The objective is not to create a personality test.
 
-The purpose is ownership.
+The objective is to move from:
 
-One meaningful choice is more valuable than a large customization screen in the early product.
+> “the room Mis Pagos gives everyone”
+
+to:
+
+> “my space inside Mis Pagos”
+
+Personalization and progression are separate:
+
+- personalization determines **how the space looks**;
+- progression determines **how the space evolves through useful organization**.
+
+Changing theme, interests or atmosphere must never erase engagement progress.
+
+The user must always be able to skip this layer and change preferences later.
+
+Detailed rules live in:
+
+`docs/PERSONALIZATION_SYSTEM.md`
 
 ---
 
@@ -592,35 +649,50 @@ The product should seek:
 
 ---
 
-## 19. MVP scope
+## 19. Current engagement scope
 
-The first engagement MVP should contain only high-impact, relatively low-cost elements.
+### Implemented MVP v0
 
-### Required
+The current product already contains:
 
 - immediate useful feedback after financial actions;
 - deterministic contextual messages;
-- one simple living-space scene;
-- approximately 3–5 persistent visual progression states;
-- non-regressing progress;
-- at least one occasional visual surprise;
-- calm integration with Home;
+- a compact `Tu espacio` scene;
+- persistent non-regressing progress;
+- three implemented visual progression states;
+- one occasional surprise;
+- secondary placement below the core financial experience;
 - no punishment mechanics.
 
-### Not required yet
+### Next high-impact expansion
+
+Before adding a large inventory or more generic progression, prioritize:
+
+- curated app themes;
+- optional interest selection;
+- ambient style;
+- optional space naming;
+- modular scene variation using reusable components/assets.
+
+This expansion is intended to increase identity and ownership without requiring a
+large asset library.
+
+### Still not required
 
 - free-form room editor;
 - large inventory;
 - many collections;
-- pets;
+- pets requiring care;
 - seasonal events;
 - sounds;
-- complex animations;
+- complex animation systems;
 - social features;
 - rankings;
 - minigames;
-- premium store;
-- dozens of assets.
+- large premium store;
+- dozens of unique room illustrations.
+
+Do not add more engagement content merely to increase feature count.
 
 ---
 
@@ -644,6 +716,12 @@ If persistent engagement state requires database changes:
 4. keep the model minimal.
 
 The implementation task must specify the persistence approach before changing the schema.
+
+When a task changes themes, interests, ambient style, space naming or modular visual
+composition, it must also respect `docs/PERSONALIZATION_SYSTEM.md`.
+
+Personalization persistence must remain independent from financial truth and must not
+be attached to `Payment` merely for convenience.
 
 ---
 

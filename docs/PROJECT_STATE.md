@@ -36,6 +36,34 @@ force-stopped throughout APK QA. No physical device was connected; physical
 dogfooding remains next. Only this fresh APK's QA data was cleared afterward.
 Tester guidance: `ALPHA_TESTING.md`. APKs and signing credentials stay out of Git.
 
+## Alpha dogfooding findings (2026-10-02)
+
+The first real APK is now being tested outside the development loop.
+
+Observed product issues:
+
+- the direct-install APK is approximately 100 MB; root cause is not yet established,
+  so optimization must begin with an artifact-size audit rather than dependency removal;
+- principal-currency selection is too rigid after setup;
+- the product does not yet support informational reference currencies;
+- `Tu espacio` is directionally positive but still too generic/basic to strongly
+  differentiate Mis Pagos from other finance apps;
+- users should be able to personalize the visual identity of the app;
+- optional interests and ambient preferences may allow `Tu espacio` to feel materially
+  different between users without building a separate room for every combination.
+
+These are alpha observations, not proof of their root causes or final solution quality.
+
+Current response:
+
+1. audit APK composition (`SIZE-01`);
+2. implement identity/personalization (`PERS-01`);
+3. implement currency references safely (`FX-01`);
+4. run Dogfooding V2;
+5. return to recurrence/reminders after these hypotheses are tested.
+
+---
+
 ## Stack
 
 - React Native
@@ -337,27 +365,79 @@ Detailed contract:
 
 `docs/ENGAGEMENT_SYSTEM.md`
 
+## Personalization system direction
+
+Alpha testing showed that a single generic `Tu espacio` scene is not enough to create
+a strong product identity.
+
+The next engagement-adjacent iteration is `PERS-01`.
+
+Direction:
+
+- curated app color/themes;
+- optional selection of up to a few interests;
+- optional ambient style;
+- optional custom space name;
+- modular scene composition using reusable visual slots;
+- preferences editable later;
+- no effect on financial calculations;
+- interests must not be used to infer financial behavior or targeting.
+
+Changing appearance must never erase engagement progress.
+
+Detailed contract:
+
+`docs/PERSONALIZATION_SYSTEM.md`
+
+## Currency system direction
+
+Mis Pagos will continue to use one principal accounting currency for financial truth.
+
+The next currency iteration (`FX-01`) introduces:
+
+- broader currency metadata;
+- zero to two optional reference currencies;
+- informational automatic conversion;
+- provider-agnostic exchange-rate access;
+- local rate cache;
+- stale-rate disclosure;
+- offline-safe financial behavior.
+
+Reference currencies do not modify stored Payment amounts, current balance,
+Disponible real or Projection.
+
+A principal-currency change with existing financial data must never be implemented as
+a symbol-only switch.
+
+Detailed contract:
+
+`docs/CURRENCY_SYSTEM.md`
+
 ## Roadmap direction
 
-Development now prioritizes:
+Development continues to prioritize:
 
 1. highest expected product impact;
 2. lowest reasonable implementation cost;
 3. coherent functional iterations;
 4. validation before expensive expansion.
 
-Next product direction:
+Immediate order:
 
-- validate repeated use of movement management;
-- recurrence;
-- reminders;
-- engagement expansion;
-- polish;
-- launch preparation.
+1. `SIZE-01` — audit the approximately 100 MB direct APK before optimizing;
+2. `PERS-01` — themes, optional interests, ambient style and modular `Tu espacio`;
+3. `FX-01` — expanded currency metadata and up to two reference currencies;
+4. Dogfooding V2 on physical devices;
+5. recurrence design/implementation;
+6. reminders;
+7. engagement expansion;
+8. polish and launch preparation.
 
 Detailed roadmap:
 
 `docs/PRODUCT_ROADMAP.md`
+
+---
 
 ## Product principles
 
@@ -390,7 +470,11 @@ Use:
 
 - `AGENTS.md` for permanent repository rules;
 - `docs/PROJECT_STATE.md` for compact current state;
-- specific product contracts such as `HOME_UX.md` and `ENGAGEMENT_SYSTEM.md` only when the task needs them;
+- `docs/HOME_UX.md` for Home behavior when relevant;
+- `docs/ENGAGEMENT_SYSTEM.md` for engagement rules when relevant;
+- `docs/PERSONALIZATION_SYSTEM.md` for themes/interests/space identity tasks;
+- `docs/CURRENCY_SYSTEM.md` for currency/FX tasks;
+- `docs/PRODUCT_ROADMAP.md` only when planning or changing roadmap priorities;
 - direct task prompts for the current implementation work.
 
 Do not make Codex re-read the entire documentation set by default.
