@@ -16,8 +16,10 @@ const { spaceStage } = load('src/domain/engagement.ts');
 const { advanceSpace } = load('src/data/repositories/engagementRepository.ts');
 const { initialMigration } = load('src/data/db/migrations/001_initial.ts');
 const { engagementMigration } = load('src/data/db/migrations/002_engagement.ts');
+const { personalizationMigration } = load('src/data/db/migrations/003_personalization.ts');
 const { runMigrations } = load('src/data/db/migrations/index.ts', (name) =>
-  name === './001_initial' ? { initialMigration } : { engagementMigration });
+  name === './001_initial' ? { initialMigration } :
+    name === './002_engagement' ? { engagementMigration } : { personalizationMigration });
 const now = new Date(2026, 8, 28, 23, 59);
 const payment = (type, overrides = {}) => ({ id: 1, type, amountMinor: 100,
   dueDate: '2026-09-28', status: 'pending', ...overrides });
@@ -64,7 +66,7 @@ test('forward migration, atomic non-regression, one surprise, and financial inde
     const before = ['financial_profile', 'payments'].map(table => sqlite.prepare(`SELECT * FROM ${table}`).all());
     await runMigrations(db);
     await runMigrations(db); // Reopening the app cannot reset the table.
-    assert.equal(sqlite.prepare('PRAGMA user_version').get().user_version, 2);
+    assert.equal(sqlite.prepare('PRAGMA user_version').get().user_version, 3);
     assert.deepEqual(await advanceSpace(db, 0), { stage: 0, surprise: false });
     assert.deepEqual(await advanceSpace(db, 1), { stage: 1, surprise: false });
     assert.deepEqual(await advanceSpace(db, 0), { stage: 1, surprise: false });

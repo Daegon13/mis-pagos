@@ -6,11 +6,12 @@ import { deletePayment } from "@/data/repositories/paymentRepository";
 import { paymentStatusLabel, paymentTiming } from "@/domain/paymentTiming";
 import { formatBalance } from "@/features/financial-profile/money";
 import { PaymentForm } from "./PaymentForm";
-import { Action, Feedback, MovementScreen, styles } from "./MovementScreen";
+import { Action, Feedback, MovementScreen, useMovementStyles } from "./MovementScreen";
 import { useMovementAction, useMovements } from "./useMovements";
 import { formatCivilDate } from "./civilDate";
 
 export function MovementDetail({ id, onBack, onDeleted }: { id: number; onBack: () => void; onDeleted: () => void }) {
+  const styles = useMovementStyles();
   const { db, data, error, reload } = useMovements();
   const action = useMovementAction();
   const [editing, setEditing] = useState(false);

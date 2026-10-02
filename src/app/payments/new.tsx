@@ -4,29 +4,31 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useFinancialProfile } from "@/features/financial-profile/useFinancialProfile";
 import { PaymentForm } from "@/features/payments/PaymentForm";
+import { usePersonalization } from "@/features/personalization/PersonalizationProvider";
 
 export default function NewPayment() {
   const router = useRouter();
   const { profile, isLoading, loadError, retry } = useFinancialProfile();
+  const { theme } = usePersonalization();
 
   if (!isLoading && !loadError && profile === null) return <Redirect href="/" />;
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
       <Stack.Screen options={{ headerShown: false }} />
       <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
         <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled" keyboardDismissMode="on-drag">
           <Pressable accessibilityRole="button" accessibilityLabel="Volver a Home" onPress={() => router.dismissTo("/")} style={styles.back}>
-            <Text style={styles.backText}>← Volver</Text>
+            <Text style={[styles.backText, { color: theme.primary }]}>← Volver</Text>
           </Pressable>
-          <Text accessibilityRole="header" style={styles.title}>Nuevo movimiento</Text>
+          <Text accessibilityRole="header" style={[styles.title, { color: theme.primary }]}>Nuevo movimiento</Text>
           {isLoading ? (
-            <Text accessibilityLiveRegion="polite" style={styles.description}>Cargando...</Text>
+            <Text accessibilityLiveRegion="polite" style={[styles.description, { color: theme.textSecondary }]}>Cargando...</Text>
           ) : loadError ? (
             <>
-              <Text accessibilityRole="alert" style={styles.description}>{loadError}</Text>
+              <Text accessibilityRole="alert" style={[styles.description, { color: theme.textSecondary }]}>{loadError}</Text>
               <Pressable accessibilityRole="button" onPress={retry} style={styles.back}>
-                <Text style={styles.backText}>Reintentar</Text>
+                <Text style={[styles.backText, { color: theme.primary }]}>Reintentar</Text>
               </Pressable>
             </>
           ) : profile !== null ? (

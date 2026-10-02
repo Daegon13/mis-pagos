@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
 import { parseBalanceMinor } from "./money";
+import { usePersonalization } from "@/features/personalization/PersonalizationProvider";
+import type { ThemeTokens } from "@/features/personalization/themes";
 
 const CURRENCIES = ["UYU", "ARS", "BRL", "CLP", "COP", "MXN", "USD"];
 
@@ -12,6 +14,8 @@ interface FinancialSetupProps {
 }
 
 export function FinancialSetup({ isSaving, error, onSave }: FinancialSetupProps) {
+  const { theme } = usePersonalization();
+  const styles = createStyles(theme);
   const [currency, setCurrency] = useState("UYU");
   const [balance, setBalance] = useState("");
   const [inputError, setInputError] = useState<string | null>(null);
@@ -59,7 +63,7 @@ export function FinancialSetup({ isSaving, error, onSave }: FinancialSetupProps)
           value={balance}
           onChangeText={(value) => { setBalance(value); setInputError(null); }}
           placeholder="Ej. 30000"
-          placeholderTextColor="#697973"
+          placeholderTextColor={theme.muted}
           keyboardType="numeric"
           editable={!isSaving}
           onSubmitEditing={submit}
@@ -81,23 +85,23 @@ export function FinancialSetup({ isSaving, error, onSave }: FinancialSetupProps)
   );
 }
 
-const styles = StyleSheet.create({
+function createStyles(theme: ThemeTokens) { return StyleSheet.create({
   form: { gap: 28 },
   intro: { gap: 12 },
-  title: { color: "#163B30", fontSize: 30, fontWeight: "700", lineHeight: 37 },
-  description: { color: "#52645C", fontSize: 17, lineHeight: 25 },
+  title: { color: theme.primary, fontSize: 30, fontWeight: "700", lineHeight: 37 },
+  description: { color: theme.textSecondary, fontSize: 17, lineHeight: 25 },
   field: { gap: 10 },
-  label: { color: "#203D32", fontSize: 16, fontWeight: "600" },
+  label: { color: theme.textPrimary, fontSize: 16, fontWeight: "600" },
   currencies: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
-  currency: { minWidth: 64, minHeight: 48, paddingHorizontal: 14, paddingVertical: 13, borderWidth: 1, borderColor: "#ABBAB1", borderRadius: 12, alignItems: "center", justifyContent: "center" },
-  selected: { backgroundColor: "#163B30", borderColor: "#163B30" },
-  currencyText: { color: "#203D32", fontSize: 15, fontWeight: "600" },
-  selectedText: { color: "#FFFFFF" },
-  input: { minHeight: 60, borderWidth: 1, borderColor: "#879B90", borderRadius: 12, paddingHorizontal: 16, paddingVertical: 12, fontSize: 24, color: "#163B30", backgroundColor: "#FFFFFF" },
-  invalidInput: { borderColor: "#A12D26" },
-  hint: { fontSize: 14, lineHeight: 20, color: "#52645C" },
-  error: { color: "#A12D26", fontSize: 15, lineHeight: 22 },
-  button: { minHeight: 56, borderRadius: 14, padding: 16, alignItems: "center", justifyContent: "center", backgroundColor: "#163B30" },
-  buttonText: { color: "#FFFFFF", fontSize: 17, fontWeight: "600" },
+  currency: { minWidth: 64, minHeight: 48, paddingHorizontal: 14, paddingVertical: 13, borderWidth: 1, borderColor: theme.border, borderRadius: 12, alignItems: "center", justifyContent: "center" },
+  selected: { backgroundColor: theme.primary, borderColor: theme.primary },
+  currencyText: { color: theme.textPrimary, fontSize: 15, fontWeight: "600" },
+  selectedText: { color: theme.textOnPrimary },
+  input: { minHeight: 60, borderWidth: 1, borderColor: theme.border, borderRadius: 12, paddingHorizontal: 16, paddingVertical: 12, fontSize: 24, color: theme.textPrimary, backgroundColor: theme.surface },
+  invalidInput: { borderColor: theme.negative },
+  hint: { fontSize: 14, lineHeight: 20, color: theme.textSecondary },
+  error: { color: theme.negative, fontSize: 15, lineHeight: 22 },
+  button: { minHeight: 56, borderRadius: 14, padding: 16, alignItems: "center", justifyContent: "center", backgroundColor: theme.primary },
+  buttonText: { color: theme.textOnPrimary, fontSize: 17, fontWeight: "600" },
   pressed: { opacity: 0.65 },
-});
+}); }

@@ -4,12 +4,13 @@ import { Pressable, Text, View } from "react-native";
 import type { Payment, PaymentStatus } from "@/domain/payment";
 import { groupMovements, paymentTiming } from "@/domain/paymentTiming";
 import { formatBalance } from "@/features/financial-profile/money";
-import { Action, Feedback, MovementScreen, styles } from "./MovementScreen";
+import { Action, Feedback, MovementScreen, useMovementStyles } from "./MovementScreen";
 import { useMovements } from "./useMovements";
 
 export function Movements({ onBack, onOpen, deleted, onDismiss }: {
   onBack: () => void; onOpen: (id: number) => void; deleted?: string; onDismiss: () => void;
 }) {
+  const styles = useMovementStyles();
   const { data, error, reload } = useMovements();
   const [tab, setTab] = useState<PaymentStatus>("pending");
   const groups = groupMovements(data?.payments ?? []);

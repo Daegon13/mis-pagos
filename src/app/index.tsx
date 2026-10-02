@@ -5,24 +5,26 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { FinancialSetup } from "@/features/financial-profile/FinancialSetup";
 import { Home } from "@/features/home/Home";
 import { useFinancialProfile } from "@/features/financial-profile/useFinancialProfile";
+import { usePersonalization } from "@/features/personalization/PersonalizationProvider";
 
 export default function Index() {
   const router = useRouter();
   const { paymentSaved, balanceSaved } = useLocalSearchParams<{ paymentSaved?: string; balanceSaved?: string }>();
   const { profile, isLoading, isSaving, loadError, saveError, retry, save } = useFinancialProfile();
+  const { theme } = usePersonalization();
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
       <Stack.Screen options={{ headerShown: false }} />
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-        <Text accessibilityRole="header" style={styles.brand}>Mis Pagos</Text>
+        <Text accessibilityRole="header" style={[styles.brand, { color: theme.primary }]}>Mis Pagos</Text>
         {isLoading ? (
-          <Text accessibilityLiveRegion="polite" style={styles.description}>Cargando...</Text>
+          <Text accessibilityLiveRegion="polite" style={[styles.description, { color: theme.textSecondary }]}>Cargando...</Text>
         ) : loadError ? (
           <View style={styles.section}>
-            <Text accessibilityRole="alert" style={styles.description}>{loadError}</Text>
-            <Pressable accessibilityRole="button" onPress={retry} style={styles.retry}>
-              <Text style={styles.retryText}>Reintentar</Text>
+            <Text accessibilityRole="alert" style={[styles.description, { color: theme.textSecondary }]}>{loadError}</Text>
+            <Pressable accessibilityRole="button" onPress={retry} style={[styles.retry, { backgroundColor: theme.primary }]}>
+              <Text style={[styles.retryText, { color: theme.textOnPrimary }]}>Reintentar</Text>
             </Pressable>
           </View>
         ) : profile === null ? (
@@ -33,6 +35,7 @@ export default function Index() {
             onOpen={id => router.push({ pathname: "/payments/[id]", params: { id: String(id) } })}
             onBalance={() => router.push("/balance")}
             onDismissFeedback={() => router.setParams({ paymentSaved: undefined, balanceSaved: undefined })}
+            onPersonalize={() => router.push("/personalize")}
             onAdd={() => router.push("/payments/new")} />
         )}
       </ScrollView>

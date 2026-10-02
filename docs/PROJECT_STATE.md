@@ -146,8 +146,10 @@ Current financial tables:
 - `financial_profile`
 - `payments`
 
-Independent cosmetic table: `engagement_progress` (singleton `stage`, 0–2).
-Schema version 2 adds it through `002_engagement`; migration 001 is unchanged.
+Independent cosmetic tables: `engagement_progress` (singleton `stage`, 0–2)
+and `personalization_preferences` (singleton theme, interests, atmosphere,
+space name). Schema version 3 adds personalization through forward-only
+`003_personalization`; migrations 001 and 002 are unchanged.
 
 Migrations use `PRAGMA user_version`.
 
@@ -370,7 +372,22 @@ Detailed contract:
 Alpha testing showed that a single generic `Tu espacio` scene is not enough to create
 a strong product identity.
 
-The next engagement-adjacent iteration is `PERS-01`.
+`PERS-01` is implemented. Six curated semantic themes cover the main app
+surfaces, with Bosque as the default. Optional choices are up to three interests,
+one of five atmospheres, and a space name of up to 24 characters. A dedicated
+`/personalize` route is reachable from Tu espacio; skipping leaves financial
+setup and Home usable. Preferences persist independently in SQLite. Existing
+engagement stages still determine the window, plant, table and books milestones;
+theme, atmosphere and interest details only change the presentation.
+
+Validation: 31 automated tests, typecheck, lint and diff checks pass. Android
+API 35 Expo Go QA covered all six themes, all atmospheres, three distinct visual
+profiles, a cold restart, negative Disponible real, movement create/edit/delete,
+balance update and a 360×640 dp viewport. Existing financial rows and stage 1
+were preserved. Automated SQLite tests cover both a v2-to-v3 upgrade and a fresh
+installation; the standalone alpha APK upgrade itself was not exercised. QA-only
+balance, movement, preferences and emulator size were restored. No new visual
+asset or dependency was added.
 
 Direction:
 

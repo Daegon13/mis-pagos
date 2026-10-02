@@ -6,6 +6,8 @@ import { useCreatePayment } from "./useCreatePayment";
 import type { Payment } from "@/domain/payment";
 import { formatBalance, parseBalanceMinor } from "@/features/financial-profile/money";
 import { civilDateToPickerDate, formatCivilDate, pickerDateToCivilDate } from "./civilDate";
+import { usePersonalization } from "@/features/personalization/PersonalizationProvider";
+import type { ThemeTokens } from "@/features/personalization/themes";
 
 interface PaymentFormProps {
   currencyCode: string;
@@ -14,6 +16,8 @@ interface PaymentFormProps {
 }
 
 export function PaymentForm({ currencyCode, onSaved, initial }: PaymentFormProps) {
+  const { theme } = usePersonalization();
+  const styles = createStyles(theme);
   const form = useCreatePayment(initial);
   const amountInput = useRef<TextInput>(null);
   const [showDate, setShowDate] = useState(false);
@@ -60,7 +64,7 @@ export function PaymentForm({ currencyCode, onSaved, initial }: PaymentFormProps
           value={form.title}
           onChangeText={form.setTitle}
           placeholder="Ej. Alquiler o Sueldo"
-          placeholderTextColor="#697973"
+          placeholderTextColor={theme.muted}
           editable={!form.isSaving}
           autoCapitalize="sentences"
           returnKeyType="next"
@@ -78,7 +82,7 @@ export function PaymentForm({ currencyCode, onSaved, initial }: PaymentFormProps
           value={form.amount}
           onChangeText={form.setAmount}
           placeholder="Ej. 1500,50"
-          placeholderTextColor="#697973"
+          placeholderTextColor={theme.muted}
           keyboardType="decimal-pad"
           editable={!form.isSaving}
           returnKeyType="next"
@@ -123,7 +127,7 @@ export function PaymentForm({ currencyCode, onSaved, initial }: PaymentFormProps
           textAlignVertical="top"
           editable={!form.isSaving}
           placeholder="Algo que quieras recordar"
-          placeholderTextColor="#697973"
+          placeholderTextColor={theme.muted}
           returnKeyType="done"
           submitBehavior="blurAndSubmit"
         />
@@ -142,24 +146,24 @@ export function PaymentForm({ currencyCode, onSaved, initial }: PaymentFormProps
   );
 }
 
-const styles = StyleSheet.create({
+function createStyles(theme: ThemeTokens) { return StyleSheet.create({
   form: { gap: 22 },
-  description: { color: "#52645C", fontSize: 17, lineHeight: 25 },
+  description: { color: theme.textSecondary, fontSize: 17, lineHeight: 25 },
   field: { gap: 10 },
-  label: { color: "#203D32", fontSize: 16, fontWeight: "600" },
+  label: { color: theme.textPrimary, fontSize: 16, fontWeight: "600" },
   types: { flexDirection: "row", gap: 12 },
-  type: { flex: 1, minHeight: 52, padding: 14, borderWidth: 1, borderColor: "#ABBAB1", borderRadius: 12, alignItems: "center", justifyContent: "center" },
-  selected: { backgroundColor: "#163B30", borderColor: "#163B30" },
-  typeText: { color: "#203D32", fontSize: 17, fontWeight: "600" },
-  selectedText: { color: "#FFFFFF" },
-  input: { minHeight: 56, borderWidth: 1, borderColor: "#879B90", borderRadius: 12, paddingHorizontal: 16, paddingVertical: 12, fontSize: 20, color: "#163B30", backgroundColor: "#FFFFFF" },
-  invalidInput: { borderColor: "#A12D26" },
+  type: { flex: 1, minHeight: 52, padding: 14, borderWidth: 1, borderColor: theme.border, borderRadius: 12, alignItems: "center", justifyContent: "center" },
+  selected: { backgroundColor: theme.primary, borderColor: theme.primary },
+  typeText: { color: theme.textPrimary, fontSize: 17, fontWeight: "600" },
+  selectedText: { color: theme.textOnPrimary },
+  input: { minHeight: 56, borderWidth: 1, borderColor: theme.border, borderRadius: 12, paddingHorizontal: 16, paddingVertical: 12, fontSize: 20, color: theme.textPrimary, backgroundColor: theme.surface },
+  invalidInput: { borderColor: theme.negative },
   notes: { minHeight: 96, maxHeight: 160 },
-  dateText: { fontSize: 18, lineHeight: 28, color: "#163B30" },
+  dateText: { fontSize: 18, lineHeight: 28, color: theme.textPrimary },
   dateDone: { minHeight: 48, justifyContent: "center", alignItems: "center" },
-  hint: { fontSize: 14, lineHeight: 20, color: "#52645C" },
-  error: { color: "#A12D26", fontSize: 15, lineHeight: 22 },
-  button: { minHeight: 56, borderRadius: 14, padding: 16, alignItems: "center", justifyContent: "center", backgroundColor: "#163B30" },
-  buttonText: { color: "#FFFFFF", fontSize: 17, fontWeight: "600" },
+  hint: { fontSize: 14, lineHeight: 20, color: theme.textSecondary },
+  error: { color: theme.negative, fontSize: 15, lineHeight: 22 },
+  button: { minHeight: 56, borderRadius: 14, padding: 16, alignItems: "center", justifyContent: "center", backgroundColor: theme.primary },
+  buttonText: { color: theme.textOnPrimary, fontSize: 17, fontWeight: "600" },
   pressed: { opacity: 0.65 },
-});
+}); }
