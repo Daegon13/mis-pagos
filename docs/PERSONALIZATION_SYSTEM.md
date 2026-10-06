@@ -1,7 +1,18 @@
 # Mis Pagos — Personalization System
 
 ## Status
-Product contract for visual personalization and identity. Complements `ENGAGEMENT_SYSTEM.md`.
+
+Product contract for visual personalization and identity. Complements:
+
+- `ENGAGEMENT_SYSTEM.md`
+- `ACHIEVEMENT_SYSTEM.md`
+
+PERS-01 is implemented with six curated semantic themes, optional interests, one
+atmosphere, an optional space name and modular `Tu espacio` rendering.
+
+The next visual direction is selective expansion, not a larger settings system.
+
+---
 
 ## 1. Purpose
 Personalization should make Mis Pagos feel like **the user's app**, not a generic finance utility.
@@ -77,9 +88,11 @@ This may influence:
 - compatible scene details.
 
 ## 6. App theme / color
+
 Use curated themes rather than an unrestricted RGB picker.
 
-Suggested themes:
+Implemented themes:
+
 - Bosque
 - Océano
 - Lavanda
@@ -87,7 +100,21 @@ Suggested themes:
 - Noche
 - Arena
 
+Bosque remains the default product identity.
+
+Potential future additions should remain few and deliberate.
+
+Two useful candidates for a softer/warm part of the palette are:
+
+- Peonía — rosa viejo / nude / crema;
+- Ciruela — malva / berry oscuro / lavanda cálida.
+
+These themes should not be labeled by gender in the UI. They simply broaden aesthetic
+choice.
+
 Themes must preserve contrast, accessibility and brand quality.
+
+---
 
 ## 7. Theme architecture
 Use semantic design tokens, for example:
@@ -189,7 +216,8 @@ Examples:
 
 Naming is cosmetic only and must not affect progression.
 
-## 13. Personalization vs progression
+## 13. Personalization vs progression and achievements
+
 Personalization answers:
 
 > ¿Cómo quiero que se vea?
@@ -198,7 +226,33 @@ Progression answers:
 
 > ¿Cómo ha evolucionado con mi organización?
 
-Changing theme/interests must never erase engagement progress.
+Achievements answer:
+
+> ¿Qué hitos significativos ya forman parte de mi historia?
+
+Changing theme/interests/atmosphere must never erase:
+
+- engagement progress;
+- unlocked achievements.
+
+An achievement may map to different cosmetic presentation depending on the user's
+personalization.
+
+Example:
+
+- a milestone may reveal a warm reading detail in a Libros/Cálido space;
+- the same conceptual milestone may reveal a technical ambient detail in a
+  Gaming/Tecnología/Nocturno space.
+
+The milestone meaning remains the same.
+
+Only its visual expression changes.
+
+Detailed achievement rules live in:
+
+`docs/ACHIEVEMENT_SYSTEM.md`
+
+---
 
 ## 14. Persistence
 Keep personalization local-first.
@@ -254,15 +308,28 @@ Core finance functionality must never depend on personalization.
 - social sharing.
 
 ## 17. Future expansion
+
 Only after validation:
-- more themes;
-- more interests;
+
+- Peonía/Ciruela or similarly deliberate additional curated themes;
+- a small real visual-asset library;
+- more interest-compatible modular objects;
+- milestone-linked objects;
 - larger decorative library;
 - advanced room customization;
 - ambient pet/character;
-- milestone-linked objects;
 - premium cosmetic packs;
 - before-vs-now history.
+
+Visual assets should remain modular.
+
+Prefer approximately a few dozen reusable high-quality objects over many full-room
+illustrations.
+
+The goal is more combinations and stronger emotional identity without combinatorial
+asset growth.
+
+---
 
 ## 18. Non-negotiables
 Personalization must never:

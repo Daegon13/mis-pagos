@@ -14,7 +14,23 @@ Todo agente debe:
 6. consultar `docs/ARCHITECTURE.md`, `docs/DECISIONS.md` o `docs/DATA_MODEL.md`
    solamente cuando la tarea toque directamente una decisión arquitectónica,
    modelo persistente, migraciones o exista un conflicto;
-7. no ampliar el alcance silenciosamente.
+7. leer contratos de producto específicos solo cuando la tarea los toque;
+8. no ampliar el alcance silenciosamente.
+
+Contratos específicos:
+
+- `docs/PRODUCT_THESIS.md`: cambios de producto, prioridad, Home o roadmap;
+- `docs/HOME_UX.md`: comportamiento y jerarquía de Home;
+- `docs/SPENDING_PLAN_SYSTEM.md`: reserva, Libre para usar, asignaciones, ritmo y simulación;
+- `docs/ENGAGEMENT_SYSTEM.md`: progresión emocional y `Tu espacio`;
+- `docs/ACHIEVEMENT_SYSTEM.md`: logros, desbloqueos y recompensas;
+- `docs/PERSONALIZATION_SYSTEM.md`: temas, intereses, atmósfera e identidad visual;
+- `docs/CURRENCY_SYSTEM.md`: moneda principal, referencias y FX;
+- `docs/PRODUCT_ROADMAP.md`: planificación/prioridades, no como lectura por defecto.
+
+No leer todos estos documentos para cada tarea.
+
+---
 
 ## Responsabilidad de `src/app`
 
@@ -66,6 +82,27 @@ Una tarea pequeña no debería modificar normalmente más de **5 archivos de pro
 - lockfiles automáticos.
 
 Si una tarea aparentemente pequeña requiere muchos archivos, detener el trabajo y reportarlo antes de ampliar el alcance.
+
+## Dirección de producto
+
+`docs/PRODUCT_THESIS.md` define el criterio de producto de alto nivel.
+
+No convertir Mis Pagos silenciosamente en:
+
+- un tracker exhaustivo de gastos;
+- una app que exige categorizar cada transacción;
+- una agenda financiera genérica;
+- un dashboard bancario;
+- un sistema dependiente de IA.
+
+`Disponible real` conserva su significado financiero establecido.
+
+Los objetivos personales de planificación, como una reserva, son una capa separada y
+no deben alterar silenciosamente la verdad financiera.
+
+Cuando una tarea implemente `¿Puedo gastar esto?`, reservas, asignaciones o ritmo de
+gasto, respetar `docs/SPENDING_PLAN_SYSTEM.md`.
+
 
 ## Dinero
 
@@ -153,6 +190,8 @@ No mezclar refactors, formateos o cambios ajenos a la tarea.
 ## Context efficiency
 
 - Treat `docs/PROJECT_STATE.md` as the compact current-state reference.
+- Route to the narrowest relevant product contract instead of reading every document.
+- Read `PRODUCT_THESIS.md` only for product-direction/scope decisions or when a feature may change the product's core proposition.
 - Do not re-derive or restate settled architecture.
 - If a decision already exists in `docs/DECISIONS.md`, treat it as settled unless the current task explicitly changes it.
 - Read only files relevant to the current task.

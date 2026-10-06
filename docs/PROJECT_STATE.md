@@ -38,29 +38,107 @@ Tester guidance: `ALPHA_TESTING.md`. APKs and signing credentials stay out of Gi
 
 ## Alpha dogfooding findings (2026-10-02)
 
-The first real APK is now being tested outside the development loop.
+The first real APK is being tested outside the development loop.
 
 Observed product issues:
 
-- the direct-install APK is approximately 100 MB; root cause is not yet established,
-  so optimization must begin with an artifact-size audit rather than dependency removal;
+- the direct-install APK felt too large for the product;
 - principal-currency selection is too rigid after setup;
 - the product does not yet support informational reference currencies;
-- `Tu espacio` is directionally positive but still too generic/basic to strongly
-  differentiate Mis Pagos from other finance apps;
-- users should be able to personalize the visual identity of the app;
-- optional interests and ambient preferences may allow `Tu espacio` to feel materially
-  different between users without building a separate room for every combination.
+- `Tu espacio` was directionally positive but initially too generic/basic to strongly differentiate Mis Pagos;
+- visual personalization and user interests appeared promising for product identity;
+- the product needed a stronger functional reason to exist beyond being a polished agenda.
 
-These are alpha observations, not proof of their root causes or final solution quality.
+### SIZE-01 — COMPLETE
+
+The exact PREVIEW-01 artifact was audited.
+
+Measured universal APK:
+
+- `110,399,866` bytes;
+- `110.40 MB`;
+- `105.29 MiB`;
+- four Android ABIs.
+
+Main composition:
+
+- native `lib/`: about `88.55 MB`, approximately 80.2% of the APK;
+- DEX: about `15.63 MB` compressed;
+- JS bundle: `2,320,964` bytes, about `2.21 MiB` / 2.1%;
+- `resources.arsc`: about `1.66 MB`;
+- `res/`: about `1.15 MB`;
+- source visual assets: about `1.41 MB`.
+
+The three ABIs other than `arm64-v8a` account for about `62.25 MiB` combined.
+The large direct-install APK is therefore dominated by native multi-ABI packaging,
+not by Mis Pagos visual/product content.
+
+An equivalent single-ABI APK was estimated from the artifact at roughly 36–44 MiB,
+depending on architecture. This is an estimate, not a measured build.
+
+The production profile is already configured for AAB, so future Play delivery can use
+device-specific splits.
+
+Decision:
+
+- do not block product work because of the current universal APK size;
+- do not remove React Native, Hermes, SQLite or `@expo/ui` for speculative savings;
+- keep asset growth disciplined;
+- use `docs/APK_SIZE_AUDIT.md` as the size baseline.
+
+### PERS-01 — COMPLETE
+
+Personalization is now implemented:
+
+- six curated semantic themes;
+- Bosque default;
+- up to three optional interests;
+- five atmospheres;
+- optional custom space name;
+- dedicated `/personalize` route;
+- modular `Tu espacio` composition;
+- local SQLite persistence;
+- forward-only `003_personalization` migration;
+- financial data and engagement milestone rules unchanged.
+
+Validation:
+
+- 31 automated tests pass;
+- typecheck, lint and diff checks pass;
+- Android QA covered all themes, all atmospheres, three materially distinct profiles,
+  negative Disponible real, cold restart and a 360×640 dp viewport;
+- no new dependency;
+- no new visual asset bytes.
+
+The standalone Alpha 0.1 → Alpha 0.2 APK update still needs a real artifact-level
+upgrade test before the next alpha is treated as validated.
+
+### New product learning
+
+The strongest emerging product thesis is not “a better financial agenda”.
+
+Mis Pagos should help the user move from:
+
+> “¿Cuánto tengo?”
+
+to:
+
+> “¿Cuánto realmente puedo usar y qué pasa si gasto X hoy?”
+
+That direction is captured in:
+
+- `docs/PRODUCT_THESIS.md`;
+- `docs/SPENDING_PLAN_SYSTEM.md`;
+- `docs/ACHIEVEMENT_SYSTEM.md`.
 
 Current response:
 
-1. audit APK composition (`SIZE-01`);
-2. implement identity/personalization (`PERS-01`);
-3. implement currency references safely (`FX-01`);
-4. run Dogfooding V2;
-5. return to recurrence/reminders after these hypotheses are tested.
+1. create/validate Alpha 0.2 with PERS-01 and test the real v2→v3 app upgrade;
+2. implement `PLAN-01` as the next major product-differentiation iteration;
+3. add a small `ACH-01` layer once planning milestones exist;
+4. implement `FX-01`;
+5. run Dogfooding V2;
+6. return to recurrence/reminders after these hypotheses are tested.
 
 ---
 
@@ -406,6 +484,92 @@ Detailed contract:
 
 `docs/PERSONALIZATION_SYSTEM.md`
 
+## Product thesis direction
+
+Mis Pagos is not intended to become a generic expense tracker, budgeting suite,
+financial agenda or spreadsheet replacement.
+
+Its current internal thesis is:
+
+> No te decimos en qué gastaste tu dinero. Te ayudamos a decidir qué podés hacer con el que todavía tenés.
+
+Operationally:
+
+> Mis Pagos te dice cuánto de tu dinero realmente podés usar, teniendo en cuenta lo que ya sabés que viene.
+
+The product ladder is:
+
+1. **Reality** — current balance, commitments and Disponible real;
+2. **Intention** — reserve target and optional allocations;
+3. **Decision** — safe spending pace and “¿Puedo gastar esto?” simulation;
+4. **Forecasting later** — estimated period close from lightweight balance updates.
+
+This thesis is normative for roadmap decisions.
+
+Detailed contract:
+
+`docs/PRODUCT_THESIS.md`
+
+## Spending-plan system direction
+
+`PLAN-01` is now a high-priority product iteration because it deepens the reason for
+Mis Pagos to exist instead of merely adding another convenience feature.
+
+The first planning layer should preserve the exact meaning of Disponible real.
+
+It adds separate concepts:
+
+- **Reserva objetivo** — an amount the user chooses to preserve for the period;
+- **Libre para usar** — Disponible real minus that reserve target;
+- **Asignaciones** — optional percentage guidance over Libre para usar;
+- **Ritmo seguro/de referencia** — a time-based guide for the remaining period;
+- **¿Puedo gastar esto?** — side-effect-free simulation of a hypothetical purchase.
+
+A percentage reserve is converted to a concrete amount when the plan is created or
+changed. It must not shrink automatically as the user spends.
+
+The system should explain consequences rather than prohibit decisions.
+
+The initial planning layer must work offline and does not require AI, bank connections
+or exhaustive transaction categorization.
+
+Detailed contract:
+
+`docs/SPENDING_PLAN_SYSTEM.md`
+
+## Achievement system direction
+
+Achievements are approved as a discovery/memory layer, not as an XP economy.
+
+Their purpose is to make it obvious that `Tu espacio` can continue evolving and to
+remember meaningful organization milestones.
+
+Valid examples include:
+
+- first commitment organized;
+- first income planned;
+- first movement resolved;
+- first overdue item resolved;
+- first reserve created;
+- first spending simulation;
+- first period reaching the user's own reserve target;
+- first personalized space.
+
+Achievements must not reward:
+
+- wealth;
+- income level;
+- spending amount;
+- transaction quantity;
+- app-open streaks;
+- ad views.
+
+Unlocked achievements never regress and must remain independent from financial truth.
+
+Detailed contract:
+
+`docs/ACHIEVEMENT_SYSTEM.md`
+
 ## Currency system direction
 
 Mis Pagos will continue to use one principal accounting currency for financial truth.
@@ -437,18 +601,23 @@ Development continues to prioritize:
 1. highest expected product impact;
 2. lowest reasonable implementation cost;
 3. coherent functional iterations;
-4. validation before expensive expansion.
+4. validation before expensive expansion;
+5. the product thesis over generic competitor feature parity.
 
 Immediate order:
 
-1. `SIZE-01` — audit the approximately 100 MB direct APK before optimizing;
-2. `PERS-01` — themes, optional interests, ambient style and modular `Tu espacio`;
-3. `FX-01` — expanded currency metadata and up to two reference currencies;
-4. Dogfooding V2 on physical devices;
-5. recurrence design/implementation;
-6. reminders;
-7. engagement expansion;
-8. polish and launch preparation.
+1. `PREVIEW-02` — build Alpha 0.2 and verify a real Alpha 0.1 → 0.2 update without data loss;
+2. `PLAN-01` — reserve, Libre para usar, optional allocations, safe pace and “¿Puedo gastar esto?”;
+3. `ACH-01` — a small milestone/discovery layer tied to useful organization;
+4. `FX-01` — expanded currency metadata and up to two reference currencies;
+5. Dogfooding V2 on physical devices;
+6. recurrence design/implementation;
+7. reminders;
+8. engagement/visual asset expansion;
+9. polish and launch preparation.
+
+`PLAN-01` now has higher product priority than FX because it strengthens the core
+decision-support proposition rather than only broadening compatibility.
 
 Detailed roadmap:
 
@@ -463,15 +632,34 @@ Priority:
 simplicity
 → stability
 → maintainability
+→ decision usefulness
 → sophistication
 
 The product should answer quickly:
 
 > How much of my money is committed, and how much can I really use?
 
+As planning evolves, it should also answer:
+
+> What happens if I spend this today?
+
+The user should not need a spreadsheet, exhaustive categorization or bank connection
+to receive core value.
+
 New features do not automatically earn a place on Home.
 
-The product should optimize for recurring usefulness, not maximum time spent inside the app.
+Home space should primarily help answer:
+
+1. what do I have?
+2. what is committed?
+3. what is truly available?
+4. what needs attention?
+5. what can I safely do next?
+
+The product should optimize for recurring usefulness and better decisions, not maximum
+time spent inside the app.
+
+---
 
 ## Execution strategy
 
@@ -487,11 +675,16 @@ Use:
 
 - `AGENTS.md` for permanent repository rules;
 - `docs/PROJECT_STATE.md` for compact current state;
-- `docs/HOME_UX.md` for Home behavior when relevant;
+- `docs/PRODUCT_THESIS.md` when a task changes product scope, Home priority or roadmap direction;
+- `docs/HOME_UX.md` for existing Home behavior when relevant;
+- `docs/SPENDING_PLAN_SYSTEM.md` for reserve/allocation/safe-pace/spending-simulation work;
 - `docs/ENGAGEMENT_SYSTEM.md` for engagement rules when relevant;
+- `docs/ACHIEVEMENT_SYSTEM.md` for milestones/unlocks/rewards;
 - `docs/PERSONALIZATION_SYSTEM.md` for themes/interests/space identity tasks;
 - `docs/CURRENCY_SYSTEM.md` for currency/FX tasks;
 - `docs/PRODUCT_ROADMAP.md` only when planning or changing roadmap priorities;
 - direct task prompts for the current implementation work.
 
 Do not make Codex re-read the entire documentation set by default.
+
+---

@@ -23,7 +23,20 @@ Mis Pagos should help the user answer quickly:
 - how much is truly available;
 - what is coming next.
 
-The product should then make maintaining that clarity feel rewarding rather than tedious.
+The product should then help the user decide:
+
+- how much of that real availability they want to preserve;
+- how much remains flexible;
+- what spending pace fits that intention;
+- what happens if they spend a specific amount today.
+
+The current product thesis is:
+
+> No te decimos en qué gastaste tu dinero. Te ayudamos a decidir qué podés hacer con el que todavía tenés.
+
+Detailed thesis:
+
+`docs/PRODUCT_THESIS.md`
 
 ---
 
@@ -54,25 +67,32 @@ Avoid:
 | Core Home / Disponible real | Very high | Medium | P0 | COMPLETE |
 | Full movement lifecycle | Very high | Medium | P0 | COMPLETE |
 | Daily-use UX polish | Very high | Low/medium | P0 | COMPLETE |
-| Private Android alpha | Very high | Medium | P0 | COMPLETE |
-| APK size audit | High | Low | P0 | NEXT |
-| Curated app themes | High | Low/medium | P0 | NEXT |
-| Optional interests + atmosphere | High | Medium | P0 | NEXT |
-| Modular personalized `Tu espacio` | Very high | Medium | P0 | NEXT |
-| Optional space naming | Medium/high | Low | P0 | NEXT |
+| Private Android Alpha 0.1 | Very high | Medium | P0 | COMPLETE |
+| APK size audit | High | Low | P0 | COMPLETE |
+| Curated themes / interests / atmosphere | High | Medium | P0 | COMPLETE |
+| Modular personalized `Tu espacio` | Very high | Medium | P0 | COMPLETE |
+| Alpha 0.2 real-upgrade validation | High | Low/medium | P0 | NEXT |
+| Reserve + Libre para usar | Very high | Medium | P0 | NEXT |
+| “¿Puedo gastar esto?” simulation | Very high | Medium | P0 | NEXT |
+| Safe spending pace | Very high | Low/medium | P0 | NEXT |
+| Optional planning allocations | High | Medium | P0 | NEXT |
+| Small achievement/discovery layer | High | Medium | P1 | AFTER PLAN-01 |
 | Expanded currency metadata | High | Low/medium | P1 | PLANNED |
 | Up to two reference currencies | High | Medium | P1 | PLANNED |
 | Cached offline FX references | High | Medium | P1 | PLANNED |
 | Safe principal-currency change | High | Medium/high | P1 | PLANNED |
 | Recurring movements | Very high | Medium/high | P1 | AFTER DOGFOODING V2 |
 | Reminders / due-date notifications | High | Medium | P1 | AFTER RECURRENCE |
-| Larger engagement inventory | Medium | High | P2 | DEFERRED |
+| Estimated period close / snapshots | Potentially very high | Medium/high | P2 | PLAN-02 |
+| Larger visual asset library | Medium/high | Medium/high | P2 | VALIDATE FIRST |
 | Ambient pet/character | Potentially high | High | P3 | DEFERRED |
 | Complex animation / seasonal system | Medium | High recurring cost | P3 | DEFERRED |
 
-Current prioritization reflects alpha dogfooding findings: the product is functionally
-usable, but identity, personalization, currency flexibility and install size now need
-validation before more feature breadth.
+Current prioritization reflects two alpha learnings:
+
+1. identity/personalization meaningfully improves ownership without meaningful asset cost;
+2. the stronger differentiation opportunity is decision support built on Disponible real,
+   not generic feature parity with finance trackers or agendas.
 
 ---
 
@@ -213,85 +233,168 @@ Validate:
 
 ---
 
-## 7. Phase 2.5 — Alpha learning and size audit — CURRENT
+## 7. Phase 2.5 — Alpha learning, size audit and personalization — COMPLETE
 
-### Objective
+### SIZE-01
 
-Use the first installable APK to identify product problems that were invisible in the
-emulator/development loop.
+The PREVIEW-01 universal APK was measured at:
 
-Current alpha observations:
+- 105.29 MiB;
+- four ABIs;
+- approximately 80.2% native `lib/`;
+- approximately 2.21 MiB JS bundle;
+- approximately 1.41 MB source visual assets.
 
-- the direct-install APK is approximately 100 MB and needs composition analysis;
-- the app still feels visually too generic despite `Tu espacio`;
-- personalization has strong potential to create ownership at relatively low cost;
-- principal-currency management is too rigid;
-- reference currencies would add practical value without requiring full multi-currency accounting.
+The three non-arm64 ABIs contribute about 62.25 MiB combined.
 
-### Immediate work
+Conclusion:
 
-#### SIZE-01
-
-Audit what actually contributes to APK size before removing dependencies or changing
-architecture.
-
-Do not optimize blindly.
-
-The result should identify, at minimum:
-
-- native libraries;
-- JavaScript bundle contribution;
-- assets;
-- architecture/ABI contribution where visible;
-- realistic opportunities for reduction;
-- difference between direct APK size and future store-delivered build considerations.
-
-No functional changes are required for the audit itself.
-
----
-
-## 8. Phase 3 — Identity and personalization
-
-### Objective
-
-Make Mis Pagos recognizable and personally meaningful without harming financial clarity.
-
-Normative contract:
-
-`docs/PERSONALIZATION_SYSTEM.md`
+- the APK size is not mainly caused by product content;
+- visual personalization does not need to be blocked;
+- future Play/AAB delivery should benefit from device-specific splits;
+- avoid speculative framework removal.
 
 ### PERS-01
 
-Prioritize:
+Implemented:
 
-- curated theme/color selector;
-- persisted theme choice;
+- Bosque, Océano, Lavanda, Terracota, Noche and Arena;
 - optional interests;
-- optional ambient style;
-- optional custom name for `Tu espacio`;
-- modular room composition from reusable visual slots;
-- editing preferences later;
-- complete independence from financial calculations.
+- five atmospheres;
+- optional space name;
+- modular personalized `Tu espacio`;
+- local persistence through `003_personalization`;
+- no new dependency;
+- no added visual asset bytes;
+- no financial or engagement-rule coupling.
 
-Keep the personalization step optional and short.
+Validation: 31 automated tests plus Android QA.
 
-Do not build:
+The real Alpha 0.1 → Alpha 0.2 APK update remains to be validated.
 
-- a free-form room editor;
-- a large inventory;
-- pets;
-- a store;
-- dozens of unique illustrations.
+---
+
+## 8. Phase 3 — Alpha 0.2 release validation — CURRENT
+
+### Objective
+
+Turn PERS-01 into the next real installable alpha and verify upgrade safety.
+
+### PREVIEW-02
+
+Required:
+
+- app version `0.2.0`;
+- Android `versionCode` incremented;
+- same permanent Android package;
+- install over an existing Alpha 0.1 without uninstalling;
+- verify migration v2→v3 on the real app artifact;
+- preserve FinancialProfile, Payments and engagement progress;
+- verify personalization after upgrade;
+- compare artifact size with SIZE-01 baseline;
+- dogfood the new identity on physical devices.
+
+Do not add product features inside PREVIEW-02.
 
 ### Goal
 
 Validate:
 
-> “This feels like my Mis Pagos, not just another finance app.”
+> “A real existing user can upgrade safely and the personalized product still feels stable.”
 
 ---
 
-## 9. Phase 4 — Currency flexibility
+## 9. Phase 4 — Decision support / spending plan
+
+### Objective
+
+Deepen the product's core reason to exist.
+
+Normative contracts:
+
+- `docs/PRODUCT_THESIS.md`
+- `docs/SPENDING_PLAN_SYSTEM.md`
+
+### PLAN-01
+
+Implement the first planning layer without redefining Disponible real.
+
+Required concepts:
+
+- monthly planning period;
+- reserve target;
+- percentage reserve converted to a concrete target amount;
+- derived `Libre para usar`;
+- optional percentage allocations;
+- safe/reference spending pace;
+- side-effect-free “¿Puedo gastar esto?” simulation;
+- calm Home summary;
+- exact arithmetic;
+- local-first persistence.
+
+The planning layer must explain consequences rather than forbid decisions.
+
+Do not require:
+
+- bank connections;
+- AI;
+- exhaustive transaction categorization;
+- receipt tracking;
+- complete spending history.
+
+### Goal
+
+Validate:
+
+> “Before spending, I can understand what this decision does to the rest of my month.”
+
+---
+
+## 10. Phase 5 — Achievement discovery layer
+
+### Objective
+
+Make progression depth visible without turning Mis Pagos into an XP/streak system.
+
+Normative contract:
+
+`docs/ACHIEVEMENT_SYSTEM.md`
+
+### ACH-01
+
+Start small:
+
+- approximately 5–8 meaningful achievements;
+- deterministic persistent unlocks;
+- lightweight discovery/history view;
+- optional modular cosmetic reward mapping;
+- no XP;
+- no streaks;
+- no rankings;
+- no wealth-based achievements.
+
+Candidate milestones include:
+
+- first commitment organized;
+- first income planned;
+- first movement resolved;
+- first overdue resolved;
+- first reserve created;
+- first “¿Puedo gastar esto?” simulation;
+- first period reaching the user's reserve;
+- first personalized space.
+
+Achievements tied to unavailable functionality remain inactive until that functionality exists.
+
+### Goal
+
+Validate:
+
+> “I understand that my space and organization history can keep evolving.”
+
+---
+
+## 11. Phase 6 — Currency flexibility
 
 ### Objective
 
@@ -309,7 +412,7 @@ Prioritize:
 - principal currency shown clearly;
 - zero to two optional reference currencies;
 - provider-agnostic exchange-rate architecture;
-- one evaluated exchange-rate provider;
+- one evaluated provider;
 - local cached rates;
 - stale-rate disclosure;
 - offline-safe Home behavior;
@@ -321,8 +424,7 @@ Reference currencies are informational only.
 
 Do not add per-Payment currencies in this phase.
 
-A principal-currency change with existing financial data must never be a symbol-only
-switch and may require its own explicit conversion iteration.
+A principal-currency change with existing financial data must never be a symbol-only switch.
 
 ### Goal
 
@@ -332,31 +434,34 @@ Validate:
 
 ---
 
-## 10. Phase 5 — Dogfooding V2
+## 12. Phase 7 — Dogfooding V2
 
 ### Objective
 
-Run the personalized/currency-aware alpha on real devices before adding more automation.
+Test the personalized, planning-aware and currency-aware product on real devices.
 
 Observe:
 
-- whether users understand Disponible real without explanation;
+- whether Disponible real is understood without explanation;
+- whether reserve vs Disponible real is understood;
+- whether `Libre para usar` helps real decisions;
+- whether “¿Puedo gastar esto?” is used naturally;
+- whether safe pace feels useful rather than prescriptive;
 - whether personalization increases recognition/attachment;
-- whether users voluntarily interact with `Tu espacio`;
+- whether users understand that achievements represent organization rather than wealth;
 - whether reference currencies are useful or distracting;
-- whether currency settings are understandable;
 - whether recurring manual entry becomes the dominant pain point;
 - whether APK size materially affects tester willingness to install.
 
-Use findings to decide what deserves the next investment.
+Use evidence to decide what deserves the next investment.
 
 ---
 
-## 11. Phase 6 — Recurrence and reminders
+## 13. Phase 8 — Recurrence and reminders
 
 ### Objective
 
-Reduce repetitive manual work only after repeated-use pain is validated.
+Reduce repetitive manual work after repeated-use pain is validated.
 
 Implement after explicit recurrence design:
 
@@ -367,9 +472,7 @@ Implement after explicit recurrence design:
 - due-soon states;
 - useful local notifications.
 
-Notifications must remain useful, factual and non-manipulative.
-
-Never use guilt-based engagement notifications.
+Notifications must remain factual and non-manipulative.
 
 ### Goal
 
@@ -379,35 +482,54 @@ Validate:
 
 ---
 
-## 12. Phase 7 — Engagement expansion
+## 14. Phase 9 — PLAN-02 / forecasting
 
-Expand only if the personalized living-space concept proves useful and non-intrusive.
+Only after PLAN-01 and Dogfooding V2 prove useful.
+
+Potential additions:
+
+- lightweight balance snapshots;
+- estimated period close;
+- comparison against reserve target;
+- historical planning-period outcomes;
+- simple trend interpretation.
+
+Do not pretend estimates are transaction-level truth.
+
+No AI is required by default.
+
+---
+
+## 15. Phase 10 — Engagement and visual expansion
+
+Expand only when the personalized living-space concept and achievements show real value.
 
 Possible additions:
 
-- first larger object collection;
+- real visual asset library;
+- milestone-linked modular objects;
+- larger object collection;
 - dedicated space view;
-- additional meaningful milestones;
-- richer modular combinations;
+- richer combinations;
 - before-vs-now progression;
 - optional ambient character.
+
+Maintain asset discipline.
+
+Prefer reusable objects/layers over many full-room images.
 
 Still avoid:
 
 - pets requiring care;
 - rankings;
-- visible XP economy;
+- XP economy;
 - streak loss;
 - minigames;
 - engagement that competes with the financial product.
 
 ---
 
-## 13. Phase 8 — Polish
-
-### Objective
-
-Improve perceived quality after the core loops and identity system are proven.
+## 16. Phase 11 — Polish
 
 Potential work:
 
@@ -427,35 +549,33 @@ Do not spend heavily on polish before behavior is validated.
 
 ---
 
-## 14. Phase 9 — Launch preparation
+## 17. Phase 12 — Launch preparation
 
 The launch version should feel complete without being huge.
 
-Suggested engagement target:
-
-- one polished modular living-space system;
-- clear progression;
-- meaningful personalization;
-- a small high-quality visual library;
-- several meaningful milestones;
-- polished financial feedback;
-- no punishment mechanics.
-
-Suggested core-product readiness:
+Suggested core readiness:
 
 - stable setup;
 - stable Home;
 - reliable persistence;
 - full movement management;
-- currency behavior understood and tested;
-- recurring movements if validated and ready;
-- local reminders if reliable;
+- validated decision-support layer;
+- understood currency behavior;
+- recurrence/reminders if validated and ready;
 - useful empty/error/negative states;
 - Android QA;
 - production build process;
 - privacy/store materials;
 - crash and data-loss review;
 - acceptable install/download footprint.
+
+Suggested engagement readiness:
+
+- polished modular space;
+- meaningful personalization;
+- small high-quality visual library;
+- meaningful milestones;
+- no punishment mechanics.
 
 Launch should not wait for:
 
@@ -467,78 +587,79 @@ Launch should not wait for:
 
 ---
 
-## 15. Phase 10 — Post-launch learning
+## 18. Post-launch learning
 
-After launch, investment should follow actual user behavior.
+Measure:
 
-Measure questions such as:
+- repeated consultation of Disponible real;
+- reserve-plan creation and reuse;
+- use of “¿Puedo gastar esto?”;
+- whether plans reduce uncertainty;
+- personalization usage;
+- voluntary interaction with `Tu espacio`;
+- achievement discovery;
+- usefulness of reference currencies;
+- recurrence usage;
+- confusion or abandonment points.
 
-- Do users return?
-- Do they enter commitments in advance?
-- Do they repeatedly consult Disponible real?
-- Do they personalize the app?
-- Do they use `Tu espacio` voluntarily?
-- Are reference currencies useful?
-- Does engagement improve retention without increasing friction?
-- Which features create confusion?
-- Which parts are ignored?
-
-Use evidence before expanding expensive branches.
+Optimize for recurring usefulness, not captured minutes.
 
 ---
 
-## 16. Potential later expansion
+## 19. Potential later expansion
 
 Only after validation:
 
-- more visual themes;
+- more curated visual themes;
 - premium cosmetic packs;
 - larger collections;
 - alternate spaces;
 - optional ambient pets;
-- seasonal visual content;
-- advanced planning horizons;
-- richer insights;
-- multiple financial currencies / balances;
+- seasonal content;
+- custom planning cycles;
+- richer forecasts;
+- multiple financial currencies/balances;
 - additional financial organization tools.
 
-These are opportunities, not current commitments.
+These are opportunities, not commitments.
 
 ---
 
-## 17. Permanent guardrails
+## 20. Permanent guardrails
 
 Across all phases:
 
 - financial truth comes first;
-- Disponible real remains understandable;
+- Disponible real keeps its settled meaning;
+- personal reserve is separate from accounting truth;
 - future income must not be presented as currently available;
+- planning should explain consequences rather than prohibit choices;
+- no mandatory exhaustive categorization;
 - personalization never changes financial logic;
 - interests are aesthetic only;
+- achievements do not reward wealth, spending or raw quantity;
 - engagement never punishes absence;
 - economic difficulty never damages cosmetic progress;
-- no ad may interrupt a success/relief moment;
 - no pay-to-win engagement progress;
 - reference FX must not masquerade as owned balance;
 - stale exchange rates must not appear current;
-- offline financial use must continue without the FX provider;
+- offline core use remains available;
 - no feature earns Home space automatically;
 - no new dependency without explicit authorization;
-- avoid expanding scope simply because competitors contain a feature.
+- do not add features only because competitors contain them.
 
 ---
 
-## 18. Launch philosophy
+## 21. Launch philosophy
 
 Mis Pagos should launch as:
 
-> a small product that feels intentional, personal and trustworthy
+> a small product that feels intentional, personal and useful at the exact moment of a money decision
 
 not:
 
 > a large product that feels unfinished.
 
-Prefer a few polished loops and a recognizable identity over feature count.
+Prefer a few polished decision loops and a recognizable identity over feature count.
 
 ---
-

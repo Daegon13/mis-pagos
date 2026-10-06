@@ -4,18 +4,21 @@
 
 Product contract for the emotional engagement layer of Mis Pagos.
 
-The engagement MVP v0 is already implemented as a small persistent `Tu espacio`
-scene. The next product step is not to add more generic progression, but to make
-the experience feel personally recognizable through optional themes, interests,
-ambient style and modular space composition.
+The engagement MVP v0 and PERS-01 personalization layer are implemented.
+
+The next engagement expansion is not generic progression for its own sake. It should
+use meaningful organization milestones to make the future depth of `Tu espacio`
+discoverable while preserving the product's calm, non-punitive philosophy.
+
+Detailed related contracts:
+
+- `docs/PERSONALIZATION_SYSTEM.md`
+- `docs/ACHIEVEMENT_SYSTEM.md`
+- `docs/SPENDING_PLAN_SYSTEM.md`
 
 This document defines the purpose, principles, limits and staged scope of the system.
 Implementation details may evolve, but the non-negotiable constraints in this document
 must be preserved.
-
-Detailed visual-personalization rules live in:
-
-`docs/PERSONALIZATION_SYSTEM.md`
 
 ---
 
@@ -477,7 +480,58 @@ Detailed rules live in:
 
 ---
 
-## 12. Home integration
+## 12. Achievements and meaningful memory
+
+Achievements are approved as a lightweight discovery and memory layer.
+
+They should help the user understand:
+
+> “My space can keep evolving because I am building a history of useful organization.”
+
+Achievements are not:
+
+- XP;
+- levels;
+- streaks;
+- ranks;
+- a second currency;
+- a checklist required for financial functionality.
+
+Valid milestone families include:
+
+- organizing the first commitment;
+- planning the first income;
+- resolving the first movement;
+- resolving an overdue item;
+- creating the first reserve;
+- running the first spending simulation;
+- reaching the user's own reserve target for a period;
+- personalizing the space.
+
+Achievements must never reward:
+
+- higher wealth;
+- higher income;
+- more spending;
+- raw transaction quantity;
+- repeated app opens;
+- ad views.
+
+Once unlocked, they never regress.
+
+An achievement may unlock or reveal a cosmetic detail, but its rendering may adapt to
+the user's selected theme/interests/atmosphere.
+
+Changing personalization must not erase unlocked achievements.
+
+Detailed contract:
+
+`docs/ACHIEVEMENT_SYSTEM.md`
+
+
+---
+
+## 13. Home integration
 
 The living space is secondary to financial clarity.
 
@@ -513,7 +567,7 @@ The dedicated space view, if introduced later, is:
 
 ---
 
-## 13. Contextual language
+## 14. Contextual language
 
 Tone should be warm, calm and human.
 
@@ -537,7 +591,7 @@ Avoid banking language when a human phrase is clearer.
 
 ---
 
-## 14. Negative financial states
+## 15. Negative financial states
 
 The engagement system must coexist safely with difficult financial situations.
 
@@ -557,7 +611,7 @@ Reward the act of gaining clarity, not the negative financial condition.
 
 ---
 
-## 15. Notifications
+## 16. Notifications
 
 Engagement notifications must be rare.
 
@@ -582,7 +636,7 @@ but it must not become a daily retention mechanism.
 
 ---
 
-## 16. Monetization principles
+## 17. Monetization principles
 
 The preferred long-term monetization path for the emotional layer is cosmetic.
 
@@ -607,7 +661,7 @@ Free users must still experience meaningful progression.
 
 ---
 
-## 17. Future ambient characters
+## 18. Future ambient characters
 
 A pet or character may eventually exist as an optional ambient element.
 
@@ -626,7 +680,7 @@ This is not part of the first MVP.
 
 ---
 
-## 18. Engagement success criteria
+## 19. Engagement success criteria
 
 The system should not optimize primarily for time spent in the app.
 
@@ -649,54 +703,82 @@ The product should seek:
 
 ---
 
-## 19. Current engagement scope
+## 20. Current engagement scope
 
-### Implemented MVP v0
+### Implemented
 
-The current product already contains:
+The current product contains:
 
 - immediate useful feedback after financial actions;
 - deterministic contextual messages;
-- a compact `Tu espacio` scene;
+- compact `Tu espacio`;
 - persistent non-regressing progress;
-- three implemented visual progression states;
+- three implemented progression states;
 - one occasional surprise;
-- secondary placement below the core financial experience;
-- no punishment mechanics.
+- six curated themes;
+- optional interests;
+- five atmospheres;
+- optional custom space name;
+- modular scene composition;
+- preferences editable later;
+- financial independence.
 
-### Next high-impact expansion
+PERS-01 added no new visual asset bytes and no new dependency.
 
-Before adding a large inventory or more generic progression, prioritize:
+### Next high-impact engagement layer
 
-- curated app themes;
-- optional interest selection;
-- ambient style;
-- optional space naming;
-- modular scene variation using reusable components/assets.
+After PLAN-01 introduces reserve/planning milestones, `ACH-01` should add a small
+achievement/discovery system.
 
-This expansion is intended to increase identity and ownership without requiring a
-large asset library.
+Initial target:
+
+- approximately 5–8 meaningful achievements;
+- persistent/idempotent unlocks;
+- lightweight discovery/history presentation;
+- optional modular cosmetic reward mapping;
+- no XP;
+- no streaks;
+- no ranking;
+- no wealth-based achievements.
+
+### Visual assets
+
+The current primitive-based scene has validated the architecture but remains visually
+basic.
+
+Future visual expansion should start building a small real asset library, such as:
+
+- plants;
+- lamps;
+- books;
+- desks;
+- monitors;
+- headphones;
+- framed art;
+- mugs;
+- travel objects;
+- music details;
+- technology details.
+
+Prefer reusable modular objects over complete room images.
 
 ### Still not required
 
 - free-form room editor;
 - large inventory;
-- many collections;
 - pets requiring care;
 - seasonal events;
-- sounds;
 - complex animation systems;
 - social features;
 - rankings;
 - minigames;
-- large premium store;
-- dozens of unique room illustrations.
+- large premium store.
 
-Do not add more engagement content merely to increase feature count.
+Do not add content merely to increase feature count.
 
 ---
 
-## 20. Implementation contract
+## 21. Implementation contract
 
 When implementation begins:
 
@@ -723,9 +805,16 @@ composition, it must also respect `docs/PERSONALIZATION_SYSTEM.md`.
 Personalization persistence must remain independent from financial truth and must not
 be attached to `Payment` merely for convenience.
 
+When a task introduces achievements or milestone unlocks, it must also respect
+`docs/ACHIEVEMENT_SYSTEM.md`.
+
+When engagement reacts to reserve/planning behavior, it must respect
+`docs/SPENDING_PLAN_SYSTEM.md` and reward useful organization rather than the amount of
+money involved.
+
 ---
 
-## 21. Product test
+## 22. Product test
 
 Any future engagement feature must pass this test:
 
