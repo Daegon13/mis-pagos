@@ -1,4 +1,4 @@
-# Mis Pagos 0.1 Alpha
+# Mis Pagos 0.2 Alpha
 
 Prueba privada temprana con un grupo pequeño. Es una alpha: puede tener errores.
 Los datos se guardan localmente en tu dispositivo. Desinstalar la app o borrar
@@ -8,7 +8,8 @@ financiero.
 Instalá el APK compartido mediante el enlace de EAS. No requiere Expo Go ni un
 servidor de desarrollo.
 
-[Descargar APK 0.1.0 (1)](https://expo.dev/artifacts/eas/9QWCxtXe0pAnXaov_sh9Uo7C6W8M2gYa2P0fw2WkK0M.apk).
+[Descargar APK 0.2.0 (2)](https://expo.dev/artifacts/eas/EAiK7PVhMR7RApIqB3eC7DEG-TnHZNLBUxeDEpTWMPU.apk).
+Si ya tenés Alpha 0.1, instalá Alpha 0.2 encima sin desinstalar ni borrar datos.
 
 Al probarla, prestá atención a:
 
@@ -19,6 +20,9 @@ Al probarla, prestá atención a:
 - Si los movimientos vencidos tienen sentido.
 - Si algo resulta confuso o tedioso.
 - Si Tu espacio genera curiosidad o distrae.
+- Si personalizar Tu espacio se siente significativo y reconocible como propio.
+- Si elegir un tema resulta útil y los intereses cambian la experiencia.
+- Si algún tema dificulta la lectura y si te da curiosidad la evolución futura del espacio.
 
 Para compartir feedback, contanos:
 
@@ -30,7 +34,7 @@ Para compartir feedback, contanos:
 
 ## Versión Android
 
-Alpha privada: `0.1.0`, Android `versionCode: 1`.
+Alpha privada: `0.2.0`, Android `versionCode: 2`.
 Identificador permanente: `com.diegomarin.mispagos`.
 Cada futuro build Android debe incrementar `android.versionCode` en `app.json`.
 El perfil `preview` genera un APK interno; `production` queda preparado para

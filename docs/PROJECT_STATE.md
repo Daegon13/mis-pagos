@@ -12,11 +12,40 @@ and how much is truly available.
 
 The app is not a bank and does not connect to financial institutions.
 
-## Private Android alpha (PREVIEW-01)
+## Private Android Alpha 0.2 (PREVIEW-02)
+
+Current release: Mis Pagos `0.2.0`, Android `versionCode: 2`, package
+`com.diegomarin.mispagos`. EAS `preview` build
+`f031a929-48ef-44ff-b597-99e48fe94fff` is **FINISHED**.
+[Build / install](https://expo.dev/accounts/daegon13/projects/mis-pagos/builds/f031a929-48ef-44ff-b597-99e48fe94fff).
+The universal APK is `110,430,306` bytes (`110.43 MB`, `105.31 MiB`),
+`30,440` bytes (`0.029 MiB`, `0.0276%`) above Alpha 0.1. It still contains
+four ABIs; there is no material size regression.
+
+On Android API 35, Alpha 0.1 with UYU `1,234.56` balance, two pending movements,
+one completed movement, one cancelled movement and the fully evolved `Tu espacio`
+was updated in place using `adb install -r`. Android retained the first install
+time and accepted the same package/signing certificate. Alpha 0.2 opened Home
+without setup; balance, currency, movement amounts/dates/statuses, Disponible real
+and the evolved space survived. The v2→v3 migration created Bosque/Natural/empty
+interest defaults. The automated migration test also checks the unchanged
+FinancialProfile row, including `balanceDate`; the release APK does not expose
+that database field directly for inspection.
+
+Standalone QA verified theme/interests/atmosphere/name persistence, rejection of a
+fourth interest, and distinct Bosque/Naturaleza/Hogar and
+Noche/Gaming/Música/Tecnología scenes. Financial smoke QA covered movement creation,
+pending edit, completion, cancellation, hard delete, balance update, native date
+picker, natural money input and overdue handling. A force-stop/relaunch passed
+with Metro absent, Expo Go stopped and emulator networking disabled. The temporary
+regression movements were deleted and the test balance restored. No physical
+device was available for this validation. Tester guidance: `ALPHA_TESTING.md`.
+
+## Private Android Alpha 0.1 (PREVIEW-01)
 
 Mis Pagos 0.1 Alpha preview configuration is ready for private dogfooding and
 alpha testers. Permanent Android package: `com.diegomarin.mispagos`.
-Current app version: `0.1.0`; Android `versionCode`: `1`. Increment versionCode
+Alpha 0.1 version: `0.1.0`; Android `versionCode`: `1`. Increment versionCode
 for every future Android build. EAS uses local app versioning.
 
 EAS project: `@daegon13/mis-pagos`. `preview` produces an internal release APK;
@@ -110,8 +139,8 @@ Validation:
 - no new dependency;
 - no new visual asset bytes.
 
-The standalone Alpha 0.1 → Alpha 0.2 APK update still needs a real artifact-level
-upgrade test before the next alpha is treated as validated.
+The standalone Alpha 0.1 → Alpha 0.2 APK update passed real artifact-level
+upgrade QA in PREVIEW-02.
 
 ### New product learning
 
@@ -133,12 +162,11 @@ That direction is captured in:
 
 Current response:
 
-1. create/validate Alpha 0.2 with PERS-01 and test the real v2→v3 app upgrade;
-2. implement `PLAN-01` as the next major product-differentiation iteration;
-3. add a small `ACH-01` layer once planning milestones exist;
-4. implement `FX-01`;
-5. run Dogfooding V2;
-6. return to recurrence/reminders after these hypotheses are tested.
+1. implement `PLAN-01` as the next major product-differentiation iteration;
+2. add a small `ACH-01` layer once planning milestones exist;
+3. implement `FX-01`;
+4. run Dogfooding V2;
+5. return to recurrence/reminders after these hypotheses are tested.
 
 ---
 
