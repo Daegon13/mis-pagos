@@ -7,19 +7,24 @@ import { financialFeedback } from "./homeFeedback";
 import { LivingSpace } from "./LivingSpace";
 import { usePersonalization } from "@/features/personalization/PersonalizationProvider";
 import type { ThemeTokens } from "@/features/personalization/themes";
+import { localCivilDate } from "@/domain/paymentTiming";
+import { planAmounts, referencePace, remainingDays } from "@/domain/spendingPlan";
 
 const months = ["ENE", "FEB", "MAR", "ABR", "MAY", "JUN", "JUL", "AGO", "SEP", "OCT", "NOV", "DIC"];
 
-export function Home({ profile, onAdd, paymentSaved, onDismissFeedback, onAll, onOpen, onBalance, balanceSaved, onPersonalize }: {
+export function Home({ profile, onAdd, paymentSaved, onDismissFeedback, onAll, onOpen, onBalance, balanceSaved, onPersonalize, onPlan }: {
   profile: FinancialProfile; onAdd: () => void; paymentSaved?: string; onDismissFeedback: () => void;
-  onAll: () => void; onOpen: (id: number) => void; onBalance: () => void; onPersonalize: () => void; balanceSaved?: string;
+  onAll: () => void; onOpen: (id: number) => void; onBalance: () => void; onPersonalize: () => void; onPlan: () => void; balanceSaved?: string;
 }) {
   const { theme } = usePersonalization();
   const styles = createStyles(theme);
-  const { summary, error, retry, stage, spaceError, surprise, feedback } = useHome(paymentSaved);
+  const { summary, planning, planningError, error, retry, stage, spaceError, surprise, feedback } = useHome(paymentSaved);
   const { fontScale, width } = useWindowDimensions();
   const money = (amount: number) => formatBalance(amount, profile.currencyCode);
   const interpretation = summary && financialFeedback(summary);
+  const planValues = summary && planning ? planAmounts(summary.availableMinor, planning.plan.reserveTargetMinor) : null;
+  const pace = planValues && planning ? referencePace(planValues.freeToUseMinor,
+    remainingDays(localCivilDate(), planning.plan.periodEnd)) : null;
 
   return (
     <View style={styles.home}>
@@ -88,6 +93,23 @@ export function Home({ profile, onAdd, paymentSaved, onDismissFeedback, onAll, o
             <Text style={styles.projectionAmount}>{money(summary.projectionMinor)}</Text>
             <Text style={styles.caption}>Ese dinero todavía no está disponible.</Text>
           </View> : <Text style={styles.caption}>Sin ingresos previstos en estos 30 días.</Text>}
+          <View style={styles.section}>
+            <Text accessibilityRole="header" style={styles.heading}>Tu plan del mes</Text>
+            {planningError ? <Text style={styles.caption}>No pudimos cargar tu plan. Tus datos financieros siguen disponibles.</Text>
+              : !planning || !planValues || !pace ? <Text style={styles.description}>Planeá cuánto querés conservar este mes.</Text>
+                : <>
+                  <Text style={styles.description}>Reserva de cierre: {money(planning.plan.reserveTargetMinor)}</Text>
+                  <Text style={styles.title}>Libre para usar: {money(planValues.freeToUseMinor)}</Text>
+                  {planValues.reserveShortfallMinor > 0 && <Text style={styles.description}>
+                    {summary.availableMinor < 0 ? "Tu plan queda sin margen libre por ahora. " : ""}
+                    Te faltan {money(planValues.reserveShortfallMinor)} para alcanzar tu reserva.
+                  </Text>}
+                  <Text style={styles.caption}>Ritmo de referencia: ≈ {money(pace.displayMinor)} por {pace.unit === "day" ? "día" : "semana"}.</Text>
+                </>}
+            <Pressable accessibilityRole="button" onPress={onPlan} style={styles.dismiss}>
+              <Text style={styles.link}>{planning ? "¿Puedo gastar esto? · Editar plan" : "Crear plan para este mes"}</Text>
+            </Pressable>
+          </View>
           <Pressable accessibilityRole="button" onPress={onAdd} style={({ pressed }) => [styles.button, pressed && styles.pressed]}>
             <Text style={styles.buttonText}>+ Agregar movimiento</Text>
           </Pressable>

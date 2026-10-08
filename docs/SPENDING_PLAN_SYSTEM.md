@@ -383,3 +383,12 @@ Any planning feature must pass:
 8. Is the value greater than the maintenance burden?
 
 If not, do not ship it.
+
+## 27. PLAN-01 rules fixed by implementation
+
+- Current calendar month only; a past plan remains stored but never becomes the next month's plan.
+- `createdFromAvailableMinor` is immutable for a plan. Editing only allocations keeps the existing frozen reserve target.
+- Whole percentages are offered in the first UI; storage uses basis points (100% = 10,000).
+- Reserve percentages use the non-negative `Disponible real` as their base and round half up to the nearest minor unit.
+- Allocation amounts use largest remainder, with original order breaking ties.
+- Daily and weekly reference amounts round down to whole minor units. Today counts; display daily with at most 14 days left, otherwise weekly.

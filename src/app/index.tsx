@@ -36,6 +36,7 @@ export default function Index() {
             onBalance={() => router.push("/balance")}
             onDismissFeedback={() => router.setParams({ paymentSaved: undefined, balanceSaved: undefined })}
             onPersonalize={() => router.push("/personalize")}
+            onPlan={() => router.push("./plan")}
             onAdd={() => router.push("/payments/new")} />
         )}
       </ScrollView>

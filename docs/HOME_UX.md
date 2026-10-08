@@ -89,6 +89,8 @@ the domain. Date display and manual balance dates use human Spanish wording.
 
 ## Home hierarchy
 
+PLAN-01 añade, después de la información financiera principal, una sección compacta y secundaria. Sin plan activo ofrece crear el plan del mes; con plan muestra reserva de cierre, `Libre para usar`, faltante cuando corresponda y un solo ritmo de referencia. La acción abre la pantalla del plan y la simulación. Las asignaciones detalladas permanecen fuera de Home. La advertencia financiera y el valor negativo de `Disponible real` siguen visibles.
+
 1. Disponible real
 2. Hoy tenés
 3. Comprometido

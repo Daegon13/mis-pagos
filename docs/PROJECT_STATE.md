@@ -162,8 +162,8 @@ That direction is captured in:
 
 Current response:
 
-1. implement `PLAN-01` as the next major product-differentiation iteration;
-2. add a small `ACH-01` layer once planning milestones exist;
+1. validate `PLAN-01` through repeated use;
+2. add a small `ACH-01` layer now that planning milestones exist;
 3. implement `FX-01`;
 4. run Dogfooding V2;
 5. return to recurrence/reminders after these hypotheses are tested.
@@ -171,6 +171,10 @@ Current response:
 ---
 
 ## Stack
+
+### PLAN-01 implementation
+
+The first monthly spending-plan layer is implemented through forward-only schema v4 (`004_spending_plan`). It adds an independent frozen reserve target, optional allocations, `Libre para usar`, inclusive civil-day reference pace, and a pure three-outcome spending simulation. Home keeps the canonical `Disponible real` formula and adds a compact plan section. Plans do not roll over automatically; no default plan is created. Automated validation covers v3→v4, fresh v4, preservation of financial/engagement/personalization rows, exact arithmetic and side-effect-free simulation. Android API 35 Expo Go QA covered creation, fixed-reserve editing, 100% allocations, all three simulation states, restart persistence, negative Disponible real, plan removal, a 360×640 dp viewport, offline creation and the existing personalization/space UI. The original financial balance, network and viewport were restored; the QA plan was deleted. This does not validate a new standalone APK.
 
 - React Native
 - Expo SDK 57
@@ -254,8 +258,8 @@ Current financial tables:
 
 Independent cosmetic tables: `engagement_progress` (singleton `stage`, 0–2)
 and `personalization_preferences` (singleton theme, interests, atmosphere,
-space name). Schema version 3 adds personalization through forward-only
-`003_personalization`; migrations 001 and 002 are unchanged.
+space name). Schema version 4 adds the independent monthly planning tables through
+`004_spending_plan`; migrations 001–003 are unchanged.
 
 Migrations use `PRAGMA user_version`.
 
@@ -634,18 +638,16 @@ Development continues to prioritize:
 
 Immediate order:
 
-1. `PREVIEW-02` — build Alpha 0.2 and verify a real Alpha 0.1 → 0.2 update without data loss;
-2. `PLAN-01` — reserve, Libre para usar, optional allocations, safe pace and “¿Puedo gastar esto?”;
-3. `ACH-01` — a small milestone/discovery layer tied to useful organization;
-4. `FX-01` — expanded currency metadata and up to two reference currencies;
-5. Dogfooding V2 on physical devices;
-6. recurrence design/implementation;
-7. reminders;
-8. engagement/visual asset expansion;
-9. polish and launch preparation.
+1. `ACH-01` — a small milestone/discovery layer tied to useful organization;
+2. `FX-01` — expanded currency metadata and up to two reference currencies;
+3. Dogfooding V2 on physical devices, including repeated PLAN-01 use;
+4. recurrence design/implementation;
+5. reminders;
+6. engagement/visual asset expansion;
+7. polish and launch preparation.
 
-`PLAN-01` now has higher product priority than FX because it strengthens the core
-decision-support proposition rather than only broadening compatibility.
+`PREVIEW-02` and `PLAN-01` are implemented. Planning remains separate from
+financial truth and should be validated through repeated use.
 
 Detailed roadmap:
 

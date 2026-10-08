@@ -7,10 +7,13 @@ import { readFinancialSnapshot } from "@/data/repositories/paymentLifecycle";
 import { advanceSpace } from "@/data/repositories/engagementRepository";
 import { spaceStage, type SpaceStage } from "@/domain/engagement";
 import { calculateHome, type HomeSummary } from "./homeSummary";
+import { getCurrentPlan } from "@/data/repositories/spendingPlanRepository";
 
 export function useHome(paymentSaved?: string) {
   const db = useSQLiteContext();
   const [summary, setSummary] = useState<HomeSummary | null>(null);
+  const [planning, setPlanning] = useState<Awaited<ReturnType<typeof getCurrentPlan>>>(null);
+  const [planningError, setPlanningError] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [attempt, setAttempt] = useState(0);
   const [stage, setStage] = useState<SpaceStage | null>(null);
@@ -39,6 +42,12 @@ export function useHome(paymentSaved?: string) {
           }
         }
         if (!active || current !== request) return;
+        try {
+          const nextPlan = await getCurrentPlan(db);
+          if (active && current === request) { setPlanning(nextPlan); setPlanningError(false); }
+        } catch {
+          if (active && current === request) { setPlanning(null); setPlanningError(true); }
+        }
         // Cosmetic persistence must never block the financial summary.
         try {
           const progress = await advanceSpace(db, spaceStage(payments));
@@ -67,6 +76,6 @@ export function useHome(paymentSaved?: string) {
   }, [db, attempt, paymentSaved]));
 
   const retry = () => { setError(null); setAttempt((value) => value + 1); };
-  return { summary, error, retry, stage, spaceError, surprise,
+  return { summary, planning, planningError, error, retry, stage, spaceError, surprise,
     feedback: feedback?.id === paymentSaved ? feedback : null };
 }

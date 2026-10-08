@@ -73,6 +73,16 @@ El horizonte temporal y la inclusión exacta de los límites deberán ser explí
 
 `FinancialProfile` establece la moneda principal aplicable a los movimientos del MVP. No se definen cuentas bancarias, usuarios ni relaciones remotas. Según D-018, `deletePayment()` elimina físicamente el registro (hard delete), mientras que el estado `cancelled` lo conserva. No existe soft-delete en el MVP.
 
+## Capa de planificación mensual (PLAN-01)
+
+La migración `004_spending_plan` agrega `spending_plans` y `spending_allocations`, independientes de `FinancialProfile`, `Payment`, progreso e identidad visual. Cada plan cubre un mes civil y `period_start` es único. No se crea un plan por defecto ni se heredan planes al mes siguiente.
+
+`SpendingPlan` guarda `periodStart`, `periodEnd`, `reserveMode` (`percentage` o `fixed`), `reservePercentBasisPoints` opcional, `reserveTargetMinor`, `createdFromAvailableMinor`, `createdAt` y `updatedAt`. El origen financiero se fija al crear el plan. Una reserva porcentual se convierte a unidades menores al crear o editar explícitamente la reserva; las modificaciones financieras o de asignaciones no reducen ese objetivo.
+
+`SpendingAllocation` guarda `spendingPlanId`, nombre, `percentageBasisPoints`, orden y timestamps. Su FK usa `ON DELETE CASCADE`: eliminar un plan borra sólo sus asignaciones. Las asignaciones son opcionales y, si existen, suman exactamente 10.000 puntos base. Los importes de cada asignación se derivan del `Libre para usar` actual; no se persisten ni clasifican `Payment`.
+
+`Libre para usar`, faltante de reserva, ritmo de referencia y simulación son cálculos del dominio, no saldos persistidos. `Disponible real` mantiene su fórmula previa.
+
 ## Fuera del modelo inicial
 
 - usuarios y autenticación;

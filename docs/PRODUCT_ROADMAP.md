@@ -72,10 +72,10 @@ Avoid:
 | Curated themes / interests / atmosphere | High | Medium | P0 | COMPLETE |
 | Modular personalized `Tu espacio` | Very high | Medium | P0 | COMPLETE |
 | Alpha 0.2 real-upgrade validation | High | Low/medium | P0 | NEXT |
-| Reserve + Libre para usar | Very high | Medium | P0 | NEXT |
-| “¿Puedo gastar esto?” simulation | Very high | Medium | P0 | NEXT |
-| Safe spending pace | Very high | Low/medium | P0 | NEXT |
-| Optional planning allocations | High | Medium | P0 | NEXT |
+| Reserve + Libre para usar | Very high | Medium | P0 | COMPLETE (PLAN-01) |
+| “¿Puedo gastar esto?” simulation | Very high | Medium | P0 | COMPLETE (PLAN-01) |
+| Safe spending pace | Very high | Low/medium | P0 | COMPLETE (PLAN-01) |
+| Optional planning allocations | High | Medium | P0 | COMPLETE (PLAN-01) |
 | Small achievement/discovery layer | High | Medium | P1 | AFTER PLAN-01 |
 | Expanded currency metadata | High | Low/medium | P1 | PLANNED |
 | Up to two reference currencies | High | Medium | P1 | PLANNED |
@@ -315,9 +315,9 @@ Normative contracts:
 - `docs/PRODUCT_THESIS.md`
 - `docs/SPENDING_PLAN_SYSTEM.md`
 
-### PLAN-01
+### PLAN-01 — COMPLETE
 
-Implement the first planning layer without redefining Disponible real.
+The first planning layer is implemented without redefining Disponible real.
 
 Required concepts:
 
