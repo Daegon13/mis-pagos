@@ -147,3 +147,10 @@ Cada entrada incluye estado, contexto, decisión y consecuencias. Estados posibl
 - **Contexto:** La reserva personal y las asignaciones deben apoyar decisiones sin convertirse en compromisos contables ni alterar `Disponible real`.
 - **Decisión:** La migración forward-only `004_spending_plan` agrega planes por mes civil y asignaciones opcionales. La reserva porcentual se fija en unidades menores al crearla o editarla explícitamente; `createdFromAvailableMinor` conserva el origen del plan. `Libre para usar` se limita a cero y el faltante de reserva se muestra por separado. Los porcentajes internos usan puntos base; los residuos de asignación se reparten por mayor resto y orden estable. La simulación es pura y no escribe datos.
 - **Consecuencias:** No hay rollover automático. El plan y sus asignaciones se pueden eliminar sin tocar finanzas, progreso o personalización. El ritmo es una guía calculada con días civiles restantes, incluido hoy; se presenta diario hasta 14 días y semanal después.
+
+## D-021 — Descubrimientos persistentes independientes
+
+- **Estado:** Aceptada; autorizada por ACH-01.
+- **Contexto:** Los hitos útiles deben sobrevivir cambios de saldo, apariencia y etapa, sin premiar riqueza ni volumen.
+- **Decisión:** `005_achievements` agrega `achievement_unlocks` con ID único y fecha técnica. Siete hitos activos se definen en código; sólo se persiste el desbloqueo. La evaluación cosmética ocurre después de la acción primaria y sus fallos no revierten finanzas. Se derivan retrospectivamente movimiento pendiente o completado, resolución completada, reserva actual positiva y personalización no predeterminada. Simulación y resolución de vencidos requieren un evento nuevo comprobable; el cierre de período queda futuro.
+- **Consecuencias:** La etapa de `Tu espacio` sigue independiente. Eliminar datos o cambiar apariencia no quita desbloqueos. Un fallo de persistencia cosmética se reintenta cuando vuelva a existir evidencia derivable.

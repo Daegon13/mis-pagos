@@ -76,7 +76,7 @@ Avoid:
 | “¿Puedo gastar esto?” simulation | Very high | Medium | P0 | COMPLETE (PLAN-01) |
 | Safe spending pace | Very high | Low/medium | P0 | COMPLETE (PLAN-01) |
 | Optional planning allocations | High | Medium | P0 | COMPLETE (PLAN-01) |
-| Small achievement/discovery layer | High | Medium | P1 | AFTER PLAN-01 |
+| Small achievement/discovery layer | High | Medium | P1 | COMPLETE (ACH-01) |
 | Expanded currency metadata | High | Low/medium | P1 | PLANNED |
 | Up to two reference currencies | High | Medium | P1 | PLANNED |
 | Cached offline FX references | High | Medium | P1 | PLANNED |
@@ -360,11 +360,11 @@ Normative contract:
 
 `docs/ACHIEVEMENT_SYSTEM.md`
 
-### ACH-01
+### ACH-01 — COMPLETE
 
-Start small:
+Implemented scope:
 
-- approximately 5–8 meaningful achievements;
+- seven meaningful active discoveries;
 - deterministic persistent unlocks;
 - lightweight discovery/history view;
 - optional modular cosmetic reward mapping;

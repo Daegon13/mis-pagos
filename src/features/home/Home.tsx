@@ -12,13 +12,13 @@ import { planAmounts, referencePace, remainingDays } from "@/domain/spendingPlan
 
 const months = ["ENE", "FEB", "MAR", "ABR", "MAY", "JUN", "JUL", "AGO", "SEP", "OCT", "NOV", "DIC"];
 
-export function Home({ profile, onAdd, paymentSaved, onDismissFeedback, onAll, onOpen, onBalance, balanceSaved, onPersonalize, onPlan }: {
+export function Home({ profile, onAdd, paymentSaved, onDismissFeedback, onAll, onOpen, onBalance, balanceSaved, onPersonalize, onPlan, onAchievements, discovery }: {
   profile: FinancialProfile; onAdd: () => void; paymentSaved?: string; onDismissFeedback: () => void;
-  onAll: () => void; onOpen: (id: number) => void; onBalance: () => void; onPersonalize: () => void; onPlan: () => void; balanceSaved?: string;
+  onAll: () => void; onOpen: (id: number) => void; onBalance: () => void; onPersonalize: () => void; onPlan: () => void; onAchievements: () => void; balanceSaved?: string; discovery?: boolean;
 }) {
   const { theme } = usePersonalization();
   const styles = createStyles(theme);
-  const { summary, planning, planningError, error, retry, stage, spaceError, surprise, feedback } = useHome(paymentSaved);
+  const { summary, planning, planningError, error, retry, stage, spaceError, surprise, feedback, achievementCount } = useHome(paymentSaved);
   const { fontScale, width } = useWindowDimensions();
   const money = (amount: number) => formatBalance(amount, profile.currencyCode);
   const interpretation = summary && financialFeedback(summary);
@@ -62,6 +62,7 @@ export function Home({ profile, onAdd, paymentSaved, onDismissFeedback, onAll, o
           {(feedback || balanceSaved) && <View accessibilityLiveRegion="polite" style={styles.confirmation}>
             <Text style={styles.title}>{balanceSaved ? "Saldo actualizado." : "Listo. Ya lo estamos teniendo en cuenta."}</Text>
             <Text style={styles.description}>Tu disponible real ahora es {money(summary.availableMinor)}.</Text>
+            {discovery && feedback && <Text style={styles.caption}>Nuevo descubrimiento en Tu espacio.</Text>}
             <Pressable accessibilityRole="button" accessibilityLabel="Cerrar confirmación" onPress={onDismissFeedback} style={styles.dismiss}>
               <Text style={styles.link}>Entendido</Text>
             </Pressable>
@@ -146,7 +147,8 @@ export function Home({ profile, onAdd, paymentSaved, onDismissFeedback, onAll, o
       {(error || summary === null) && <Pressable accessibilityRole="button" onPress={onAdd} style={({ pressed }) => [styles.button, pressed && styles.pressed]}>
         <Text style={styles.buttonText}>+ Agregar movimiento</Text>
       </Pressable>}
-      {stage !== null && <LivingSpace stage={stage} surprise={surprise} onPersonalize={onPersonalize} />}
+      {stage !== null && <LivingSpace stage={stage} surprise={surprise} onPersonalize={onPersonalize}
+        onAchievements={onAchievements} achievementCount={achievementCount} />}
       {spaceError && <View style={styles.section}>
         <Text style={styles.caption}>No pudimos actualizar tu espacio. Tus datos financieros siguen disponibles.</Text>
         <Pressable accessibilityRole="button" onPress={retry} style={styles.dismiss}>

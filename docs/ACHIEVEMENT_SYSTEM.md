@@ -3,6 +3,19 @@
 ## Status
 Product contract for achievements and milestone discovery in Mis Pagos.
 
+ACH-01 implements seven active discoveries in a static registry. Unlocks persist in
+`achievement_unlocks` (schema v5), independently of finances, engagement stage,
+planning and personalization. The period-close milestone remains inactive.
+Existing pending or completed expenses/income, completed movements, current plans
+with a positive reserve and non-default preferences are safely derived. Historical
+overdue resolutions and simulations are not inferred without event evidence.
+New overdue resolution requires completion or intentional cancellation of an
+already overdue pending movement; deletion does not qualify. The simulator's
+financial calculation remains pure; a separate explicit valid simulation action
+may persist only its one-time discovery. Unlock writes never roll back the primary
+financial action. The discovery screen and a compact `Tu espacio` count present
+the history without points or competitive progress.
+
 Achievements exist to help the user understand that `Tu espacio` can continue evolving and to create memory around meaningful financial-organization milestones.
 
 They must not become an XP system, streak system or transaction-count game.

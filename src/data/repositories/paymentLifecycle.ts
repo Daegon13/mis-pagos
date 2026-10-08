@@ -31,15 +31,18 @@ export async function editPendingPayment(db: SQLiteDatabase, id: number, input: 
   return saved;
 }
 
-export async function cancelPendingPayment(db: SQLiteDatabase, id: number) {
+export async function cancelPendingPayment(db: SQLiteDatabase, id: number, now = new Date()) {
+  let wasOverdue = false;
   await db.withExclusiveTransactionAsync(async tx => {
     const payment = await pendingPayment(tx, id);
+    wasOverdue = payment.dueDate < localCivilDate(now);
     await updatePayment(tx, id, { ...payment, status: "cancelled" });
   });
+  return { wasOverdue };
 }
 
 export async function completePayment(db: SQLiteDatabase, id: number, adjustBalance: boolean, now = new Date()) {
-  let result: { payment: Payment; balanceMinor: number; currencyCode: string } | undefined;
+  let result: { payment: Payment; balanceMinor: number; currencyCode: string; wasOverdue: boolean } | undefined;
   await db.withExclusiveTransactionAsync(async tx => {
     // Read inside the transaction: stale screens/double taps cannot apply twice.
     const payment = await pendingPayment(tx, id);
@@ -54,7 +57,8 @@ export async function completePayment(db: SQLiteDatabase, id: number, adjustBala
     }
     const completed = await updatePayment(tx, id, { ...payment, status: "completed" });
     if (!completed) throw new Error("Missing movement");
-    result = { payment: completed, balanceMinor, currencyCode: profile.currencyCode };
+    result = { payment: completed, balanceMinor, currencyCode: profile.currencyCode,
+      wasOverdue: payment.dueDate < localCivilDate(now) };
   });
   if (!result) throw new Error("Unable to complete movement");
   return result;

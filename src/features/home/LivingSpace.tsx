@@ -26,8 +26,8 @@ function Detail({ kind, slot, color, background }: {
   </View>;
 }
 
-export function LivingSpace({ stage, surprise, onPersonalize, selection: override, preview = false }: {
-  stage: SpaceStage; surprise: boolean; onPersonalize?: () => void;
+export function LivingSpace({ stage, surprise, onPersonalize, onAchievements, achievementCount, selection: override, preview = false }: {
+  stage: SpaceStage; surprise: boolean; onPersonalize?: () => void; onAchievements?: () => void; achievementCount?: number | null;
   selection?: PersonalizationSelection; preview?: boolean;
 }) {
   const { preferences } = usePersonalization();
@@ -50,6 +50,12 @@ export function LivingSpace({ stage, surprise, onPersonalize, selection: overrid
       </Text>
       <Text style={[styles.caption, { color: theme.textSecondary }]}>{descriptions[stage]}</Text>
       {surprise && <Text accessibilityLiveRegion="polite" style={[styles.surprise, { color: theme.positive }]}>Algo cambió en tu espacio.</Text>}
+      {onAchievements && <Pressable accessibilityRole="button" onPress={onAchievements} style={styles.personalize}>
+        <Text style={[styles.personalizeText, { color: theme.primary }]}>
+          {achievementCount === null || achievementCount === undefined ? "Ver descubrimientos →" :
+            `${achievementCount} ${achievementCount === 1 ? "descubrimiento" : "descubrimientos"} →`}
+        </Text>
+      </Pressable>}
       {onPersonalize && <Pressable accessibilityRole="button" onPress={onPersonalize} style={styles.personalize}>
         <Text style={[styles.personalizeText, { color: theme.primary }]}>Personalizar →</Text>
       </Pressable>}

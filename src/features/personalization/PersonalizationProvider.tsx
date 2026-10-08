@@ -4,13 +4,15 @@ import { useSQLiteContext } from "expo-sqlite";
 import { getPersonalizationPreferences, savePersonalizationPreferences } from "@/data/repositories/personalizationRepository";
 import { DEFAULT_SELECTION, type PersonalizationPreferences, type PersonalizationSelection } from "@/domain/personalization";
 import { themeFor } from "./themes";
+import { isPersonalized } from "@/domain/achievements";
+import { tryUnlock } from "@/features/achievements/achievementService";
 
 type ContextValue = {
   preferences: PersonalizationPreferences;
   theme: ReturnType<typeof themeFor>;
   error: boolean;
   reload: () => void;
-  save: (selection: PersonalizationSelection) => Promise<void>;
+  save: (selection: PersonalizationSelection) => Promise<boolean>;
 };
 
 const PersonalizationContext = createContext<ContextValue | null>(null);
@@ -35,6 +37,7 @@ export function PersonalizationProvider({ children }: PropsWithChildren) {
     const saved = await savePersonalizationPreferences(db, selection);
     setPreferences(saved);
     setError(false);
+    return isPersonalized(saved) ? tryUnlock(db, "FIRST_PERSONALIZED_SPACE") : false;
   }, [db]);
   const value = useMemo(() => ({ preferences, theme: themeFor(preferences.themeId),
     error, reload, save }), [preferences, error, reload, save]);

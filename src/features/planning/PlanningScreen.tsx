@@ -12,6 +12,7 @@ import { allocationAmounts, monthPeriod, planAmounts, referencePace, remainingDa
 import { formatBalance, minorToInput, parseBalanceMinor } from "@/features/financial-profile/money";
 import { calculateHome } from "@/features/home/homeSummary";
 import { usePersonalization } from "@/features/personalization/PersonalizationProvider";
+import { attemptUnlock, tryUnlock } from "@/features/achievements/achievementService";
 
 type DraftAllocation = { name: string; percent: string };
 
@@ -29,6 +30,9 @@ export function PlanningScreen({ onBack }: { onBack: () => void }) {
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [ready, setReady] = useState(false);
+  const [simulatedSpend, setSimulatedSpend] = useState<number | null>(null);
+  const [discovery, setDiscovery] = useState<string | null>(null);
+  const [simulationUnlockFailed, setSimulationUnlockFailed] = useState(false);
   const today = localCivilDate();
   const period = monthPeriod(today);
   const days = remainingDays(today, period.periodEnd);
@@ -75,7 +79,7 @@ export function PlanningScreen({ onBack }: { onBack: () => void }) {
   try { if (amounts) allocationPreview = allocationAmounts(amounts.freeToUseMinor, allocationDraft); }
   catch (cause) { allocationError = cause instanceof Error ? cause.message : "Revisá tus asignaciones."; }
   const hypothetical = parseBalanceMinor(spend);
-  const simulation = available !== null && existing && hypothetical !== null && hypothetical > 0
+  const simulation = available !== null && existing && hypothetical !== null && hypothetical > 0 && hypothetical === simulatedSpend
     ? simulateSpending({ availableRealMinor: available, reserveTargetMinor: existing.plan.reserveTargetMinor,
       hypotheticalSpendMinor: hypothetical, remainingDays: days }) : null;
   const pace = amounts ? referencePace(amounts.freeToUseMinor, days) : null;
@@ -85,10 +89,23 @@ export function PlanningScreen({ onBack }: { onBack: () => void }) {
       setError(inputError ?? allocationError ?? "Revisá el plan antes de guardarlo."); return;
     }
     setBusy(true); setError(null);
-    try { await saveCurrentPlan(db, { mode, value: mode === "percentage" ? Number(value) * 100 : target,
-      availableRealMinor: available, allocations: allocationDraft, reserveChanged: reserveTouched }, today); await reload(); }
+    try { const wasNew = existing === null;
+      await saveCurrentPlan(db, { mode, value: mode === "percentage" ? Number(value) * 100 : target,
+      availableRealMinor: available, allocations: allocationDraft, reserveChanged: reserveTouched }, today);
+      if (wasNew && target > 0 && await tryUnlock(db, "FIRST_RESERVE")) setDiscovery("Primera reserva");
+      await reload(); }
     catch (cause) { setError(cause instanceof Error ? cause.message : "No pudimos guardar el plan."); }
     finally { setBusy(false); }
+  }
+  async function runSimulation() {
+    if (hypothetical === null || hypothetical <= 0 || !existing || available === null) return;
+    setDiscovery(null);
+    simulateSpending({ availableRealMinor: available, reserveTargetMinor: existing.plan.reserveTargetMinor,
+      hypotheticalSpendMinor: hypothetical, remainingDays: days });
+    setSimulatedSpend(hypothetical);
+    const result = await attemptUnlock(db, "FIRST_SPENDING_SIMULATION");
+    setSimulationUnlockFailed(result === "failed");
+    if (result === "new") setDiscovery("Primera simulación");
   }
   function confirmRemoval() {
     Alert.alert("Eliminar plan de este mes", "Se eliminarán la reserva y sus asignaciones. Tus movimientos y saldo no cambian.", [
@@ -151,6 +168,14 @@ export function PlanningScreen({ onBack }: { onBack: () => void }) {
         {allocationError && <Text accessibilityRole="alert" style={{ color: theme.negative }}>{allocationError}</Text>}
         {allocations.length < 6 && action("+ Agregar asignación", () => setAllocations(previous => [...previous, { name: "", percent: "" }]))}
         {error && <Text accessibilityRole="alert" style={{ color: theme.negative }}>{error}</Text>}
+        {discovery && <Text accessibilityLiveRegion="polite" style={{ color: theme.positive }}>Nuevo descubrimiento: {discovery}.</Text>}
+        {simulationUnlockFailed && <View>
+          <Text style={{ color: theme.textSecondary }}>La simulación se mostró, pero no pudimos guardar su descubrimiento.</Text>
+          {action("Reintentar descubrimiento", () => { void attemptUnlock(db, "FIRST_SPENDING_SIMULATION").then(result => {
+            setSimulationUnlockFailed(result === "failed");
+            if (result === "new") setDiscovery("Primera simulación");
+          }); })}
+        </View>}
         {action(busy ? "Guardando..." : existing ? "Guardar cambios" : "Crear plan", () => void save(), true)}
         {existing && <>
           <Text style={[styles.subhead, { color: theme.textPrimary }]}>¿Puedo gastar esto?</Text>
@@ -158,6 +183,7 @@ export function PlanningScreen({ onBack }: { onBack: () => void }) {
           <TextInput accessibilityLabel="Gasto hipotético" value={spend} onChangeText={setSpend}
             keyboardType="numeric" placeholder="Ej. 3000" placeholderTextColor={theme.muted}
             style={[styles.input, { color: theme.textPrimary, borderColor: theme.border, backgroundColor: theme.surface }]} />
+          {action("Simular gasto", () => void runSimulation())}
           {simulation && <View accessibilityLiveRegion="polite" style={[styles.card, { backgroundColor: theme.surface }]}>
             <Text style={[styles.subhead, { color: theme.textPrimary }]}>{simulation.outcome === "withinFlexible"
               ? "Tus compromisos conocidos y tu reserva siguen cubiertos."
@@ -168,7 +194,8 @@ export function PlanningScreen({ onBack }: { onBack: () => void }) {
             <Text style={{ color: theme.textSecondary }}>Faltante para la reserva: {money(simulation.reserveShortfallMinor)}.</Text>
             <Text style={{ color: theme.textSecondary }}>Nuevo ritmo de referencia: ≈ {money(simulation.resultingPace.displayMinor)} por {simulation.resultingPace.unit === "day" ? "día" : "semana"}.</Text>
           </View>}
-          {spend.length > 0 && !simulation && <Text style={{ color: theme.textSecondary }}>Ingresá un gasto mayor que cero.</Text>}
+          {spend.length > 0 && (hypothetical === null || hypothetical <= 0) &&
+            <Text style={{ color: theme.textSecondary }}>Ingresá un gasto mayor que cero.</Text>}
           {action("Eliminar plan de este mes", confirmRemoval)}
         </>}
         {action("Volver", onBack)}

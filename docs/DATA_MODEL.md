@@ -83,6 +83,14 @@ La migración `004_spending_plan` agrega `spending_plans` y `spending_allocation
 
 `Libre para usar`, faltante de reserva, ritmo de referencia y simulación son cálculos del dominio, no saldos persistidos. `Disponible real` mantiene su fórmula previa.
 
+## Descubrimientos (ACH-01)
+
+La migración `005_achievements` agrega `achievement_unlocks`, independiente de
+finanzas, plan, progreso y personalización. Sólo guarda `achievement_id` (clave
+primaria) y `unlocked_at` (instante ISO UTC). Título, descripción, visibilidad y
+orden viven en un registro estático. `INSERT OR IGNORE` hace idempotente el
+desbloqueo; no hay importes ni relaciones con `Payment`.
+
 ## Fuera del modelo inicial
 
 - usuarios y autenticación;

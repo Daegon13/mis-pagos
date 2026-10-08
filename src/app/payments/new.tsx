@@ -34,7 +34,8 @@ export default function NewPayment() {
           ) : profile !== null ? (
             <PaymentForm
               currencyCode={profile.currencyCode}
-              onSaved={(id) => router.dismissTo({ pathname: "/", params: { paymentSaved: String(id) } })}
+              onSaved={(id, newlyUnlocked) => router.dismissTo({ pathname: "/", params: {
+                paymentSaved: String(id), discovery: newlyUnlocked ? "1" : undefined } })}
             />
           ) : null}
         </ScrollView>

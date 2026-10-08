@@ -15,6 +15,7 @@ export function PersonalizationScreen({ onClose }: { onClose: () => void }) {
   const saving = useRef(false);
   const [interestError, setInterestError] = useState<string | null>(null);
   const [saveError, setSaveError] = useState<string | null>(null);
+  const [discovery, setDiscovery] = useState(false);
   const selection = draft ?? preferences;
   const theme = themeFor(selection.themeId);
 
@@ -34,7 +35,7 @@ export function PersonalizationScreen({ onClose }: { onClose: () => void }) {
     saving.current = true;
     setBusy(true);
     setSaveError(null);
-    try { await save(selection); onClose(); }
+    try { const unlocked = await save(selection); if (unlocked) setDiscovery(true); else onClose(); }
     catch { setSaveError("No pudimos guardar tu espacio. Intentá de nuevo."); }
     finally { saving.current = false; setBusy(false); }
   }
@@ -105,6 +106,7 @@ export function PersonalizationScreen({ onClose }: { onClose: () => void }) {
         </View>
         <LivingSpace stage={0} surprise={false} selection={selection} preview />
         {saveError && <Text accessibilityRole="alert" accessibilityLiveRegion="polite" style={{ color: theme.negative }}>{saveError}</Text>}
+        {discovery && <Text accessibilityLiveRegion="polite" style={{ color: theme.positive }}>Nuevo descubrimiento: Un espacio más tuyo.</Text>}
         <Pressable accessibilityRole="button" accessibilityState={{ disabled: busy, busy }} disabled={busy}
           onPress={() => { void submit(); }} style={[styles.save, { backgroundColor: theme.primary }, busy && styles.dim]}>
           <Text style={[styles.saveText, { color: theme.textOnPrimary }]}>{busy ? "Guardando..." : "Guardar apariencia"}</Text>

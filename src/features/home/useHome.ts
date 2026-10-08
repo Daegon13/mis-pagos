@@ -8,6 +8,8 @@ import { advanceSpace } from "@/data/repositories/engagementRepository";
 import { spaceStage, type SpaceStage } from "@/domain/engagement";
 import { calculateHome, type HomeSummary } from "./homeSummary";
 import { getCurrentPlan } from "@/data/repositories/spendingPlanRepository";
+import { deriveExistingAchievements } from "@/features/achievements/achievementService";
+import { listAchievementUnlocks } from "@/data/repositories/achievementRepository";
 
 export function useHome(paymentSaved?: string) {
   const db = useSQLiteContext();
@@ -18,6 +20,7 @@ export function useHome(paymentSaved?: string) {
   const [attempt, setAttempt] = useState(0);
   const [stage, setStage] = useState<SpaceStage | null>(null);
   const [spaceError, setSpaceError] = useState(false);
+  const [achievementCount, setAchievementCount] = useState<number | null>(null);
   const [surprise, setSurprise] = useState(false);
   const [feedback, setFeedback] = useState<{ id: string; availableMinor: number } | null>(null);
   const handledSave = useRef<string | null>(null);
@@ -59,6 +62,13 @@ export function useHome(paymentSaved?: string) {
         } catch {
           if (active && current === request) setSpaceError(true);
         }
+        try {
+          await deriveExistingAchievements(db);
+          const unlocks = await listAchievementUnlocks(db);
+          if (active && current === request) setAchievementCount(unlocks.length);
+        } catch {
+          if (active && current === request) setAchievementCount(null);
+        }
       } catch {
         if (active && current === request) {
           setSummary(null);
@@ -76,6 +86,6 @@ export function useHome(paymentSaved?: string) {
   }, [db, attempt, paymentSaved]));
 
   const retry = () => { setError(null); setAttempt((value) => value + 1); };
-  return { summary, planning, planningError, error, retry, stage, spaceError, surprise,
+  return { summary, planning, planningError, error, retry, stage, spaceError, surprise, achievementCount,
     feedback: feedback?.id === paymentSaved ? feedback : null };
 }

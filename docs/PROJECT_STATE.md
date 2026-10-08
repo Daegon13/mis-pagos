@@ -12,6 +12,30 @@ and how much is truly available.
 
 The app is not a bank and does not connect to financial institutions.
 
+## ACH-01 — Meaningful discoveries
+
+Implemented in schema v5 (`005_achievements`): seven fixed, non-regressing
+discoveries stored as independent `achievement_unlocks` rows. Home's `Tu espacio`
+shows a small count and links to `/achievements`. Financial actions, a positive
+reserve, an explicit valid simulation and a saved non-default appearance can each
+unlock one milestone. Cosmetic writes occur after primary writes, so their failure
+cannot roll back financial truth. Existing persistent movements, a current positive
+reserve and non-default preferences are derived on safe evaluation. Historical
+overdue resolution and simulations are never inferred. Period-close success remains
+future-only.
+
+Android API 35 Expo Go QA on `emulator-5554` observed the v4 data and stage after
+migration, three retroactive discoveries, a new reserve and valid simulation
+unlock, no repeated simulation announcement, locked/mystery entries, entry from
+`Tu espacio`, a cold Expo Go restart with five unlocks, a 360×640 dp viewport,
+and five unlocks retained while `Disponible real` was negative and after a
+Noche → Bosque → Noche theme change. With Wi-Fi and
+mobile data disabled, the already loaded Home still showed the count; Metro
+remained connected over ADB reverse, so this is not standalone offline proof.
+The temporary plan and movement were removed, the original available amount,
+theme selection and viewport returned, and networking was restored. This is emulator-only development
+build evidence, not a standalone APK upgrade or physical-device test.
+
 ## Private Android Alpha 0.2 (PREVIEW-02)
 
 Current release: Mis Pagos `0.2.0`, Android `versionCode: 2`, package
@@ -163,7 +187,7 @@ That direction is captured in:
 Current response:
 
 1. validate `PLAN-01` through repeated use;
-2. add a small `ACH-01` layer now that planning milestones exist;
+2. validate the implemented `ACH-01` discovery layer in continued use;
 3. implement `FX-01`;
 4. run Dogfooding V2;
 5. return to recurrence/reminders after these hypotheses are tested.
@@ -258,8 +282,9 @@ Current financial tables:
 
 Independent cosmetic tables: `engagement_progress` (singleton `stage`, 0–2)
 and `personalization_preferences` (singleton theme, interests, atmosphere,
-space name). Schema version 4 adds the independent monthly planning tables through
-`004_spending_plan`; migrations 001–003 are unchanged.
+space name). Schema version 4 added the independent monthly planning tables through
+`004_spending_plan`; schema v5 adds independent `achievement_unlocks` through
+`005_achievements`. Migrations 001–004 are unchanged.
 
 Migrations use `PRAGMA user_version`.
 
@@ -638,15 +663,14 @@ Development continues to prioritize:
 
 Immediate order:
 
-1. `ACH-01` — a small milestone/discovery layer tied to useful organization;
-2. `FX-01` — expanded currency metadata and up to two reference currencies;
-3. Dogfooding V2 on physical devices, including repeated PLAN-01 use;
-4. recurrence design/implementation;
-5. reminders;
-6. engagement/visual asset expansion;
-7. polish and launch preparation.
+1. `FX-01` — expanded currency metadata and up to two reference currencies;
+2. Dogfooding V2 on physical devices, including repeated PLAN-01 and ACH-01 use;
+3. recurrence design/implementation;
+4. reminders;
+5. engagement/visual asset expansion (`VIS-01`);
+6. polish and launch preparation.
 
-`PREVIEW-02` and `PLAN-01` are implemented. Planning remains separate from
+`PREVIEW-02`, `PLAN-01` and `ACH-01` are implemented. Planning remains separate from
 financial truth and should be validated through repeated use.
 
 Detailed roadmap:

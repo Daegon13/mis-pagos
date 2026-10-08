@@ -6,6 +6,7 @@ import { editPendingPayment } from "@/data/repositories/paymentLifecycle";
 import type { Payment, PaymentType } from "@/domain/payment";
 import { isCivilDate, localCivilDate } from "@/domain/paymentTiming";
 import { minorToInput, parseBalanceMinor } from "@/features/financial-profile/money";
+import { tryUnlock } from "@/features/achievements/achievementService";
 
 interface FormErrors {
   title?: string;
@@ -45,7 +46,13 @@ export function useCreatePayment(initial?: Payment) {
     setIsSaving(true);
     try {
       const input = { type, title: title.trim(), amountMinor, dueDate, notes };
-      return initial ? await editPendingPayment(db, initial.id, input) : await createPayment(db, input);
+      if (initial) {
+        const edited = await editPendingPayment(db, initial.id, input);
+        return edited ? { payment: edited, newlyUnlocked: false } : null;
+      }
+      const created = await createPayment(db, input);
+      const newlyUnlocked = await tryUnlock(db, type === "expense" ? "FIRST_COMMITMENT" : "FIRST_EXPECTED_INCOME");
+      return { payment: created, newlyUnlocked };
     } catch {
       setSaveError("No pudimos guardar el movimiento.");
       saving.current = false;

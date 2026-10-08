@@ -725,14 +725,13 @@ The current product contains:
 
 PERS-01 added no new visual asset bytes and no new dependency.
 
-### Next high-impact engagement layer
+### ACH-01 discovery layer — implemented
 
-After PLAN-01 introduces reserve/planning milestones, `ACH-01` should add a small
-achievement/discovery system.
+After PLAN-01, `ACH-01` adds a small achievement/discovery system.
 
-Initial target:
+Implemented scope:
 
-- approximately 5–8 meaningful achievements;
+- seven meaningful active discoveries;
 - persistent/idempotent unlocks;
 - lightweight discovery/history presentation;
 - optional modular cosmetic reward mapping;

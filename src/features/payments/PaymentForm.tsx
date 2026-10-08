@@ -11,7 +11,7 @@ import type { ThemeTokens } from "@/features/personalization/themes";
 
 interface PaymentFormProps {
   currencyCode: string;
-  onSaved: (id: number) => void;
+  onSaved: (id: number, newlyUnlocked: boolean) => void;
   initial?: Payment;
 }
 
@@ -30,7 +30,7 @@ export function PaymentForm({ currencyCode, onSaved, initial }: PaymentFormProps
 
   async function submit() {
     const payment = await form.save();
-    if (payment !== null) onSaved(payment.id);
+    if (payment !== null) onSaved(payment.payment.id, payment.newlyUnlocked);
   }
 
   return (

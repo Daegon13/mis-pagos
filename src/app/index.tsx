@@ -9,7 +9,7 @@ import { usePersonalization } from "@/features/personalization/PersonalizationPr
 
 export default function Index() {
   const router = useRouter();
-  const { paymentSaved, balanceSaved } = useLocalSearchParams<{ paymentSaved?: string; balanceSaved?: string }>();
+  const { paymentSaved, balanceSaved, discovery } = useLocalSearchParams<{ paymentSaved?: string; balanceSaved?: string; discovery?: string }>();
   const { profile, isLoading, isSaving, loadError, saveError, retry, save } = useFinancialProfile();
   const { theme } = usePersonalization();
 
@@ -30,12 +30,13 @@ export default function Index() {
         ) : profile === null ? (
           <FinancialSetup isSaving={isSaving} error={saveError} onSave={save} />
         ) : (
-          <Home profile={profile} paymentSaved={paymentSaved} balanceSaved={balanceSaved}
+          <Home profile={profile} paymentSaved={paymentSaved} balanceSaved={balanceSaved} discovery={discovery === "1"}
             onAll={() => router.push("/payments")}
             onOpen={id => router.push({ pathname: "/payments/[id]", params: { id: String(id) } })}
             onBalance={() => router.push("/balance")}
-            onDismissFeedback={() => router.setParams({ paymentSaved: undefined, balanceSaved: undefined })}
+            onDismissFeedback={() => router.setParams({ paymentSaved: undefined, balanceSaved: undefined, discovery: undefined })}
             onPersonalize={() => router.push("/personalize")}
+            onAchievements={() => router.push("./achievements")}
             onPlan={() => router.push("./plan")}
             onAdd={() => router.push("/payments/new")} />
         )}
