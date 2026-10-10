@@ -1,9 +1,8 @@
-import type { SpaceStage } from "./engagement";
-
 export const THEMES = [
   { id: "bosque", label: "Bosque" }, { id: "oceano", label: "Océano" },
   { id: "lavanda", label: "Lavanda" }, { id: "terracota", label: "Terracota" },
   { id: "noche", label: "Noche" }, { id: "arena", label: "Arena" },
+  { id: "peonia", label: "Peonía" }, { id: "ciruela", label: "Ciruela" },
 ] as const;
 export type ThemeId = (typeof THEMES)[number]["id"];
 
@@ -76,30 +75,4 @@ export function validateSelection(value: PersonalizationSelection): Personalizat
   }
   return { ...value, interestIds: [...value.interestIds],
     spaceName: value.spaceName.trim().slice(0, MAX_SPACE_NAME_LENGTH) };
-}
-
-export type SceneDetail = "foliage" | "books" | "monitor" | "record" | "animal" |
-  "mug" | "map" | "frame" | "moon" | "device" | "lamp";
-
-const detailByInterest: Partial<Record<InterestId, SceneDetail>> = {
-  naturaleza: "foliage", libros: "books", gaming: "monitor", musica: "record",
-  animales: "animal", cafe: "mug", viajes: "map", arte: "frame",
-  noche: "moon", tecnologia: "device", hogar: "lamp",
-};
-
-// Pure composition: preferences choose decoration; stage keeps its existing milestones.
-export function composeSpace(selection: PersonalizationSelection, stage: SpaceStage) {
-  const minimal = selection.interestIds.includes("minimalismo") || selection.atmosphereId === "minimalista";
-  const details = selection.interestIds.flatMap((id) => {
-    const detail = detailByInterest[id];
-    return detail ? [detail] : [];
-  });
-  return {
-    stage,
-    atmosphereId: selection.atmosphereId,
-    minimal,
-    primaryDetail: details[0] ?? null,
-    secondaryDetail: minimal ? null : details[1] ?? null,
-    ambientDetail: minimal ? null : details[2] ?? null,
-  };
 }

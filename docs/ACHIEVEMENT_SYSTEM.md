@@ -15,6 +15,9 @@ financial calculation remains pure; a separate explicit valid simulation action
 may persist only its one-time discovery. Unlock writes never roll back the primary
 financial action. The discovery screen and a compact `Tu espacio` count present
 the history without points or competitive progress.
+VIS-01 adds bounded secondary scene details from existing unlock IDs. It does not
+change unlock rules, persistence or engagement stages; interactive Android QA for
+that visual mapping is pending.
 
 Achievements exist to help the user understand that `Tu espacio` can continue evolving and to create memory around meaningful financial-organization milestones.
 

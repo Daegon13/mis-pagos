@@ -5,7 +5,7 @@ const { load } = require('./helpers/load.cjs');
 
 const {
   DEFAULT_SELECTION, INTERESTS, THEMES, ATMOSPHERES, MAX_SPACE_NAME_LENGTH,
-  normalizeStoredSelection, validateSelection, composeSpace,
+  normalizeStoredSelection, validateSelection,
 } = load('src/domain/personalization.ts');
 const { themeFor } = load('src/features/personalization/themes.ts');
 const { runMigrations } = load('src/data/db/migrations/index.ts');
@@ -45,7 +45,7 @@ test('default and invalid stored choices are safe; curated themes have semantic 
   assert.equal(DEFAULT_SELECTION.themeId, 'bosque');
   assert.equal(DEFAULT_SELECTION.atmosphereId, 'natural');
   assert.deepEqual(DEFAULT_SELECTION.interestIds, []);
-  assert.equal(THEMES.length, 6);
+  assert.equal(THEMES.length, 8);
   assert.equal(ATMOSPHERES.length, 5);
   assert.equal(INTERESTS.length, 12);
   for (const item of THEMES) {
@@ -77,23 +77,6 @@ test('interest limit, blank name, custom name and length are enforced', () => {
   assert.equal(validateSelection({ ...DEFAULT_SELECTION, spaceName: '  Mi rincón  ' }).spaceName, 'Mi rincón');
   assert.equal(validateSelection({ ...DEFAULT_SELECTION, spaceName: 'x'.repeat(100) }).spaceName.length,
     MAX_SPACE_NAME_LENGTH);
-});
-
-test('scene composition is deterministic, distinct for three profiles, and stage remains independent', () => {
-  const a = { themeId: 'bosque', interestIds: ['naturaleza', 'hogar'], atmosphereId: 'natural', spaceName: '' };
-  const b = { themeId: 'noche', interestIds: ['gaming', 'tecnologia', 'musica'], atmosphereId: 'nocturno', spaceName: 'Base' };
-  const c = { themeId: 'terracota', interestIds: ['libros', 'cafe', 'arte'], atmosphereId: 'calido', spaceName: '' };
-  assert.deepEqual(composeSpace(a, 2), composeSpace(a, 2));
-  assert.equal(composeSpace(a, 0).primaryDetail, 'foliage');
-  assert.equal(composeSpace(b, 0).primaryDetail, 'monitor');
-  assert.equal(composeSpace(b, 0).ambientDetail, 'record');
-  assert.equal(composeSpace(c, 0).primaryDetail, 'books');
-  assert.equal(composeSpace(c, 0).secondaryDetail, 'mug');
-  assert.notDeepEqual(composeSpace(a, 2), composeSpace(b, 2));
-  assert.notDeepEqual(composeSpace(b, 2), composeSpace(c, 2));
-  assert.equal(composeSpace(b, 0).stage, 0);
-  assert.equal(composeSpace(b, 2).stage, 2);
-  assert.equal(composeSpace({ ...a, interestIds: ['minimalismo', 'naturaleza'] }, 2).secondaryDetail, null);
 });
 
 test('alpha v2 upgrade preserves financial rows and engagement stage; preferences persist independently', async () => {

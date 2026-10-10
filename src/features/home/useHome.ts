@@ -10,6 +10,7 @@ import { calculateHome, type HomeSummary } from "./homeSummary";
 import { getCurrentPlan } from "@/data/repositories/spendingPlanRepository";
 import { deriveExistingAchievements } from "@/features/achievements/achievementService";
 import { listAchievementUnlocks } from "@/data/repositories/achievementRepository";
+import type { AchievementId } from "@/domain/achievements";
 
 export function useHome(paymentSaved?: string) {
   const db = useSQLiteContext();
@@ -21,6 +22,7 @@ export function useHome(paymentSaved?: string) {
   const [stage, setStage] = useState<SpaceStage | null>(null);
   const [spaceError, setSpaceError] = useState(false);
   const [achievementCount, setAchievementCount] = useState<number | null>(null);
+  const [achievementUnlocks, setAchievementUnlocks] = useState<AchievementId[]>([]);
   const [surprise, setSurprise] = useState(false);
   const [feedback, setFeedback] = useState<{ id: string; availableMinor: number } | null>(null);
   const handledSave = useRef<string | null>(null);
@@ -65,9 +67,12 @@ export function useHome(paymentSaved?: string) {
         try {
           await deriveExistingAchievements(db);
           const unlocks = await listAchievementUnlocks(db);
-          if (active && current === request) setAchievementCount(unlocks.length);
+          if (active && current === request) {
+            setAchievementCount(unlocks.length);
+            setAchievementUnlocks(unlocks.map(unlock => unlock.achievement_id));
+          }
         } catch {
-          if (active && current === request) setAchievementCount(null);
+          if (active && current === request) { setAchievementCount(null); setAchievementUnlocks([]); }
         }
       } catch {
         if (active && current === request) {
@@ -86,6 +91,6 @@ export function useHome(paymentSaved?: string) {
   }, [db, attempt, paymentSaved]));
 
   const retry = () => { setError(null); setAttempt((value) => value + 1); };
-  return { summary, planning, planningError, error, retry, stage, spaceError, surprise, achievementCount,
+  return { summary, planning, planningError, error, retry, stage, spaceError, surprise, achievementCount, achievementUnlocks,
     feedback: feedback?.id === paymentSaved ? feedback : null };
 }

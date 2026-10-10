@@ -715,7 +715,7 @@ The current product contains:
 - persistent non-regressing progress;
 - three implemented progression states;
 - one occasional surprise;
-- six curated themes;
+- eight curated themes (including VIS-01 Peonía and Ciruela);
 - optional interests;
 - five atmospheres;
 - optional custom space name;
@@ -742,10 +742,9 @@ Implemented scope:
 
 ### Visual assets
 
-The current primitive-based scene has validated the architecture but remains visually
-basic.
-
-Future visual expansion should start building a small real asset library, such as:
+VIS-01 implements a small real modular asset library and replaces the primitive
+production drawing. Its interactive Android QA is pending. The established
+three-stage milestone rules do not change. Further selective expansion may use:
 
 - plants;
 - lamps;

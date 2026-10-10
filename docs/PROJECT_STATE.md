@@ -12,6 +12,27 @@ and how much is truly available.
 
 The app is not a bank and does not connect to financial institutions.
 
+## VIS-01 — Modular Tu espacio renderer
+
+The implementation replaces the production primitive drawing with an image-based
+1448×1086 room, normalized wall/floor/window masks, a static asset and slot
+registry, deterministic stage/interest/achievement composition, and a development
+calibration route. Bosque, Océano, Lavanda, Terracota, Noche and Arena remain;
+Peonía and Ciruela are added. The 17 canonical source images remain untouched.
+Sixteen production derivatives total 2,836,895 bytes, including the cleaned
+transparent cat. The approved master is used only as a separate development
+calibration derivative. No dependency, persistence, engagement rule or financial
+formula changed.
+
+The 46 current tests, including four focused scene tests, pass, as do typecheck,
+lint and Android Metro export. Six static compositions were inspected alongside
+the master and corrected for desk support and foreground order. Android API 35
+Expo Go QA loaded through the LAN Metro address after the localhost connection
+failed. It covered stages 0/1/2, six profile compositions, masks, the DEV master
+overlay, achievement details, a cold restart and a 360×640 dp viewport. The
+temporary QA income was deleted and the original preferences restored. The
+emulator's engagement stage remains 2 because progression does not regress.
+
 ## ACH-01 — Meaningful discoveries
 
 Implemented in schema v5 (`005_achievements`): seven fixed, non-regressing
@@ -457,8 +478,8 @@ Detailed Home behavior lives in:
 
 A product engagement layer has been approved.
 
-MVP v0 is implemented as a compact, secondary “Tu espacio” scene made with
-React Native primitives. Three persistent states: window; plant after the first
+MVP v0 established a compact, secondary “Tu espacio” scene. VIS-01 replaces its
+primitive drawing with modular images. Three persistent states remain: window; plant after the first
 pending movement from today onward; table/books when pending expenses and
 income are both represented. These signals include dates beyond Home's horizon.
 Progress never decreases and does not use amounts or transaction counts.
@@ -507,7 +528,7 @@ Detailed contract:
 Alpha testing showed that a single generic `Tu espacio` scene is not enough to create
 a strong product identity.
 
-`PERS-01` is implemented. Six curated semantic themes cover the main app
+`PERS-01` introduced six curated semantic themes; VIS-01 adds Peonía and Ciruela, so eight cover the main app
 surfaces, with Bosque as the default. Optional choices are up to three interests,
 one of five atmospheres, and a space name of up to 24 characters. A dedicated
 `/personalize` route is reachable from Tu espacio; skipping leaves financial
@@ -667,7 +688,7 @@ Immediate order:
 2. Dogfooding V2 on physical devices, including repeated PLAN-01 and ACH-01 use;
 3. recurrence design/implementation;
 4. reminders;
-5. engagement/visual asset expansion (`VIS-01`);
+5. `VIS-01` visual expansion (completed);
 6. polish and launch preparation.
 
 `PREVIEW-02`, `PLAN-01` and `ACH-01` are implemented. Planning remains separate from

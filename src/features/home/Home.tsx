@@ -18,7 +18,7 @@ export function Home({ profile, onAdd, paymentSaved, onDismissFeedback, onAll, o
 }) {
   const { theme } = usePersonalization();
   const styles = createStyles(theme);
-  const { summary, planning, planningError, error, retry, stage, spaceError, surprise, feedback, achievementCount } = useHome(paymentSaved);
+  const { summary, planning, planningError, error, retry, stage, spaceError, surprise, feedback, achievementCount, achievementUnlocks } = useHome(paymentSaved);
   const { fontScale, width } = useWindowDimensions();
   const money = (amount: number) => formatBalance(amount, profile.currencyCode);
   const interpretation = summary && financialFeedback(summary);
@@ -148,7 +148,7 @@ export function Home({ profile, onAdd, paymentSaved, onDismissFeedback, onAll, o
         <Text style={styles.buttonText}>+ Agregar movimiento</Text>
       </Pressable>}
       {stage !== null && <LivingSpace stage={stage} surprise={surprise} onPersonalize={onPersonalize}
-        onAchievements={onAchievements} achievementCount={achievementCount} />}
+        onAchievements={onAchievements} achievementCount={achievementCount} achievementUnlocks={achievementUnlocks} />}
       {spaceError && <View style={styles.section}>
         <Text style={styles.caption}>No pudimos actualizar tu espacio. Tus datos financieros siguen disponibles.</Text>
         <Pressable accessibilityRole="button" onPress={retry} style={styles.dismiss}>

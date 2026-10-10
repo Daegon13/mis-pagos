@@ -12,7 +12,7 @@ This document exists so implementation tasks do not have to infer which uploaded
 - a modular object asset;
 - a development-only calibration reference.
 
-The original source filenames listed here are canonical references and must not be renamed or overwritten silently.
+Asset roles are contractual. Exact physical filenames are taken from `assets/assets mis pagos/` and must not be renamed or overwritten silently. During the one-time VIS-01 reconciliation only, trailing upload-generated parenthetical numeric suffixes immediately before `.png` were ignored when matching each documented asset to exactly one source file. The filenames below now reflect the repository files; future work should use them directly.
 
 If optimized runtime derivatives are created, they must be new files and their mapping back to the canonical source filename must remain documented.
 
@@ -76,7 +76,7 @@ If included in the repository for calibration, it must be development-only and e
 
 ### Canonical source filename
 
-`Rincón minimalista bañado por el sol(2).png`
+`Rincón minimalista bañado por el sol.png`
 
 ### Role
 
@@ -120,7 +120,7 @@ The normalized runtime masks should contain no generated gray noise.
 
 Canonical source filename:
 
-`Máscara minimalista de habitación en blanco y negro(1).png`
+`Máscara minimalista de habitación en blanco y negro.png`
 
 Meaning:
 
@@ -213,7 +213,7 @@ Never stretch them non-uniformly to imitate the master.
 | `desk` | `Escritorio escandinavo de madera clara.png` | Main desk/furniture anchor |
 | `shelf` | `Estantería modular de madera clara.png` | Secondary furniture / storage anchor |
 | `monitor` | `Monitor moderno minimalista en fondo transparente.png` | Desk-center technology/gaming anchor |
-| `deskLamp` | `Lámpara de escritorio verde oliva(1).png` | Desk-left warm/light detail |
+| `deskLamp` | `Lámpara de escritorio verde oliva.png` | Desk-left warm/light detail |
 | `plantLarge` | `Planta frondosa en maceta crema.png` | Large nature/progression anchor |
 | `plantSmall` | `Planta pothos en maceta cerámica.png` | Small desk/detail plant |
 
@@ -551,3 +551,50 @@ For any task involving `Tu espacio` rendering, assets, masks, placement, themes 
 5. do not rename canonical source files silently.
 
 If a supplied image conflicts with the role documented here, stop and report the conflict before implementing.
+
+---
+
+## 20. VIS-01 production implementation
+
+The physical source directory is `assets/assets mis pagos/`. VIS-01 reconciled the three upload-suffix differences shown in sections 3, 4.1 and 5.1 by unique basename matching; source files were not renamed or overwritten.
+
+`scripts/build-space-assets.ps1` creates deterministic derivatives. The production folder is `assets/space/runtime/`. The development calibration reference is a separate 900×675 JPEG at `assets/space/calibration/master-reference.jpg`, derived from `Rincón de trabajo acogedor y minimalista(5).png`; it is absent from the production object registry and never used as the room base.
+
+| Runtime derivative | Physical source filename |
+|---|---|
+| `empty-room.jpg` | `Rincón minimalista bañado por el sol.png` |
+| `wall-mask.png` | `Máscara minimalista de habitación en blanco y negro.png` |
+| `floor-mask.png` | `Máscara binaria de habitación vacía.png` |
+| `window-mask.png` | `Máscara minimalista de ventana blanca.png` |
+| `desk.png` | `Escritorio escandinavo de madera clara.png` |
+| `shelf.png` | `Estantería modular de madera clara.png` |
+| `monitor.png` | `Monitor moderno minimalista en fondo transparente.png` |
+| `desk-lamp.png` | `Lámpara de escritorio verde oliva.png` |
+| `plant-large.png` | `Planta frondosa en maceta crema.png` |
+| `plant-small.png` | `Planta pothos en maceta cerámica.png` |
+| `books.png` | `Pila de libros en tonos cálidos.png` |
+| `mug.png` | `Taza cerámica bicolor sobre fondo transparente.png` |
+| `gamepad.png` | `Controlador gamer moderno en grafito.png` |
+| `speaker-vinyl.png` | `Altavoz moderno y disco de vinilo.png` |
+| `moon-lamp.png` | `Lámpara de luna sobre base de madera.png` |
+| `cat-figurine.png` | `Gato cerámico minimalista y sereno.png` |
+
+The three masks retain 1448×1086 and have binary alpha from source luminance `>=128`; RGB is white. The opaque cat source receives deterministic warm-background removal during preprocessing. Its source is preserved. No runtime segmentation or color key is used. Object derivatives preserve aspect ratio and are cropped to their visible alpha bounds. Large objects are at most 600 px on the longest side; details are at most 360 px. PNG retains alpha, while the opaque room uses JPEG. The 17 raw sources total **19,921,272 bytes**; the 16 production derivatives total **2,836,895 bytes**. The dev-only master derivative is outside that production total.
+
+Final canonical slot geometry lives in `src/features/space/spaceScene.ts`. Values below are `x,y,maxWidth,maxHeight`, where `x,y` is the bottom-center anchor in the 1448×1086 scene:
+
+| Slot | Geometry | Z layer |
+|---|---:|---:|
+| `floorLeft` | 255,1030,500,610 | 60 |
+| `desk` | 800,1040,1020,680 | 30 |
+| `deskLeft` | 490,510,190,155 | 40 |
+| `deskCenter` | 820,510,390,320 | 40 |
+| `deskRight` | 1120,515,165,170 | 40 |
+| `floorRight` | 1270,1015,270,390 | 20 |
+| `detailLeft` | 345,510,155,245 | 40 |
+| `detailCenter` | 765,525,155,105 | 50 |
+| `detailRight` | 1250,515,145,180 | 50 |
+
+Object z order can override the slot layer where foreground occlusion is intentional. Room tints use theme semantic tokens. Wall alpha is 0.22, or 0.32 for Nocturno; floor alpha is 0.08; window alpha is 0.08, or 0.18 for Nocturno; Cálido uses an additional 0.05 ambient treatment. These treatments leave the base lighting visible.
+
+`/space-calibration` redirects to Home in production. Its master require is behind `__DEV__`; an Android production export excludes both the raw master and calibration derivative. In development it overlays the modular scene on the approved master derivative, supports 0–100% scene opacity, selectable visible objects and temporary ±1/±5/±10 adjustments to x, y, width and zIndex. Accepted values are copied into the static registry; calibration does not persist them.

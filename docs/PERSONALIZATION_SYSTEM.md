@@ -7,8 +7,9 @@ Product contract for visual personalization and identity. Complements:
 - `ENGAGEMENT_SYSTEM.md`
 - `ACHIEVEMENT_SYSTEM.md`
 
-PERS-01 is implemented with six curated semantic themes, optional interests, one
-atmosphere, an optional space name and modular `Tu espacio` rendering.
+PERS-01 introduced six curated semantic themes, optional interests, one
+atmosphere and an optional space name. VIS-01 adds Peonía and Ciruela and an
+image-based modular `Tu espacio` renderer; Android visual QA remains pending.
 
 The next visual direction is selective expansion, not a larger settings system.
 
@@ -99,12 +100,14 @@ Implemented themes:
 - Terracota
 - Noche
 - Arena
+- Peonía
+- Ciruela
 
 Bosque remains the default product identity.
 
 Potential future additions should remain few and deliberate.
 
-Two useful candidates for a softer/warm part of the palette are:
+VIS-01 adds two softer curated themes:
 
 - Peonía — rosa viejo / nude / crema;
 - Ciruela — malva / berry oscuro / lavanda cálida.
@@ -311,8 +314,8 @@ Core finance functionality must never depend on personalization.
 
 Only after validation:
 
-- Peonía/Ciruela or similarly deliberate additional curated themes;
-- a small real visual-asset library;
+- any further curated themes only after validation;
+- selective expansion of the real visual-asset library;
 - more interest-compatible modular objects;
 - milestone-linked objects;
 - larger decorative library;
