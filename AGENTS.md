@@ -216,3 +216,7 @@ For medium or large tasks:
 6. report only material results.
 
 Do not break a coherent feature into multiple artificial sub-tasks unless the task explicitly requires it.
+
+- `docs/SPACE_RENDERER.md`: required for any task involving Tu espacio assets,
+  masks, placement, themes, scene composition or renderer behavior.
+the new assets can be found in C:\Users\Usuario\Documents\GitHub\mis-pagos\assets\assets mis pagos
