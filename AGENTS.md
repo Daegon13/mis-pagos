@@ -27,6 +27,7 @@ Contratos específicos:
 - `docs/PERSONALIZATION_SYSTEM.md`: temas, intereses, atmósfera e identidad visual;
 - `docs/CURRENCY_SYSTEM.md`: moneda principal, referencias y FX;
 - `docs/PRODUCT_ROADMAP.md`: planificación/prioridades, no como lectura por defecto.
+- `docs/HELP_SYSTEM.md`: educación del usuario, terminología, glosario, explicaciones contextuales o Help Center.
 
 No leer todos estos documentos para cada tarea.
 

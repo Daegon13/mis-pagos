@@ -12,6 +12,12 @@ and how much is truly available.
 
 The app is not a bank and does not connect to financial institutions.
 
+## HELP-01 — Ayuda permanente
+
+`/help` ofrece cinco categorías y un glosario local, accesibles desde el `?` discreto de Home después del alta financiera. El registro centralizado contiene temas con IDs estables; Disponible real, Proyección, Reserva objetivo, Libre para usar, Ritmo de referencia, Tu espacio y Descubrimientos tienen acceso contextual con explicación breve y **Ver más**. No hay persistencia, dependencia nueva ni cambios en cálculos financieros. El contrato vigente está en `docs/HELP_SYSTEM.md`.
+
+Validación HELP-01: 50 pruebas automatizadas (46 previas y cuatro nuevas), typecheck, lint y `git diff --check` pasan. En Android API 35 Expo Go se comprobaron entrada global, cinco categorías, glosario, navegación contextual de Disponible real, Reserva, Libre para usar, Ritmo, Tu espacio y Descubrimientos, vista de 360×640 dp y uso del contenido ya cargado con Wi-Fi y datos apagados. El saldo visible y Disponible real siguieron iguales tras reiniciar Expo Go. Los ocho temas superan la prueba de contraste de texto; Océano y las vistas previas de Peonía/Ciruela se inspeccionaron visualmente. No es evidencia de APK autónoma sin conexión ni de cada tema abierto dentro de Ayuda.
+
 ## VIS-01 — Modular Tu espacio renderer
 
 The implementation replaces the production primitive drawing with an image-based

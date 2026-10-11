@@ -9,6 +9,7 @@ import { usePersonalization } from "@/features/personalization/PersonalizationPr
 import type { ThemeTokens } from "@/features/personalization/themes";
 import { localCivilDate } from "@/domain/paymentTiming";
 import { planAmounts, referencePace, remainingDays } from "@/domain/spendingPlan";
+import { ContextualHelp } from "@/features/help/ContextualHelp";
 
 const months = ["ENE", "FEB", "MAR", "ABR", "MAY", "JUN", "JUL", "AGO", "SEP", "OCT", "NOV", "DIC"];
 
@@ -39,7 +40,8 @@ export function Home({ profile, onAdd, paymentSaved, onDismissFeedback, onAll, o
         <>
           <View style={styles.hero}>
             <Text style={styles.horizon}>{summary.overdueExpenseCount > 0 ? "VENCIDOS + PRÓXIMOS 30 DÍAS" : "PRÓXIMOS 30 DÍAS"} · {profile.currencyCode}</Text>
-            <Text accessibilityRole="header" style={styles.label}>Disponible real</Text>
+            <View style={styles.helpRow}><Text accessibilityRole="header" style={styles.label}>Disponible real</Text>
+              <ContextualHelp topicId="available-real" inverse /></View>
             <Text style={[styles.balance, summary.availableMinor < 0 && styles.negative]}>{money(summary.availableMinor)}</Text>
             <Text style={styles.heroDescription}>Lo que te queda después de tus compromisos</Text>
             <View style={styles.breakdown}>
@@ -90,7 +92,8 @@ export function Home({ profile, onAdd, paymentSaved, onDismissFeedback, onAll, o
               <Text style={styles.description}>Ingresos previstos</Text>
               <Text style={styles.income}>+{money(summary.incomeMinor)}</Text>
             </View>
-            <Text style={styles.caption}>Con esos ingresos, tu proyección para los próximos 30 días es:</Text>
+            <View style={styles.helpRow}><Text style={styles.caption}>Con esos ingresos, tu proyección para los próximos 30 días es:</Text>
+              <ContextualHelp topicId="projection" /></View>
             <Text style={styles.projectionAmount}>{money(summary.projectionMinor)}</Text>
             <Text style={styles.caption}>Ese dinero todavía no está disponible.</Text>
           </View> : <Text style={styles.caption}>Sin ingresos previstos en estos 30 días.</Text>}
@@ -99,13 +102,16 @@ export function Home({ profile, onAdd, paymentSaved, onDismissFeedback, onAll, o
             {planningError ? <Text style={styles.caption}>No pudimos cargar tu plan. Tus datos financieros siguen disponibles.</Text>
               : !planning || !planValues || !pace ? <Text style={styles.description}>Planeá cuánto querés conservar este mes.</Text>
                 : <>
-                  <Text style={styles.description}>Reserva de cierre: {money(planning.plan.reserveTargetMinor)}</Text>
-                  <Text style={styles.title}>Libre para usar: {money(planValues.freeToUseMinor)}</Text>
+                  <View style={styles.helpRow}><Text style={styles.description}>Reserva de cierre: {money(planning.plan.reserveTargetMinor)}</Text>
+                    <ContextualHelp topicId="reserve" /></View>
+                  <View style={styles.helpRow}><Text style={styles.title}>Libre para usar: {money(planValues.freeToUseMinor)}</Text>
+                    <ContextualHelp topicId="free-to-use" /></View>
                   {planValues.reserveShortfallMinor > 0 && <Text style={styles.description}>
                     {summary.availableMinor < 0 ? "Tu plan queda sin margen libre por ahora. " : ""}
                     Te faltan {money(planValues.reserveShortfallMinor)} para alcanzar tu reserva.
                   </Text>}
-                  <Text style={styles.caption}>Ritmo de referencia: ≈ {money(pace.displayMinor)} por {pace.unit === "day" ? "día" : "semana"}.</Text>
+                  <View style={styles.helpRow}><Text style={styles.caption}>Ritmo de referencia: ≈ {money(pace.displayMinor)} por {pace.unit === "day" ? "día" : "semana"}.</Text>
+                    <ContextualHelp topicId="pace" /></View>
                 </>}
             <Pressable accessibilityRole="button" onPress={onPlan} style={styles.dismiss}>
               <Text style={styles.link}>{planning ? "¿Puedo gastar esto? · Editar plan" : "Crear plan para este mes"}</Text>
@@ -162,6 +168,7 @@ export function Home({ profile, onAdd, paymentSaved, onDismissFeedback, onAll, o
 function createStyles(theme: ThemeTokens) { return StyleSheet.create({
   home: { gap: 20 },
   section: { gap: 8 },
+  helpRow: { flexDirection: "row", flexWrap: "wrap", alignItems: "center", gap: 2 },
   hero: { backgroundColor: theme.primary, borderRadius: 24, padding: 22, gap: 10 },
   horizon: { color: theme.heroMuted, fontSize: 11, fontWeight: "600", letterSpacing: 1 },
   label: { color: theme.textOnPrimary, fontSize: 20, fontWeight: "500", marginTop: 8 },

@@ -17,7 +17,14 @@ export default function Index() {
     <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
       <Stack.Screen options={{ headerShown: false }} />
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-        <Text accessibilityRole="header" style={[styles.brand, { color: theme.primary }]}>Mis Pagos</Text>
+        <View style={styles.header}>
+          <Text accessibilityRole="header" style={[styles.brand, { color: theme.primary }]}>Mis Pagos</Text>
+          {profile && <Pressable accessibilityRole="button" accessibilityLabel="Cómo funciona Mis Pagos"
+            onPress={() => router.push("/help")}
+            style={[styles.help, { borderColor: theme.border }]}>
+            <Text style={{ color: theme.primary, fontSize: 19, fontWeight: "600" }}>?</Text>
+          </Pressable>}
+        </View>
         {isLoading ? (
           <Text accessibilityLiveRegion="polite" style={[styles.description, { color: theme.textSecondary }]}>Cargando...</Text>
         ) : loadError ? (
@@ -51,6 +58,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#F7F9F5",
   },
   content: { flexGrow: 1, width: "100%", maxWidth: 560, alignSelf: "center", padding: 24, paddingBottom: 40, gap: 24 },
+  header: { flexDirection: "row", gap: 12, alignItems: "center" },
+  help: { width: 44, height: 44, borderWidth: 1, borderRadius: 22, alignItems: "center", justifyContent: "center" },
   brand: { color: "#163B30", fontSize: 21, fontWeight: "700" },
   section: { gap: 12 },
   description: { color: "#52645C", fontSize: 16, lineHeight: 24 },

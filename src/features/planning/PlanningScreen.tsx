@@ -13,6 +13,7 @@ import { formatBalance, minorToInput, parseBalanceMinor } from "@/features/finan
 import { calculateHome } from "@/features/home/homeSummary";
 import { usePersonalization } from "@/features/personalization/PersonalizationProvider";
 import { attemptUnlock, tryUnlock } from "@/features/achievements/achievementService";
+import { ContextualHelp } from "@/features/help/ContextualHelp";
 
 type DraftAllocation = { name: string; percent: string };
 
@@ -129,7 +130,8 @@ export function PlanningScreen({ onBack }: { onBack: () => void }) {
       <Text accessibilityRole="header" style={[styles.heading, { color: theme.textPrimary }]}>Planeá lo que querés conservar</Text>
       <Text style={{ color: theme.textSecondary }}>Tu disponible real ya descuenta tus compromisos conocidos. Elegí cuánto querés dejar intacto al terminar el mes.</Text>
       {!ready ? <Text>Cargando...</Text> : available === null ? <>{error && <Text accessibilityRole="alert">{error}</Text>}{action("Reintentar", () => void reload())}</> : <>
-        <Text style={[styles.subhead, { color: theme.textPrimary }]}>Reserva de cierre · {period.periodEnd}</Text>
+        <View style={styles.row}><Text style={[styles.subhead, { color: theme.textPrimary }]}>Reserva de cierre · {period.periodEnd}</Text>
+          <ContextualHelp topicId="reserve" /></View>
         <View style={styles.row}>
           {action("Porcentaje", () => { setMode("percentage"); setValue("20"); setReserveTouched(true); })}
           {action("Monto fijo", () => { setMode("fixed"); setValue(target === null ? "0" : minorToInput(target)); setReserveTouched(true); })}
@@ -147,11 +149,13 @@ export function PlanningScreen({ onBack }: { onBack: () => void }) {
         {amounts && target !== null && <View style={[styles.card, { backgroundColor: theme.surface }]}>
           <Text style={{ color: theme.textSecondary }}>Disponible real: {money(available)}</Text>
           <Text style={{ color: theme.textSecondary }}>Reserva objetivo: {money(target)}</Text>
-          <Text style={[styles.subhead, { color: theme.textPrimary }]}>Libre para usar: {money(amounts.freeToUseMinor)}</Text>
+          <View style={[styles.row, { alignItems: "center" }]}><Text style={[styles.subhead, { color: theme.textPrimary }]}>Libre para usar: {money(amounts.freeToUseMinor)}</Text>
+            <ContextualHelp topicId="free-to-use" /></View>
           {amounts.reserveShortfallMinor > 0 && <Text style={{ color: theme.textSecondary }}>
             Te faltan {money(amounts.reserveShortfallMinor)} para llegar a la reserva. Tu disponible real sigue siendo {money(available)}.
           </Text>}
-          {pace && <Text style={{ color: theme.textSecondary }}>Ritmo de referencia: ≈ {money(pace.displayMinor)} por {pace.unit === "day" ? "día" : "semana"}.</Text>}
+          {pace && <View style={[styles.row, { alignItems: "center" }]}><Text style={{ color: theme.textSecondary }}>Ritmo de referencia: ≈ {money(pace.displayMinor)} por {pace.unit === "day" ? "día" : "semana"}.</Text>
+            <ContextualHelp topicId="pace" /></View>}
         </View>}
         <Text style={[styles.subhead, { color: theme.textPrimary }]}>Asignaciones opcionales</Text>
         <Text style={{ color: theme.textSecondary }}>Son una guía para repartir tu margen libre. No clasifican tus movimientos.</Text>

@@ -8,6 +8,7 @@ import { listAchievementUnlocks } from "@/data/repositories/achievementRepositor
 import { ACHIEVEMENTS, type AchievementId } from "@/domain/achievements";
 import { usePersonalization } from "@/features/personalization/PersonalizationProvider";
 import { deriveExistingAchievements } from "./achievementService";
+import { ContextualHelp } from "@/features/help/ContextualHelp";
 
 export function AchievementsScreen({ onBack }: { onBack: () => void }) {
   const db = useSQLiteContext();
@@ -29,7 +30,8 @@ export function AchievementsScreen({ onBack }: { onBack: () => void }) {
       <Pressable accessibilityRole="button" onPress={onBack} style={styles.back}>
         <Text style={{ color: theme.primary }}>← Volver</Text>
       </Pressable>
-      <Text accessibilityRole="header" style={[styles.heading, { color: theme.textPrimary }]}>Descubrimientos</Text>
+      <View style={styles.titleRow}><Text accessibilityRole="header" style={[styles.heading, { color: theme.textPrimary }]}>Descubrimientos</Text>
+        <ContextualHelp topicId="discoveries" /></View>
       <Text style={{ color: theme.textSecondary }}>Una historia de lo que fuiste organizando, a tu ritmo.</Text>
       {error ? <View style={styles.card}>
         <Text accessibilityRole="alert" style={{ color: theme.textSecondary }}>No pudimos cargar tus descubrimientos.</Text>
@@ -62,6 +64,7 @@ const styles = StyleSheet.create({
   content: { width: "100%", maxWidth: 560, alignSelf: "center", padding: 24, paddingBottom: 48, gap: 14 },
   back: { minHeight: 44, alignSelf: "flex-start", justifyContent: "center" },
   heading: { fontSize: 28, fontWeight: "700" },
+  titleRow: { flexDirection: "row", flexWrap: "wrap", alignItems: "center" },
   card: { padding: 16, borderRadius: 16, borderWidth: 1, gap: 7 },
   title: { fontSize: 17, fontWeight: "600" },
 });

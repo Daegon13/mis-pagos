@@ -121,6 +121,8 @@ The next work should build on this foundation instead of redesigning the data ar
 
 ## 5. Phase 1 — Immediate implementation
 
+HELP-01 (ayuda permanente, glosario y explicaciones contextuales): completado. La siguiente iteración visual mayor prevista es SPACE-02 + ACH-02; no forma parte de HELP-01.
+
 ### Objective
 
 Make the current product feel significantly clearer, warmer and more rewarding with limited additional complexity.

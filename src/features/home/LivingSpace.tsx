@@ -6,6 +6,7 @@ import type { PersonalizationSelection } from "@/domain/personalization";
 import { usePersonalization } from "@/features/personalization/PersonalizationProvider";
 import { themeFor } from "@/features/personalization/themes";
 import { SpaceRenderer } from "@/features/space/SpaceRenderer";
+import { ContextualHelp } from "@/features/help/ContextualHelp";
 
 const descriptions = ["Un lugar para empezar.", "Tu espacio empieza a tomar forma.", "Un poco más tuyo, paso a paso."];
 
@@ -21,9 +22,9 @@ export function LivingSpace({ stage, surprise, onPersonalize, onAchievements, ac
   const label = `Tu espacio, etapa ${stage}, ambiente ${selection.atmosphereId}`;
   return <View style={[styles.card, { backgroundColor: theme.secondarySurface }]}>
     <View style={styles.copy}>
-      <Text accessibilityRole="header" style={[styles.title, { color: theme.textPrimary }]}>
+      <View style={styles.titleRow}><Text accessibilityRole="header" style={[styles.title, { color: theme.textPrimary }]}>
         {preview ? "Vista previa" : selection.spaceName || "Tu espacio"}
-      </Text>
+      </Text>{!preview && <ContextualHelp topicId="space" />}</View>
       <Text style={[styles.caption, { color: theme.textSecondary }]}>{descriptions[stage]}</Text>
       {surprise && <Text accessibilityLiveRegion="polite" style={[styles.surprise, { color: theme.positive }]}>Algo cambió en tu espacio.</Text>}
       {onAchievements && <Pressable accessibilityRole="button" onPress={onAchievements} style={styles.link}>
@@ -45,6 +46,7 @@ export function LivingSpace({ stage, surprise, onPersonalize, onAchievements, ac
 const styles = StyleSheet.create({
   card: { flexDirection: "row", alignItems: "center", gap: 10, padding: 14, borderRadius: 20 },
   copy: { flex: 1, gap: 5 },
+  titleRow: { flexDirection: "row", flexWrap: "wrap", alignItems: "center" },
   title: { fontSize: 17, fontWeight: "600" },
   caption: { fontSize: 13, lineHeight: 19 },
   surprise: { fontSize: 13, lineHeight: 19, fontWeight: "600" },

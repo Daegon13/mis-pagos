@@ -1,0 +1,93 @@
+import { useState } from "react";
+import { useLocalSearchParams } from "expo-router";
+import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+
+import { usePersonalization } from "@/features/personalization/PersonalizationProvider";
+import { HELP_CATEGORIES, HELP_TOPICS, getHelpTopic, type HelpCategoryId } from "./helpContent";
+
+export function HelpScreen({ onBack }: { onBack: () => void }) {
+  const { topic: linkedTopic } = useLocalSearchParams<{ topic?: string }>();
+  const { theme } = usePersonalization();
+  const [category, setCategory] = useState<HelpCategoryId | "glossary" | null>(null);
+  const [topicId, setTopicId] = useState<string | null>(linkedTopic && getHelpTopic(linkedTopic) ? linkedTopic : null);
+  const topic = topicId ? getHelpTopic(topicId) : undefined;
+  const back = () => {
+    if (topic && !category) onBack();
+    else if (topic) setTopicId(null);
+    else if (category) setCategory(null);
+    else onBack();
+  };
+  const heading = { color: theme.textPrimary };
+  const body = { color: theme.textSecondary };
+  const link = { color: theme.primary };
+
+  return <SafeAreaView style={{ flex: 1, backgroundColor: theme.background }} edges={["bottom"]}>
+    <ScrollView contentContainerStyle={styles.content}>
+      <Pressable accessibilityRole="button" accessibilityLabel={topic || category ? "Volver en Ayuda" : "Volver a la pantalla anterior"}
+        onPress={back} style={styles.back}><Text style={link}>← Volver</Text></Pressable>
+      {topic ? <>
+        <Text style={[styles.eyebrow, body]}>{HELP_CATEGORIES.find(item => item.id === topic.category)?.title}</Text>
+        <Text accessibilityRole="header" style={[styles.heading, heading]}>{topic.title}</Text>
+        <Text style={[styles.lead, body]}>{topic.shortDescription}</Text>
+        <View style={[styles.card, { backgroundColor: theme.surface, borderColor: theme.border }]}>
+          <Text style={[styles.body, heading]}>{topic.body}</Text>
+        </View>
+        {!!topic.relatedTopicIds?.length && <>
+          <Text accessibilityRole="header" style={[styles.subhead, heading]}>También puede ayudarte</Text>
+          {topic.relatedTopicIds.map(id => {
+            const related = getHelpTopic(id);
+            return related && <Pressable key={id} accessibilityRole="button" onPress={() => setTopicId(id)} style={styles.row}>
+              <Text style={[styles.rowText, link]}>{related.title} →</Text>
+            </Pressable>;
+          })}
+        </>}
+      </> : category === "glossary" ? <>
+        <Text accessibilityRole="header" style={[styles.heading, heading]}>Glosario</Text>
+        <Text style={[styles.lead, body]}>Palabras que usamos en Mis Pagos, en pocas líneas.</Text>
+        {HELP_TOPICS.filter(item => item.glossaryDefinition).map(item => <Pressable key={item.id}
+          accessibilityRole="button" accessibilityLabel={`${item.glossaryTitle ?? item.title}. ${item.glossaryDefinition} Ver explicación completa`}
+          onPress={() => setTopicId(item.id)} style={[styles.card, { backgroundColor: theme.surface, borderColor: theme.border }]}>
+          <Text style={[styles.subhead, heading]}>{item.glossaryTitle ?? item.title}</Text>
+          <Text style={[styles.body, body]}>{item.glossaryDefinition}</Text>
+        </Pressable>)}
+      </> : category ? <>
+        <Text accessibilityRole="header" style={[styles.heading, heading]}>{HELP_CATEGORIES.find(item => item.id === category)?.title}</Text>
+        <Text style={[styles.lead, body]}>{HELP_CATEGORIES.find(item => item.id === category)?.introduction}</Text>
+        {HELP_TOPICS.filter(item => item.category === category).map(item => <Pressable key={item.id}
+          accessibilityRole="button" accessibilityLabel={`Leer sobre ${item.title}`} onPress={() => setTopicId(item.id)}
+          style={[styles.card, { backgroundColor: theme.surface, borderColor: theme.border }]}>
+          <Text style={[styles.subhead, heading]}>{item.title}</Text>
+          <Text style={[styles.body, body]}>{item.shortDescription}</Text>
+        </Pressable>)}
+      </> : <>
+        <Text accessibilityRole="header" style={[styles.heading, heading]}>Cómo funciona Mis Pagos</Text>
+        <Text style={[styles.lead, body]}>¿Qué querés entender mejor?</Text>
+        {HELP_CATEGORIES.map(item => <Pressable key={item.id} accessibilityRole="button"
+          accessibilityLabel={`Abrir ${item.title}`} onPress={() => setCategory(item.id)}
+          style={[styles.card, { backgroundColor: theme.surface, borderColor: theme.border }]}>
+          <Text style={[styles.subhead, heading]}>{item.title} →</Text>
+          <Text style={[styles.body, body]}>{item.introduction}</Text>
+        </Pressable>)}
+        <Pressable accessibilityRole="button" accessibilityLabel="Abrir glosario" onPress={() => setCategory("glossary")}
+          style={[styles.card, { backgroundColor: theme.primarySurface, borderColor: theme.border }]}>
+          <Text style={[styles.subhead, heading]}>Glosario →</Text>
+          <Text style={[styles.body, body]}>Encontrá una definición rápida.</Text>
+        </Pressable>
+      </>}
+    </ScrollView>
+  </SafeAreaView>;
+}
+
+const styles = StyleSheet.create({
+  content: { width: "100%", maxWidth: 560, alignSelf: "center", padding: 24, paddingBottom: 48, gap: 12 },
+  back: { minHeight: 44, alignSelf: "flex-start", justifyContent: "center", paddingRight: 16 },
+  eyebrow: { fontSize: 13, fontWeight: "600" },
+  heading: { fontSize: 27, lineHeight: 34, fontWeight: "700" },
+  lead: { fontSize: 16, lineHeight: 24, marginBottom: 6 },
+  card: { padding: 16, borderRadius: 16, borderWidth: 1, gap: 7, minHeight: 60 },
+  subhead: { fontSize: 18, lineHeight: 24, fontWeight: "600" },
+  body: { fontSize: 15, lineHeight: 23 },
+  row: { minHeight: 44, justifyContent: "center", paddingHorizontal: 4 },
+  rowText: { fontSize: 15, fontWeight: "600" },
+});
