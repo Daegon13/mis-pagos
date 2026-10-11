@@ -1,6 +1,12 @@
 import type { SQLiteDatabase } from "expo-sqlite";
 import type { SpaceStage } from "@/domain/engagement";
 
+export async function getSpaceStage(db: SQLiteDatabase): Promise<SpaceStage> {
+  const row = await db.getFirstAsync<{ stage: SpaceStage }>("SELECT stage FROM engagement_progress WHERE id = 1");
+  if (!row) throw new Error("Missing engagement progress");
+  return row.stage;
+}
+
 export async function advanceSpace(db: SQLiteDatabase, candidate: SpaceStage) {
   // Conditional update is atomic: stale loads cannot lower persisted progress
   // or repeat a surprise. No financial table is written here.

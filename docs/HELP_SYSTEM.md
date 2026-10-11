@@ -4,6 +4,8 @@
 
 HELP-01 está implementado. El contenido es local, funciona sin red y explica el producto actual. No ejecuta cálculos financieros ni modifica datos persistentes.
 
+SPACE-02/ACH-02 actualiza los temas Tu espacio, Tema, Intereses y Descubrimientos para explicar controles manuales, Automático frente a Vacío, paleta independiente y recompensas persistentes. El glosario usa los mismos significados actuales.
+
 ## Estructura
 
 `/help` es una ruta permanente, disponible desde el `?` discreto del encabezado de Home después de configurar el perfil financiero. Presenta cinco secciones: **Entender tu dinero**, **Planificar el mes**, **Movimientos**, **Tu espacio** y **Descubrimientos**. Cada sección ofrece temas breves. El glosario reúne definiciones de una a tres frases. La pantalla permite volver al nivel anterior o a la pantalla de origen.
@@ -22,8 +24,8 @@ El registro `src/features/help/helpContent.ts` es la fuente única del contenido
 - **Asignaciones**: reparto porcentual opcional del margen. No clasifican movimientos ni cambian datos financieros.
 - **¿Puedo gastar esto?**: simulación hipotética. No crea movimientos, no gasta, no ajusta saldo ni reserva. Su primera ejecución explícita puede guardar un descubrimiento independiente.
 - **Movimientos**: gastos e ingresos nacen pendientes. Al completarlos se elige **Ajustar el saldo** si aún no está reflejado, o **Ya está reflejado** si el saldo ya lo incluye. Cancelar conserva el registro; cancelar o eliminar nunca reescribe automáticamente el saldo.
-- **Tu espacio**: memoria visual de organización, con progresión de habitación, planta y escritorio con libros. Tema, intereses, atmósfera y nombre personalizan su presentación. No representa riqueza, ingresos, gasto ni superioridad. Una situación difícil no lo daña; ignorarlo no limita las funciones financieras.
-- **Descubrimientos**: siete hitos actuales de organización, persistentes y de una sola activación. Algunos se derivan de historia existente; no son puntos, rankings, rachas ni premios por riqueza o gasto. El render actual puede usar algunos como detalles visuales secundarios según el espacio, sin recompensa de objeto garantizada.
+- **Tu espacio**: memoria visual de organización, con progresión de habitación, planta y escritorio con libros. La decoración automática sigue intereses; Descubrimientos habilitan edición manual por zona. Automático devuelve el control al resolvedor y Vacío mantiene libre la zona. Las anclas no se editan.
+- **Descubrimientos**: siete hitos actuales, persistentes y de una sola activación. Cada uno muestra su condición y la capacidad de personalización de Tu espacio que concede. No son puntos, rangos, rachas ni premios por riqueza o gasto.
 
 ## Voz y límites
 

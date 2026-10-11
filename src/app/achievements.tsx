@@ -5,6 +5,6 @@ export default function AchievementsRoute() {
   const router = useRouter();
   return <>
     <Stack.Screen options={{ headerShown: false }} />
-    <AchievementsScreen onBack={() => router.back()} />
+    <AchievementsScreen onBack={() => router.back()} onOpenSpace={() => router.push("/space")} />
   </>;
 }

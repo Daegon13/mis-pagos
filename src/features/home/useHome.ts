@@ -11,6 +11,8 @@ import { getCurrentPlan } from "@/data/repositories/spendingPlanRepository";
 import { deriveExistingAchievements } from "@/features/achievements/achievementService";
 import { listAchievementUnlocks } from "@/data/repositories/achievementRepository";
 import type { AchievementId } from "@/domain/achievements";
+import { getSpaceVisualPreferences, listSlotOverrides, type StoredSlotOverride,
+  type StoredVisualPreferences } from "@/data/repositories/spaceCustomizationRepository";
 
 export function useHome(paymentSaved?: string) {
   const db = useSQLiteContext();
@@ -23,6 +25,8 @@ export function useHome(paymentSaved?: string) {
   const [spaceError, setSpaceError] = useState(false);
   const [achievementCount, setAchievementCount] = useState<number | null>(null);
   const [achievementUnlocks, setAchievementUnlocks] = useState<AchievementId[]>([]);
+  const [slotOverrides, setSlotOverrides] = useState<StoredSlotOverride[]>([]);
+  const [visualPreferences, setVisualPreferences] = useState<StoredVisualPreferences>({ roomPaletteId: null, windowMoodId: null });
   const [surprise, setSurprise] = useState(false);
   const [feedback, setFeedback] = useState<{ id: string; availableMinor: number } | null>(null);
   const handledSave = useRef<string | null>(null);
@@ -74,6 +78,12 @@ export function useHome(paymentSaved?: string) {
         } catch {
           if (active && current === request) { setAchievementCount(null); setAchievementUnlocks([]); }
         }
+        try {
+          const [slots, visual] = await Promise.all([listSlotOverrides(db), getSpaceVisualPreferences(db)]);
+          if (active && current === request) { setSlotOverrides(slots); setVisualPreferences(visual); }
+        } catch {
+          if (active && current === request) { setSlotOverrides([]); setVisualPreferences({ roomPaletteId: null, windowMoodId: null }); }
+        }
       } catch {
         if (active && current === request) {
           setSummary(null);
@@ -92,5 +102,6 @@ export function useHome(paymentSaved?: string) {
 
   const retry = () => { setError(null); setAttempt((value) => value + 1); };
   return { summary, planning, planningError, error, retry, stage, spaceError, surprise, achievementCount, achievementUnlocks,
+    slotOverrides, visualPreferences,
     feedback: feedback?.id === paymentSaved ? feedback : null };
 }

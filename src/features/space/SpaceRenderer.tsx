@@ -4,8 +4,10 @@ import { Image, StyleSheet, View } from "react-native";
 import type { AchievementId } from "@/domain/achievements";
 import type { SpaceStage } from "@/domain/engagement";
 import type { PersonalizationSelection } from "@/domain/personalization";
+import type { StoredSlotOverride, StoredVisualPreferences } from "@/data/repositories/spaceCustomizationRepository";
 import { themeFor } from "@/features/personalization/themes";
-import { resolveSpaceScene, SCENE_HEIGHT, SCENE_WIDTH, SPACE_ASSETS, type AssetId } from "./spaceScene";
+import { effectiveAppearance, resolveFinalSpaceScene, EMPTY_VISUAL_PREFERENCES } from "./spaceCustomization";
+import { SCENE_HEIGHT, SCENE_WIDTH, SPACE_ASSETS, type AssetId } from "./spaceScene";
 
 const room = require("../../../assets/space/runtime/empty-room.jpg");
 const wallMask = require("../../../assets/space/runtime/wall-mask.png");
@@ -15,17 +17,21 @@ const windowMask = require("../../../assets/space/runtime/window-mask.png");
 export type CalibrationOffset = Partial<Record<AssetId, { x: number; y: number; width: number; zIndex: number }>>;
 
 export function SpaceRenderer({ stage, selection, achievementUnlocks = [], width,
-  calibrationOffsets }: {
+  calibrationOffsets, slotOverrides = [], visualPreferences = EMPTY_VISUAL_PREFERENCES }: {
   stage: SpaceStage; selection: PersonalizationSelection; achievementUnlocks?: readonly AchievementId[];
-  width: number; calibrationOffsets?: CalibrationOffset;
+  width: number; calibrationOffsets?: CalibrationOffset; slotOverrides?: readonly StoredSlotOverride[];
+  visualPreferences?: StoredVisualPreferences;
 }) {
-  const theme = themeFor(selection.themeId);
+  const appearance = effectiveAppearance(selection, achievementUnlocks, visualPreferences);
+  const theme = themeFor(appearance.paletteId);
   const unlockKey = achievementUnlocks.join("|");
   const interestKey = selection.interestIds.join("|");
+  const overrideKey = slotOverrides.map(row => `${row.slotId}:${row.assetId ?? "empty"}`).join("|");
   // Composition depends only on visual inputs; financial data never reaches the renderer.
-  const scene = useMemo(() => resolveSpaceScene(stage, selection, achievementUnlocks),
+  const scene = useMemo(() => resolveFinalSpaceScene(stage, selection, achievementUnlocks, slotOverrides, visualPreferences),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [stage, selection.themeId, selection.atmosphereId, interestKey, unlockKey]);
+    [stage, selection.themeId, selection.atmosphereId, interestKey, unlockKey, overrideKey,
+      visualPreferences.roomPaletteId, visualPreferences.windowMoodId]);
   const scale = width / SCENE_WIDTH;
   const imageStyle = { width, height: SCENE_HEIGHT * scale };
   const treatments = scene.treatments;

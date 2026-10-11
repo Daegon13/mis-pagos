@@ -19,11 +19,13 @@ const { engagementMigration } = load('src/data/db/migrations/002_engagement.ts')
 const { personalizationMigration } = load('src/data/db/migrations/003_personalization.ts');
 const { spendingPlanMigration } = load('src/data/db/migrations/004_spending_plan.ts');
 const { achievementsMigration } = load('src/data/db/migrations/005_achievements.ts');
+const { spaceCustomizationMigration } = load('src/data/db/migrations/006_space_customization.ts');
 const { runMigrations } = load('src/data/db/migrations/index.ts', (name) =>
   name === './001_initial' ? { initialMigration } :
     name === './002_engagement' ? { engagementMigration } :
       name === './003_personalization' ? { personalizationMigration } :
-        name === './004_spending_plan' ? { spendingPlanMigration } : { achievementsMigration });
+        name === './004_spending_plan' ? { spendingPlanMigration } :
+          name === './005_achievements' ? { achievementsMigration } : { spaceCustomizationMigration });
 const now = new Date(2026, 8, 28, 23, 59);
 const payment = (type, overrides = {}) => ({ id: 1, type, amountMinor: 100,
   dueDate: '2026-09-28', status: 'pending', ...overrides });
@@ -70,7 +72,7 @@ test('forward migration, atomic non-regression, one surprise, and financial inde
     const before = ['financial_profile', 'payments'].map(table => sqlite.prepare(`SELECT * FROM ${table}`).all());
     await runMigrations(db);
     await runMigrations(db); // Reopening the app cannot reset the table.
-    assert.equal(sqlite.prepare('PRAGMA user_version').get().user_version, 5);
+    assert.equal(sqlite.prepare('PRAGMA user_version').get().user_version, 6);
     assert.deepEqual(await advanceSpace(db, 0), { stage: 0, surprise: false });
     assert.deepEqual(await advanceSpace(db, 1), { stage: 1, surprise: false });
     assert.deepEqual(await advanceSpace(db, 0), { stage: 1, surprise: false });

@@ -74,7 +74,7 @@ test('interest limit, blank name, custom name and length are enforced', () => {
     interestIds: ['libros', 'cafe', 'arte', 'gaming'] }));
   assert.throws(() => validateSelection({ ...DEFAULT_SELECTION, interestIds: ['libros', 'libros'] }));
   assert.equal(validateSelection({ ...DEFAULT_SELECTION, spaceName: '  ' }).spaceName, '');
-  assert.equal(validateSelection({ ...DEFAULT_SELECTION, spaceName: '  Mi rincón  ' }).spaceName, 'Mi rincón');
+  assert.equal(validateSelection({ ...DEFAULT_SELECTION, spaceName: '  Mi rincÃ³n  ' }).spaceName, 'Mi rincÃ³n');
   assert.equal(validateSelection({ ...DEFAULT_SELECTION, spaceName: 'x'.repeat(100) }).spaceName.length,
     MAX_SPACE_NAME_LENGTH);
 });
@@ -95,7 +95,7 @@ test('alpha v2 upgrade preserves financial rows and engagement stage; preference
     const homeBefore = calculateHome(123456, payments, new Date(2026, 9, 2));
     await runMigrations(db);
     await runMigrations(db);
-    assert.equal(sqlite.prepare('PRAGMA user_version').get().user_version, 5);
+    assert.equal(sqlite.prepare('PRAGMA user_version').get().user_version, 6);
     assert.equal((await getPersonalizationPreferences(db)).themeId, 'bosque');
     await savePersonalizationPreferences(db, { themeId: 'noche',
       interestIds: ['gaming', 'tecnologia', 'musica'], atmosphereId: 'nocturno', spaceName: 'Base' });
@@ -117,7 +117,7 @@ test('fresh installation creates safe defaults without financial rows', async ()
   const { sqlite, db } = fixture();
   try {
     await runMigrations(db);
-    assert.equal(sqlite.prepare('PRAGMA user_version').get().user_version, 5);
+    assert.equal(sqlite.prepare('PRAGMA user_version').get().user_version, 6);
     const saved = await getPersonalizationPreferences(db);
     assert.equal(saved.themeId, 'bosque');
     assert.deepEqual(saved.interestIds, []);

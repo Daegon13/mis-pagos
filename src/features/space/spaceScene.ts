@@ -8,7 +8,8 @@ export const SCENE_HEIGHT = 1086;
 export const SLOTS = {
   floorLeft: { x: 255, y: 1030, maxWidth: 500, maxHeight: 610, anchor: "bottomCenter", zIndex: 60 },
   desk: { x: 800, y: 1040, maxWidth: 1020, maxHeight: 680, anchor: "bottomCenter", zIndex: 30 },
-  deskLeft: { x: 490, y: 510, maxWidth: 190, maxHeight: 155, anchor: "bottomCenter", zIndex: 40 },
+  booksAnchor: { x: 490, y: 510, maxWidth: 190, maxHeight: 155, anchor: "bottomCenter", zIndex: 40 },
+  deskLeft: { x: 645, y: 515, maxWidth: 145, maxHeight: 170, anchor: "bottomCenter", zIndex: 40 },
   deskCenter: { x: 820, y: 510, maxWidth: 390, maxHeight: 320, anchor: "bottomCenter", zIndex: 40 },
   deskRight: { x: 1120, y: 515, maxWidth: 165, maxHeight: 170, anchor: "bottomCenter", zIndex: 40 },
   floorRight: { x: 1270, y: 1015, maxWidth: 270, maxHeight: 390, anchor: "bottomCenter", zIndex: 20 },
@@ -29,11 +30,11 @@ export const SPACE_ASSETS: Record<AssetId, AssetDefinition> = {
   desk: { canonicalSourceFilename: "Escritorio escandinavo de madera clara.png", runtimeFilename: "desk.png", source: require("../../../assets/space/runtime/desk.png"), aspectRatio: 600 / 392, preferredWidth: 1020, allowedSlots: ["desk"], interestTags: [], minimumEngagementStage: 2, priority: 100, zIndex: 30 },
   shelf: { canonicalSourceFilename: "Estantería modular de madera clara.png", runtimeFilename: "shelf.png", source: require("../../../assets/space/runtime/shelf.png"), aspectRatio: 600 / 399, preferredWidth: 250, allowedSlots: ["floorRight"], interestTags: [], minimumEngagementStage: 2, priority: 10, zIndex: 20 },
   monitor: { canonicalSourceFilename: "Monitor moderno minimalista en fondo transparente.png", runtimeFilename: "monitor.png", source: require("../../../assets/space/runtime/monitor.png"), aspectRatio: 600 / 479, preferredWidth: 320, allowedSlots: ["deskCenter"], interestTags: ["gaming", "tecnologia"], minimumEngagementStage: 2, priority: 80, zIndex: 40 },
-  deskLamp: { canonicalSourceFilename: "Lámpara de escritorio verde oliva.png", runtimeFilename: "desk-lamp.png", source: require("../../../assets/space/runtime/desk-lamp.png"), aspectRatio: 263 / 360, preferredWidth: 145, allowedSlots: ["detailLeft"], interestTags: ["hogar"], minimumEngagementStage: 2, priority: 65, zIndex: 40 },
+  deskLamp: { canonicalSourceFilename: "Lámpara de escritorio verde oliva.png", runtimeFilename: "desk-lamp.png", source: require("../../../assets/space/runtime/desk-lamp.png"), aspectRatio: 263 / 360, preferredWidth: 145, allowedSlots: ["detailLeft", "deskLeft"], interestTags: ["hogar"], minimumEngagementStage: 2, priority: 65, zIndex: 40 },
   plantLarge: { canonicalSourceFilename: "Planta frondosa en maceta crema.png", runtimeFilename: "plant-large.png", source: require("../../../assets/space/runtime/plant-large.png"), aspectRatio: 575 / 600, preferredWidth: 500, allowedSlots: ["floorLeft"], interestTags: ["naturaleza"], minimumEngagementStage: 1, priority: 100, zIndex: 60 },
-  plantSmall: { canonicalSourceFilename: "Planta pothos en maceta cerámica.png", runtimeFilename: "plant-small.png", source: require("../../../assets/space/runtime/plant-small.png"), aspectRatio: 360 / 323, preferredWidth: 145, allowedSlots: ["deskRight", "detailRight"], interestTags: ["naturaleza", "hogar"], minimumEngagementStage: 2, priority: 60, zIndex: 40 },
-  books: { canonicalSourceFilename: "Pila de libros en tonos cálidos.png", runtimeFilename: "books.png", source: require("../../../assets/space/runtime/books.png"), aspectRatio: 360 / 221, preferredWidth: 175, allowedSlots: ["deskLeft"], interestTags: ["libros"], minimumEngagementStage: 2, priority: 100, zIndex: 40 },
-  mug: { canonicalSourceFilename: "Taza cerámica bicolor sobre fondo transparente.png", runtimeFilename: "mug.png", source: require("../../../assets/space/runtime/mug.png"), aspectRatio: 360 / 291, preferredWidth: 88, allowedSlots: ["detailRight", "deskRight"], interestTags: ["cafe", "hogar"], minimumEngagementStage: 2, priority: 55, zIndex: 50 },
+  plantSmall: { canonicalSourceFilename: "Planta pothos en maceta cerámica.png", runtimeFilename: "plant-small.png", source: require("../../../assets/space/runtime/plant-small.png"), aspectRatio: 360 / 323, preferredWidth: 145, allowedSlots: ["deskRight", "detailRight", "deskLeft"], interestTags: ["naturaleza", "hogar"], minimumEngagementStage: 2, priority: 60, zIndex: 40 },
+  books: { canonicalSourceFilename: "Pila de libros en tonos cálidos.png", runtimeFilename: "books.png", source: require("../../../assets/space/runtime/books.png"), aspectRatio: 360 / 221, preferredWidth: 175, allowedSlots: ["booksAnchor"], interestTags: ["libros"], minimumEngagementStage: 2, priority: 100, zIndex: 40 },
+  mug: { canonicalSourceFilename: "Taza cerámica bicolor sobre fondo transparente.png", runtimeFilename: "mug.png", source: require("../../../assets/space/runtime/mug.png"), aspectRatio: 360 / 291, preferredWidth: 88, allowedSlots: ["detailRight", "deskRight", "deskLeft"], interestTags: ["cafe", "hogar"], minimumEngagementStage: 2, priority: 55, zIndex: 50 },
   gamepad: { canonicalSourceFilename: "Controlador gamer moderno en grafito.png", runtimeFilename: "gamepad.png", source: require("../../../assets/space/runtime/gamepad.png"), aspectRatio: 360 / 230, preferredWidth: 135, allowedSlots: ["detailCenter"], interestTags: ["gaming"], minimumEngagementStage: 2, priority: 55, zIndex: 50 },
   speakerVinyl: { canonicalSourceFilename: "Altavoz moderno y disco de vinilo.png", runtimeFilename: "speaker-vinyl.png", source: require("../../../assets/space/runtime/speaker-vinyl.png"), aspectRatio: 360 / 325, preferredWidth: 205, allowedSlots: ["floorRight"], interestTags: ["musica"], minimumEngagementStage: 2, priority: 55, zIndex: 50 },
   moonLamp: { canonicalSourceFilename: "Lámpara de luna sobre base de madera.png", runtimeFilename: "moon-lamp.png", source: require("../../../assets/space/runtime/moon-lamp.png"), aspectRatio: 292 / 360, preferredWidth: 95, allowedSlots: ["detailRight", "deskRight"], interestTags: ["noche"], minimumEngagementStage: 2, priority: 55, zIndex: 50 },
@@ -42,7 +43,7 @@ export const SPACE_ASSETS: Record<AssetId, AssetDefinition> = {
 
 export interface SpaceSceneObject {
   assetId: AssetId; slotId: SlotId; x: number; y: number; width: number; height: number;
-  zIndex: number; source: "anchor" | "interest" | "achievement";
+  zIndex: number; source: "anchor" | "interest" | "achievement" | "manual";
 }
 export interface SpaceScene {
   treatments: { atmosphereId: PersonalizationSelection["atmosphereId"];

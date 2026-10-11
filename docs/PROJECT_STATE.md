@@ -12,6 +12,12 @@ and how much is truly available.
 
 The app is not a bank and does not connect to financial institutions.
 
+## SPACE-02 + ACH-02 — Tu espacio editable
+
+El esquema actual es v6 (`006_space_customization`). `/space` muestra la misma escena 4:3 que Home en tamaño mayor y permite anular zonas decorativas mediante Automático, objeto o Vacío. La planta y el escritorio con libros siguen siendo anclas de etapa; `deskLeft` agrega una capa decorativa junto a los libros. Paleta de habitación y ambiente de ventana se guardan aparte de las preferencias generales. Las siete recompensas se derivan de `achievement_unlocks`, incluso para usuarios previos; cada Descubrimiento explica su hito y el control que habilita. Ver `docs/SPACE_CUSTOMIZATION_SYSTEM.md`.
+
+Validación local: 55 pruebas automatizadas, typecheck, lint y diff check. Android API 35 en Expo Go cubrió la navegación, editor, estados manuales, duplicados, los siete Descubrimientos, paleta separada del tema de la app, ambiente, reinicio y 360×640 dp. El movimiento vencido temporal se canceló y eliminó; su Descubrimiento persistente quedó desbloqueado como corresponde. Se restauraron interés, tema, decoración automática, paleta y ambiente originales. Esta evidencia no equivale a una APK autónoma ni a un dispositivo físico.
+
 ## HELP-01 — Ayuda permanente
 
 `/help` ofrece cinco categorías y un glosario local, accesibles desde el `?` discreto de Home después del alta financiera. El registro centralizado contiene temas con IDs estables; Disponible real, Proyección, Reserva objetivo, Libre para usar, Ritmo de referencia, Tu espacio y Descubrimientos tienen acceso contextual con explicación breve y **Ver más**. No hay persistencia, dependencia nueva ni cambios en cálculos financieros. El contrato vigente está en `docs/HELP_SYSTEM.md`.

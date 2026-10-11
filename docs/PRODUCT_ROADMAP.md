@@ -77,6 +77,7 @@ Avoid:
 | Safe spending pace | Very high | Low/medium | P0 | COMPLETE (PLAN-01) |
 | Optional planning allocations | High | Medium | P0 | COMPLETE (PLAN-01) |
 | Small achievement/discovery layer | High | Medium | P1 | COMPLETE (ACH-01) |
+| Editable `Tu espacio` and explicit Discovery rewards | High | Medium | P1 | COMPLETE (SPACE-02 + ACH-02) |
 | Expanded currency metadata | High | Low/medium | P1 | PLANNED |
 | Up to two reference currencies | High | Medium | P1 | PLANNED |
 | Cached offline FX references | High | Medium | P1 | PLANNED |

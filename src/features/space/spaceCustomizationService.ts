@@ -1,0 +1,58 @@
+import type { SQLiteDatabase } from "expo-sqlite";
+import { listAchievementUnlocks } from "@/data/repositories/achievementRepository";
+import { getSpaceStage } from "@/data/repositories/engagementRepository";
+import { clearDecorationOverrides, clearRoomPaletteOverride, clearWindowMoodOverride,
+  getSpaceVisualPreferences, listSlotOverrides, restoreSlotAutomatic, setRoomPaletteOverride,
+  setSlotAssetOverride, setSlotEmpty, setWindowMoodOverride } from "@/data/repositories/spaceCustomizationRepository";
+import { capabilitiesFromUnlocks } from "@/domain/achievementRewards";
+import { isAtmosphereId, isThemeId } from "@/domain/personalization";
+import { isEditableSlotId, validateSlotChoice } from "./spaceCustomization";
+
+export async function loadSpaceCustomization(db: SQLiteDatabase) {
+  const [stage, unlockRows, overrides, visual] = await Promise.all([
+    getSpaceStage(db), listAchievementUnlocks(db), listSlotOverrides(db), getSpaceVisualPreferences(db),
+  ]);
+  return { stage, unlocks: unlockRows.map(row => row.achievement_id), overrides, visual };
+}
+
+export async function chooseSlot(db: SQLiteDatabase, slotId: string, assetId: string | null): Promise<void> {
+  await db.withExclusiveTransactionAsync(async tx => {
+    const { stage, unlocks, overrides } = await loadSpaceCustomization(tx);
+    validateSlotChoice(slotId, assetId, stage, unlocks, overrides);
+    if (assetId === null) await setSlotEmpty(tx, slotId);
+    else await setSlotAssetOverride(tx, slotId, assetId);
+  });
+}
+
+export async function resetSlot(db: SQLiteDatabase, slotId: string): Promise<void> {
+  if (!isEditableSlotId(slotId)) throw new Error("Zona desconocida.");
+  await db.withExclusiveTransactionAsync(async tx => {
+    const { stage, unlocks } = await loadSpaceCustomization(tx);
+    validateSlotChoice(slotId, null, stage, unlocks, []);
+    await restoreSlotAutomatic(tx, slotId);
+  });
+}
+
+export async function resetDecoration(db: SQLiteDatabase): Promise<void> {
+  await clearDecorationOverrides(db);
+}
+
+export async function choosePalette(db: SQLiteDatabase, paletteId: string | null): Promise<void> {
+  if (paletteId !== null && !isThemeId(paletteId)) throw new Error("Paleta desconocida.");
+  await db.withExclusiveTransactionAsync(async tx => {
+    const unlocks = (await listAchievementUnlocks(tx)).map(row => row.achievement_id);
+    if (!capabilitiesFromUnlocks(unlocks).has("roomPaletteOverride")) throw new Error("La paleta propia todavía no está desbloqueada.");
+    if (paletteId === null) await clearRoomPaletteOverride(tx);
+    else await setRoomPaletteOverride(tx, paletteId);
+  });
+}
+
+export async function chooseWindowMood(db: SQLiteDatabase, moodId: string | null): Promise<void> {
+  if (moodId !== null && !isAtmosphereId(moodId)) throw new Error("Ambiente desconocido.");
+  await db.withExclusiveTransactionAsync(async tx => {
+    const unlocks = (await listAchievementUnlocks(tx)).map(row => row.achievement_id);
+    if (!capabilitiesFromUnlocks(unlocks).has("windowMoodOverride")) throw new Error("El ambiente de ventana todavía no está desbloqueado.");
+    if (moodId === null) await clearWindowMoodOverride(tx);
+    else await setWindowMoodOverride(tx, moodId);
+  });
+}

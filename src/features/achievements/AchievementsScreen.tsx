@@ -6,11 +6,12 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { listAchievementUnlocks } from "@/data/repositories/achievementRepository";
 import { ACHIEVEMENTS, type AchievementId } from "@/domain/achievements";
+import { ACHIEVEMENT_REWARDS } from "@/domain/achievementRewards";
 import { usePersonalization } from "@/features/personalization/PersonalizationProvider";
 import { deriveExistingAchievements } from "./achievementService";
 import { ContextualHelp } from "@/features/help/ContextualHelp";
 
-export function AchievementsScreen({ onBack }: { onBack: () => void }) {
+export function AchievementsScreen({ onBack, onOpenSpace }: { onBack: () => void; onOpenSpace: () => void }) {
   const db = useSQLiteContext();
   const { theme } = usePersonalization();
   const [unlocked, setUnlocked] = useState<Set<AchievementId> | null>(null);
@@ -42,23 +43,28 @@ export function AchievementsScreen({ onBack }: { onBack: () => void }) {
         <Text style={{ color: theme.textSecondary }}>{unlocked.size} {unlocked.size === 1 ? "descubrimiento" : "descubrimientos"}</Text>
         {ACHIEVEMENTS.map(item => {
           const found = unlocked.has(item.id);
-          const mystery = !found && item.visibility === "mystery";
+          const reward = ACHIEVEMENT_REWARDS.find(candidate => candidate.achievementId === item.id);
+          if (!reward) return null;
           return <View key={item.id} style={[styles.card, { backgroundColor: theme.surface, borderColor: theme.border }]}>
-            <Text style={[styles.title, { color: theme.textPrimary }]}>
-              {mystery ? "Algo especial todavía está oculto" : item.title}
-            </Text>
-            <Text style={{ color: theme.textSecondary }}>
-              {mystery ? "Lo vas a descubrir al seguir organizando tu camino." : item.description}
-            </Text>
+            <Text style={[styles.title, { color: theme.textPrimary }]}>{item.title}</Text>
+            <Text style={stylesText(theme.textSecondary)}>{reward.howToUnlock}</Text>
+            <Text style={[styles.rewardLabel, { color: theme.textSecondary }]}>RECOMPENSA</Text>
+            <Text style={[styles.title, { color: theme.textPrimary }]}>{reward.title}</Text>
+            <Text style={stylesText(theme.textSecondary)}>{reward.shortDescription}</Text>
             <Text style={{ color: found ? theme.positive : theme.textSecondary }}>
-              {found ? "Descubierto" : "Por descubrir"}
+              {found ? "✓ Descubierto" : "Todavía no desbloqueado"}
             </Text>
+            {found && <Pressable accessibilityRole="button" onPress={onOpenSpace} style={styles.action}>
+              <Text style={{ color: theme.primary, fontWeight: "600" }}>{reward.ctaLabel} →</Text>
+            </Pressable>}
           </View>;
         })}
       </>}
     </ScrollView>
   </SafeAreaView>;
 }
+
+const stylesText = (color: string) => ({ color, lineHeight: 21 });
 
 const styles = StyleSheet.create({
   content: { width: "100%", maxWidth: 560, alignSelf: "center", padding: 24, paddingBottom: 48, gap: 14 },
@@ -67,4 +73,6 @@ const styles = StyleSheet.create({
   titleRow: { flexDirection: "row", flexWrap: "wrap", alignItems: "center" },
   card: { padding: 16, borderRadius: 16, borderWidth: 1, gap: 7 },
   title: { fontSize: 17, fontWeight: "600" },
+  rewardLabel: { fontSize: 11, fontWeight: "700", letterSpacing: 1, marginTop: 6 },
+  action: { minHeight: 44, alignSelf: "flex-start", justifyContent: "center", paddingRight: 12 },
 });

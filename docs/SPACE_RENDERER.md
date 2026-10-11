@@ -349,6 +349,7 @@ Initial slot vocabulary:
 
 - `floorLeft`
 - `desk`
+- `booksAnchor` (fixed stage-2 books)
 - `deskLeft`
 - `deskCenter`
 - `deskRight`
@@ -587,7 +588,8 @@ Final canonical slot geometry lives in `src/features/space/spaceScene.ts`. Value
 |---|---:|---:|
 | `floorLeft` | 255,1030,500,610 | 60 |
 | `desk` | 800,1040,1020,680 | 30 |
-| `deskLeft` | 490,510,190,155 | 40 |
+| `booksAnchor` | 490,510,190,155 | 40 |
+| `deskLeft` | 645,515,145,170 | 40 |
 | `deskCenter` | 820,510,390,320 | 40 |
 | `deskRight` | 1120,515,165,170 | 40 |
 | `floorRight` | 1270,1015,270,390 | 20 |
@@ -596,5 +598,7 @@ Final canonical slot geometry lives in `src/features/space/spaceScene.ts`. Value
 | `detailRight` | 1250,515,145,180 | 50 |
 
 Object z order can override the slot layer where foreground occlusion is intentional. Room tints use theme semantic tokens. Wall alpha is 0.22, or 0.32 for Nocturno; floor alpha is 0.08; window alpha is 0.08, or 0.18 for Nocturno; Cálido uses an additional 0.05 ambient treatment. These treatments leave the base lighting visible.
+
+SPACE-02 keeps the books at their previous geometry in `booksAnchor` and adds a separate editable decorative `deskLeft` layer. Home and `/space` render the same automatic scene plus valid manual overrides. See `SPACE_CUSTOMIZATION_SYSTEM.md` for persistence, entitlements and editor semantics.
 
 `/space-calibration` redirects to Home in production. Its master require is behind `__DEV__`; an Android production export excludes both the raw master and calibration derivative. In development it overlays the modular scene on the approved master derivative, supports 0–100% scene opacity, selectable visible objects and temporary ±1/±5/±10 adjustments to x, y, width and zIndex. Accepted values are copied into the static registry; calibration does not persist them.

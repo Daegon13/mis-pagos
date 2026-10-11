@@ -107,7 +107,7 @@ test('v3 upgrade preserves finance, engagement and personalization; plan persist
     const before = ['financial_profile', 'payments', 'engagement_progress', 'personalization_preferences']
       .map(table => sqlite.prepare(`SELECT * FROM ${table}`).all());
     await runMigrations(db);
-    assert.equal(sqlite.prepare('PRAGMA user_version').get().user_version, 5);
+    assert.equal(sqlite.prepare('PRAGMA user_version').get().user_version, 6);
     assert.equal(await getCurrentPlan(db, '2026-10-08'), null);
     await saveCurrentPlan(db, { mode: 'percentage', value: 2000, availableRealMinor: 29000,
       allocations: [{ name: 'A', percentageBasisPoints: 5000 }, { name: 'B', percentageBasisPoints: 5000 }] }, '2026-10-08');
@@ -134,11 +134,11 @@ test('v3 upgrade preserves finance, engagement and personalization; plan persist
   } finally { sqlite.close(); }
 });
 
-test('fresh database reaches v4 with no default plan and failed allocation replacement rolls back', async () => {
+test('fresh database reaches v6 with no default plan and failed allocation replacement rolls back', async () => {
   const { sqlite, db } = fixture();
   try {
     await runMigrations(db);
-    assert.equal(sqlite.prepare('PRAGMA user_version').get().user_version, 5);
+    assert.equal(sqlite.prepare('PRAGMA user_version').get().user_version, 6);
     assert.equal(sqlite.prepare('SELECT COUNT(*) AS n FROM spending_plans').get().n, 0);
     await saveCurrentPlan(db, { mode: 'fixed', value: 1000, availableRealMinor: 0,
       allocations: [{ name: 'Original', percentageBasisPoints: 10000 }] }, '2026-10-08');

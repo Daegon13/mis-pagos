@@ -44,11 +44,11 @@ test('registry has seven stable unique ordered IDs', () => {
   assert.equal(new Set(ACHIEVEMENTS.map(x => x.id)).size, 7);
 });
 
-test('fresh v5 unlocks persist once and never change other tables', async () => {
+test('fresh v6 unlocks persist once and never change other tables', async () => {
   const { db, sqlite } = fixture();
   try {
     await runMigrations(db);
-    assert.equal(sqlite.prepare('PRAGMA user_version').get().user_version, 5);
+    assert.equal(sqlite.prepare('PRAGMA user_version').get().user_version, 6);
     assert.equal((await listAchievementUnlocks(db)).length, 0);
     const before = ['financial_profile', 'payments', 'engagement_progress',
       'personalization_preferences', 'spending_plans', 'spending_allocations']
@@ -83,7 +83,7 @@ test('v4 upgrade preserves rows and derives only supported history', async () =>
     const before = ['financial_profile', 'payments', 'engagement_progress', 'personalization_preferences', 'spending_plans']
       .map(table => sqlite.prepare(`SELECT * FROM ${table}`).all());
     await runMigrations(db);
-    assert.equal(sqlite.prepare('PRAGMA user_version').get().user_version, 5);
+    assert.equal(sqlite.prepare('PRAGMA user_version').get().user_version, 6);
     assert.equal((await listAchievementUnlocks(db)).length, 0);
     await deriveExistingAchievements(db);
     await deriveExistingAchievements(db);
@@ -102,7 +102,7 @@ test('retroactive rules exclude cancelled and unsupported event history', () => 
   const ids = derivableAchievements([item('income', 'completed')], false, DEFAULT_SELECTION);
   assert.deepEqual(ids, ['FIRST_EXPECTED_INCOME', 'FIRST_RESOLVED_MOVEMENT']);
   assert.equal(isPersonalized(DEFAULT_SELECTION), false);
-  assert.equal(isPersonalized({ ...DEFAULT_SELECTION, spaceName: '  Mi rincón ' }), true);
+  assert.equal(isPersonalized({ ...DEFAULT_SELECTION, spaceName: '  Mi rincÃ³n ' }), true);
 });
 
 test('overdue eligibility is captured immediately before successful resolution', async () => {

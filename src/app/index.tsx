@@ -44,6 +44,7 @@ export default function Index() {
             onDismissFeedback={() => router.setParams({ paymentSaved: undefined, balanceSaved: undefined, discovery: undefined })}
             onPersonalize={() => router.push("/personalize")}
             onAchievements={() => router.push("./achievements")}
+            onOpenSpace={() => router.push("/space")}
             onPlan={() => router.push("./plan")}
             onAdd={() => router.push("/payments/new")} />
         )}

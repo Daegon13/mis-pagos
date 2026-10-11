@@ -1,5 +1,9 @@
 # Mis Pagos — Personalization System
 
+## SPACE-02 — Apariencia propia de la habitación
+
+El tema de la app sigue siendo la preferencia general. Tras `FIRST_RESERVE`, la persona puede elegir una paleta propia para Tu espacio entre los ocho temas o volver a seguir el tema de la app; esta acción no cambia la interfaz. Tras `FIRST_SPENDING_SIMULATION`, puede elegir el ambiente de ventana entre las atmósferas existentes o volver a seguir la atmósfera general. Ambos cambios usan `space_visual_preferences` y no duplican el modelo de personalización. Intereses y Minimalismo siguen guiando zonas automáticas; las elecciones manuales válidas permanecen. Ver `docs/SPACE_CUSTOMIZATION_SYSTEM.md`.
+
 ## Status
 
 Product contract for visual personalization and identity. Complements:

@@ -13,13 +13,14 @@ import { ContextualHelp } from "@/features/help/ContextualHelp";
 
 const months = ["ENE", "FEB", "MAR", "ABR", "MAY", "JUN", "JUL", "AGO", "SEP", "OCT", "NOV", "DIC"];
 
-export function Home({ profile, onAdd, paymentSaved, onDismissFeedback, onAll, onOpen, onBalance, balanceSaved, onPersonalize, onPlan, onAchievements, discovery }: {
+export function Home({ profile, onAdd, paymentSaved, onDismissFeedback, onAll, onOpen, onBalance, balanceSaved, onPersonalize, onPlan, onAchievements, onOpenSpace, discovery }: {
   profile: FinancialProfile; onAdd: () => void; paymentSaved?: string; onDismissFeedback: () => void;
-  onAll: () => void; onOpen: (id: number) => void; onBalance: () => void; onPersonalize: () => void; onPlan: () => void; onAchievements: () => void; balanceSaved?: string; discovery?: boolean;
+  onAll: () => void; onOpen: (id: number) => void; onBalance: () => void; onPersonalize: () => void; onPlan: () => void; onAchievements: () => void; onOpenSpace: () => void; balanceSaved?: string; discovery?: boolean;
 }) {
   const { theme } = usePersonalization();
   const styles = createStyles(theme);
-  const { summary, planning, planningError, error, retry, stage, spaceError, surprise, feedback, achievementCount, achievementUnlocks } = useHome(paymentSaved);
+  const { summary, planning, planningError, error, retry, stage, spaceError, surprise, feedback, achievementCount,
+    achievementUnlocks, slotOverrides, visualPreferences } = useHome(paymentSaved);
   const { fontScale, width } = useWindowDimensions();
   const money = (amount: number) => formatBalance(amount, profile.currencyCode);
   const interpretation = summary && financialFeedback(summary);
@@ -153,7 +154,8 @@ export function Home({ profile, onAdd, paymentSaved, onDismissFeedback, onAll, o
       {(error || summary === null) && <Pressable accessibilityRole="button" onPress={onAdd} style={({ pressed }) => [styles.button, pressed && styles.pressed]}>
         <Text style={styles.buttonText}>+ Agregar movimiento</Text>
       </Pressable>}
-      {stage !== null && <LivingSpace stage={stage} surprise={surprise} onPersonalize={onPersonalize}
+      {stage !== null && <LivingSpace stage={stage} surprise={surprise} onPersonalize={onPersonalize} onOpenSpace={onOpenSpace}
+        slotOverrides={slotOverrides} visualPreferences={visualPreferences}
         onAchievements={onAchievements} achievementCount={achievementCount} achievementUnlocks={achievementUnlocks} />}
       {spaceError && <View style={styles.section}>
         <Text style={styles.caption}>No pudimos actualizar tu espacio. Tus datos financieros siguen disponibles.</Text>

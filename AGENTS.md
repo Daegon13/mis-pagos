@@ -220,4 +220,6 @@ Do not break a coherent feature into multiple artificial sub-tasks unless the ta
 
 - `docs/SPACE_RENDERER.md`: required for any task involving Tu espacio assets,
   masks, placement, themes, scene composition or renderer behavior.
+- `docs/SPACE_CUSTOMIZATION_SYSTEM.md`: required for tasks involving manual Tu espacio
+  editing, decoration overrides or Discovery customization rewards.
 the new assets can be found in C:\Users\Usuario\Documents\GitHub\mis-pagos\assets\assets mis pagos

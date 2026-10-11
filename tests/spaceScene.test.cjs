@@ -18,7 +18,7 @@ test('asset and slot registries preserve contract IDs, source mapping and bounde
   assert.equal(new Set(ids).size, ids.length);
   assert.deepEqual(ids.sort(), ['desk', 'shelf', 'monitor', 'deskLamp', 'plantLarge', 'plantSmall',
     'books', 'mug', 'gamepad', 'speakerVinyl', 'moonLamp', 'catFigurine'].sort());
-  assert.equal(new Set(Object.keys(SLOTS)).size, 9);
+  assert.equal(new Set(Object.keys(SLOTS)).size, 10);
   for (const [id, asset] of Object.entries(SPACE_ASSETS)) {
     assert.ok(fs.existsSync(path.join('assets/assets mis pagos', asset.canonicalSourceFilename)), id);
     assert.ok(fs.existsSync(path.join('assets/space/runtime', asset.runtimeFilename)), id);

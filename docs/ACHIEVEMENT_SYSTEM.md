@@ -1,5 +1,9 @@
 # Mis Pagos — Achievement System
 
+## ACH-02 — Recompensas explícitas
+
+Los siete Descubrimientos vigentes muestran hito, estado y capacidad de personalización. Cada desbloqueo concede control manual específico de Tu espacio; la escena automática sigue funcionando antes del desbloqueo. El registro está en `src/domain/achievementRewards.ts` y el contrato completo en `docs/SPACE_CUSTOMIZATION_SYSTEM.md`. La capacidad se deriva de `achievement_unlocks`, sin estado de recompensa duplicado. Un desbloqueo existente tiene efecto inmediato y nunca se revoca.
+
 ## Status
 Product contract for achievements and milestone discovery in Mis Pagos.
 

@@ -5,7 +5,7 @@ export const ACHIEVEMENTS = [
   { id: "FIRST_COMMITMENT", title: "Primer compromiso organizado", description: "Ya empezaste a ponerle forma a lo que viene.", visibility: "visible" },
   { id: "FIRST_EXPECTED_INCOME", title: "Primer ingreso previsto", description: "También sabés qué dinero está por llegar.", visibility: "visible" },
   { id: "FIRST_RESOLVED_MOVEMENT", title: "Primer movimiento resuelto", description: "Una parte de tu historia ya encontró su lugar.", visibility: "visible" },
-  { id: "FIRST_OVERDUE_RESOLVED", title: "Un pendiente resuelto", description: "Atendiste algo que había quedado atrás.", visibility: "mystery" },
+  { id: "FIRST_OVERDUE_RESOLVED", title: "Un pendiente resuelto", description: "Atendiste algo que había quedado atrás.", visibility: "visible" },
   { id: "FIRST_RESERVE", title: "Primera reserva", description: "Elegiste cuánto querés conservar para vos.", visibility: "visible" },
   { id: "FIRST_SPENDING_SIMULATION", title: "Primera simulación", description: "Miraste la consecuencia antes de decidir.", visibility: "visible" },
   { id: "FIRST_PERSONALIZED_SPACE", title: "Un espacio más tuyo", description: "Elegiste un detalle que te representa.", visibility: "visible" },

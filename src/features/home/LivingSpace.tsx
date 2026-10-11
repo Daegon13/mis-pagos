@@ -3,23 +3,27 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import type { AchievementId } from "@/domain/achievements";
 import type { SpaceStage } from "@/domain/engagement";
 import type { PersonalizationSelection } from "@/domain/personalization";
+import type { StoredSlotOverride, StoredVisualPreferences } from "@/data/repositories/spaceCustomizationRepository";
 import { usePersonalization } from "@/features/personalization/PersonalizationProvider";
 import { themeFor } from "@/features/personalization/themes";
 import { SpaceRenderer } from "@/features/space/SpaceRenderer";
+import { effectiveAppearance, EMPTY_VISUAL_PREFERENCES } from "@/features/space/spaceCustomization";
 import { ContextualHelp } from "@/features/help/ContextualHelp";
 
 const descriptions = ["Un lugar para empezar.", "Tu espacio empieza a tomar forma.", "Un poco más tuyo, paso a paso."];
 
 export function LivingSpace({ stage, surprise, onPersonalize, onAchievements, achievementCount,
-  achievementUnlocks = [], selection: override, preview = false }: {
-  stage: SpaceStage; surprise: boolean; onPersonalize?: () => void; onAchievements?: () => void;
+  achievementUnlocks = [], selection: override, preview = false, onOpenSpace, slotOverrides, visualPreferences }: {
+  stage: SpaceStage; surprise: boolean; onPersonalize?: () => void; onAchievements?: () => void; onOpenSpace?: () => void;
   achievementCount?: number | null; achievementUnlocks?: readonly AchievementId[];
-  selection?: PersonalizationSelection; preview?: boolean;
+  selection?: PersonalizationSelection; preview?: boolean; slotOverrides?: readonly StoredSlotOverride[];
+  visualPreferences?: StoredVisualPreferences;
 }) {
   const { preferences } = usePersonalization();
   const selection = override ?? preferences;
   const theme = themeFor(selection.themeId);
-  const label = `Tu espacio, etapa ${stage}, ambiente ${selection.atmosphereId}`;
+  const appearance = effectiveAppearance(selection, achievementUnlocks, visualPreferences ?? EMPTY_VISUAL_PREFERENCES);
+  const label = `Tu espacio, etapa ${stage}, paleta ${appearance.paletteId}, ambiente ${appearance.moodId}`;
   return <View style={[styles.card, { backgroundColor: theme.secondarySurface }]}>
     <View style={styles.copy}>
       <View style={styles.titleRow}><Text accessibilityRole="header" style={[styles.title, { color: theme.textPrimary }]}>
@@ -27,6 +31,9 @@ export function LivingSpace({ stage, surprise, onPersonalize, onAchievements, ac
       </Text>{!preview && <ContextualHelp topicId="space" />}</View>
       <Text style={[styles.caption, { color: theme.textSecondary }]}>{descriptions[stage]}</Text>
       {surprise && <Text accessibilityLiveRegion="polite" style={[styles.surprise, { color: theme.positive }]}>Algo cambió en tu espacio.</Text>}
+      {onOpenSpace && <Pressable accessibilityRole="button" onPress={onOpenSpace} style={styles.link}>
+        <Text style={[styles.linkText, { color: theme.primary }]}>Abrir Tu espacio →</Text>
+      </Pressable>}
       {onAchievements && <Pressable accessibilityRole="button" onPress={onAchievements} style={styles.link}>
         <Text style={[styles.linkText, { color: theme.primary }]}>
           {achievementCount === null || achievementCount === undefined ? "Ver descubrimientos →" :
@@ -38,7 +45,8 @@ export function LivingSpace({ stage, surprise, onPersonalize, onAchievements, ac
       </Pressable>}
     </View>
     <View accessible accessibilityLabel={label} style={styles.scene}>
-      <SpaceRenderer stage={stage} selection={selection} achievementUnlocks={achievementUnlocks} width={148} />
+      <SpaceRenderer stage={stage} selection={selection} achievementUnlocks={achievementUnlocks} width={148}
+        slotOverrides={slotOverrides} visualPreferences={visualPreferences} />
     </View>
   </View>;
 }
