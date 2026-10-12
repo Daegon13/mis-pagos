@@ -222,4 +222,8 @@ Do not break a coherent feature into multiple artificial sub-tasks unless the ta
   masks, placement, themes, scene composition or renderer behavior.
 - `docs/SPACE_CUSTOMIZATION_SYSTEM.md`: required for tasks involving manual Tu espacio
   editing, decoration overrides or Discovery customization rewards.
+- `docs/PLAY_STORE_RELEASE.md`: required for Google Play releases, AAB, signing,
+  store submission and testing tracks.
+- `docs/PLAY_DATA_SAFETY_AUDIT.md`: required before changing privacy or Data Safety
+  declarations.
 the new assets can be found in C:\Users\Usuario\Documents\GitHub\mis-pagos\assets\assets mis pagos

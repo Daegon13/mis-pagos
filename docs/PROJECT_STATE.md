@@ -12,6 +12,21 @@ and how much is truly available.
 
 The app is not a bank and does not connect to financial institutions.
 
+## PLAY-01 — Google Play beta preparation
+
+Preparation for Internal Testing and Closed Testing is in progress; no Play Console
+submission or testing-track publication has occurred. Android identity remains
+`com.diegomarin.mispagos`, version `0.4.0`, code `4`. Expo SDK 57 / React Native
+0.86 use Android compile/target API 36 and minimum API 24, confirmed in the
+signed AAB manifest. The existing `production` EAS profile made build
+`2ecbacab-f7ad-4473-a3bf-23435875d555` (77,312,354 bytes) with the same
+EAS-managed signing certificate as `preview`. Unneeded legacy storage,
+overlay and vibration permissions are absent from the AAB.
+Ayuda now offers a local Privacidad page. Privacy policy, Data Safety worksheet,
+store copy and Console checklist are drafts. Public privacy URL, privacy/contact
+identity, SDK traffic verification, brand icon, feature graphic, screenshots and
+feedback destination remain manual prerequisites. See `PLAY_STORE_RELEASE.md`.
+
 ## Private Android Alpha 0.4 (PREVIEW-04)
 
 Standalone `preview` APK: `0.4.0`, Android `versionCode: 4`, package

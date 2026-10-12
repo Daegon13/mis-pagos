@@ -9,7 +9,7 @@ import { HELP_CATEGORIES, HELP_TOPICS, getHelpTopic, type HelpCategoryId } from 
 export function HelpScreen({ onBack }: { onBack: () => void }) {
   const { topic: linkedTopic } = useLocalSearchParams<{ topic?: string }>();
   const { theme } = usePersonalization();
-  const [category, setCategory] = useState<HelpCategoryId | "glossary" | null>(null);
+  const [category, setCategory] = useState<HelpCategoryId | "glossary" | "privacy" | null>(null);
   const [topicId, setTopicId] = useState<string | null>(linkedTopic && getHelpTopic(linkedTopic) ? linkedTopic : null);
   const topic = topicId ? getHelpTopic(topicId) : undefined;
   const back = () => {
@@ -42,6 +42,15 @@ export function HelpScreen({ onBack }: { onBack: () => void }) {
             </Pressable>;
           })}
         </>}
+      </> : category === "privacy" ? <>
+        <Text accessibilityRole="header" style={[styles.heading, heading]}>Privacidad</Text>
+        <Text style={[styles.lead, body]}>Cómo se manejan tus datos en Mis Pagos.</Text>
+        <View style={[styles.card, { backgroundColor: theme.surface, borderColor: theme.border }]}>
+          <Text style={[styles.body, heading]}>Tus saldos, movimientos, planes, preferencias y descubrimientos se guardan en la base de datos de este dispositivo. Mis Pagos no tiene cuenta, sincronización bancaria ni nube propia.</Text>
+          <Text style={[styles.body, heading]}>Las funciones principales se pueden usar sin conexión. El paquete incluye componentes de Expo y React Native con capacidad de red; su comportamiento de red final se verifica antes de completar la declaración de privacidad de Google Play. No incluyas datos financieros sensibles al enviar comentarios.</Text>
+          <Text style={[styles.body, heading]}>Podés eliminar movimientos y planes desde la app. Desinstalarla elimina sus datos locales del dispositivo; las copias del sistema operativo, si están activadas, pueden tener sus propias reglas de conservación. Mis Pagos no ofrece exportación ni respaldo dentro de la app.</Text>
+          <Text style={[styles.body, heading]}>La política completa y el contacto de privacidad estarán disponibles en la ficha de Google Play antes de distribuir la beta cerrada.</Text>
+        </View>
       </> : category === "glossary" ? <>
         <Text accessibilityRole="header" style={[styles.heading, heading]}>Glosario</Text>
         <Text style={[styles.lead, body]}>Palabras que usamos en Mis Pagos, en pocas líneas.</Text>
@@ -73,6 +82,11 @@ export function HelpScreen({ onBack }: { onBack: () => void }) {
           style={[styles.card, { backgroundColor: theme.primarySurface, borderColor: theme.border }]}>
           <Text style={[styles.subhead, heading]}>Glosario →</Text>
           <Text style={[styles.body, body]}>Encontrá una definición rápida.</Text>
+        </Pressable>
+        <Pressable accessibilityRole="button" accessibilityLabel="Abrir privacidad" onPress={() => setCategory("privacy")}
+          style={[styles.card, { backgroundColor: theme.surface, borderColor: theme.border }]}>
+          <Text style={[styles.subhead, heading]}>Privacidad →</Text>
+          <Text style={[styles.body, body]}>Cómo se guardan y gestionan tus datos.</Text>
         </Pressable>
       </>}
     </ScrollView>

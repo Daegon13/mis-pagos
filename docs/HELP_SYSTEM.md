@@ -12,6 +12,8 @@ SPACE-02/ACH-02 actualiza los temas Tu espacio, Tema, Intereses y Descubrimiento
 
 El registro `src/features/help/helpContent.ts` es la fuente única del contenido. Cada tema tiene un ID estable, categoría, título, explicación breve, cuerpo, definición opcional de glosario y vínculos relacionados. Los accesos contextuales usan esos IDs, muestran una explicación corta mediante un diálogo nativo y ofrecen **Ver más** para abrir el tema. Se reservan para conceptos donde aclaran una decisión: Disponible real, Proyección, Reserva objetivo, Libre para usar, Ritmo de referencia, Tu espacio y Descubrimientos. Sus botones tienen etiqueta accesible y área táctil de al menos 44 puntos.
 
+PLAY-01 agrega **Privacidad** como entrada informativa independiente al final de la portada de Ayuda. Explica el almacenamiento local, los límites de la auditoría de red y la eliminación de datos sin alterar las cinco categorías ni el glosario. La política completa preparada para publicación está en `docs/legal/PRIVACY_POLICY.md`; el contacto y la URL pública siguen pendientes.
+
 ## Significado de los términos
 
 - **Saldo actual**: cifra registrada como disponible hoy; se actualiza manualmente o al completar un movimiento eligiendo ajustar el saldo.

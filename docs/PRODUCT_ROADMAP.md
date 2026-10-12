@@ -73,6 +73,7 @@ Avoid:
 | Modular personalized `Tu espacio` | Very high | Medium | P0 | COMPLETE |
 | Alpha 0.2 real-upgrade validation | High | Low/medium | P0 | COMPLETE (PREVIEW-02) |
 | Alpha 0.4 standalone release validation | High | Low/medium | P0 | COMPLETE (PREVIEW-04) |
+| Google Play beta readiness | High | Medium | P0 | IN PROGRESS (PLAY-01); Console submission pending |
 | Reserve + Libre para usar | Very high | Medium | P0 | COMPLETE (PLAN-01) |
 | “¿Puedo gastar esto?” simulation | Very high | Medium | P0 | COMPLETE (PLAN-01) |
 | Safe spending pace | Very high | Low/medium | P0 | COMPLETE (PLAN-01) |
