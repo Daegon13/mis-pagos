@@ -12,6 +12,25 @@ and how much is truly available.
 
 The app is not a bank and does not connect to financial institutions.
 
+## PRE-BETA-AUDIT-01 — Core audit
+
+The pre-beta baseline was clean and passed 55 tests, typecheck, lint and diff check.
+Three focused audit tests now cover cross-screen financial invariants, horizon/date/status
+boundaries, reserve/allocations/pace/simulation, and schema v6 persistence and constraints
+after closing and reopening a real SQLite file. Existing lifecycle tests cover both movement
+types, both completion choices, duplicate completion, and rollback on either write failure.
+No financial contradiction or code bug was found; no product formula or migration changed.
+
+The signed AAB manifest has `expo.modules.updates.ENABLED=false`; no OTA URL/channel or
+`expo-updates`/`expo-observe` package is installed. No analytics, crash, ad, attribution,
+authentication or cloud SDK was found. A network-enabled Android API 35 smoke of the
+standalone `0.4.0` APK (cold launch, Home, Movements, Plan, Help, Tu espacio and
+Discoveries) recorded no bytes for its app UID in `dumpsys netstats`. This is a UID
+counter observation, not packet inspection or a test of the Play-delivered AAB.
+Play Data Safety collected/shared data, technical metadata and encryption answers remain
+manual until the delivered build and providers are checked. See
+`PLAY_DATA_SAFETY_AUDIT.md` and `PLAY_DATA_SAFETY_WORKSHEET.md`.
+
 ## PLAY-01 — Google Play beta preparation
 
 Preparation for Internal Testing and Closed Testing is in progress; no Play Console
