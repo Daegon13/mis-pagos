@@ -1,41 +1,21 @@
-# Mis Pagos 0.2 Alpha
+# Mis Pagos Alpha 0.4
 
-Prueba privada temprana con un grupo pequeño. Es una alpha: puede tener errores.
-Los datos se guardan localmente en tu dispositivo. Desinstalar la app o borrar
-sus datos puede eliminar tus datos de prueba. No la uses como tu único registro
-financiero.
+Prueba privada en Android: versión `0.4.0`, `versionCode: 4`, paquete `com.diegomarin.mispagos`.
 
-Instalá el APK compartido mediante el enlace de EAS. No requiere Expo Go ni un
-servidor de desarrollo.
+Los datos se guardan en el dispositivo. **Instalá el APK encima de la versión anterior**, sin desinstalar, borrar datos ni restablecer la base. Si Android pide permiso para instalarlo, confirmá que el paquete sea Mis Pagos. La instalación superpuesta conserva los datos locales; desinstalar o borrar datos puede eliminarlos. No uses esta alpha como único registro financiero.
 
-[Descargar APK 0.2.0 (2)](https://expo.dev/artifacts/eas/EAiK7PVhMR7RApIqB3eC7DEG-TnHZNLBUxeDEpTWMPU.apk).
-Si ya tenés Alpha 0.1, instalá Alpha 0.2 encima sin desinstalar ni borrar datos.
+[Descargar APK Alpha 0.4](https://expo.dev/artifacts/eas/lRbT9uHU5U8YCUR4loj7-t9LQLxfJx64RtD6CuQGUQU.apk) · [detalle del build EAS](https://expo.dev/accounts/daegon13/projects/mis-pagos/builds/18ea75d4-9456-4048-a3d4-ea4103ccb1e1).
 
-Al probarla, prestá atención a:
+Esta versión reúne Ayuda y glosario, Tu espacio editable y recompensas de Descubrimientos. No requiere Expo Go ni un servidor de desarrollo. La app debe abrir con la red apagada una vez instalada.
 
-- Si Disponible real se entiende de inmediato.
-- Si agregar un movimiento resulta fácil.
-- Si se entiende la diferencia entre descontar/sumar al pagar/cobrar y elegir
-  «Ya está reflejado».
-- Si los movimientos vencidos tienen sentido.
-- Si algo resulta confuso o tedioso.
-- Si Tu espacio genera curiosidad o distrae.
-- Si personalizar Tu espacio se siente significativo y reconocible como propio.
-- Si elegir un tema resulta útil y los intereses cambian la experiencia.
-- Si algún tema dificulta la lectura y si te da curiosidad la evolución futura del espacio.
+## Qué observar
 
-Para compartir feedback, contanos:
+- Si saldo y Disponible real coinciden con lo que esperabas antes y después de actualizar.
+- Si los movimientos, la reserva, el espacio y los Descubrimientos conservan su estado.
+- Si entendés Proyección, Reserva, Libre para usar y Ritmo sin tener que abrir Ayuda.
+- Si la edición de Tu espacio resulta clara y si los desbloqueos tienen sentido.
+- Si alguna acción cotidiana pide demasiados toques o te lleva a olvidar registrar un movimiento.
 
-1. Qué esperabas que ocurriera.
-2. Qué ocurrió realmente.
-3. Qué te confundió.
-4. Qué te hubiera gustado que existiera.
-5. Si abrirías la app de nuevo por iniciativa propia.
+Para contar un problema, anotá qué esperabas, qué ocurrió, los pasos para repetirlo y la versión de Android. El diario breve para 7–14 días está en [ALPHA_DOGFOODING.md](ALPHA_DOGFOODING.md).
 
-## Versión Android
-
-Alpha privada: `0.2.0`, Android `versionCode: 2`.
-Identificador permanente: `com.diegomarin.mispagos`.
-Cada futuro build Android debe incrementar `android.versionCode` en `app.json`.
-El perfil `preview` genera un APK interno; `production` queda preparado para
-un AAB futuro. El APK se distribuye por EAS y no se guarda en Git.
+El perfil EAS `preview` genera un APK interno. El APK y las credenciales no se guardan en Git.

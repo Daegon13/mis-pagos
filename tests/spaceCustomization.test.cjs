@@ -40,7 +40,7 @@ const row = (slotId, assetId) => ({ slotId, assetId, updatedAt: 'stamp' });
 const selection = (interestIds = [], atmosphereId = 'natural', themeId = 'bosque') =>
   ({ ...DEFAULT_SELECTION, interestIds, atmosphereId, themeId });
 
-test('v5 to v6 preserves existing financial, personalization, engagement and unlock rows', async () => {
+test('v5 to v6 preserves financial, planning, engagement, personalization and unlock rows', async () => {
   const { db, sqlite } = fixture();
   try {
     for (const migration of [initialMigration, engagementMigration, personalizationMigration,
@@ -48,14 +48,16 @@ test('v5 to v6 preserves existing financial, personalization, engagement and unl
     sqlite.exec(`PRAGMA user_version=5;
       INSERT INTO financial_profile VALUES(1,'UYU',12345,'2026-10-11','stamp','stamp');
       INSERT INTO payments VALUES(1,'expense','Rent',500,'2026-10-12','pending',NULL,'stamp','stamp');
+      INSERT INTO spending_plans VALUES(1,'2026-10-01','2026-10-31','fixed',NULL,1000,12345,'stamp','stamp');
+      INSERT INTO spending_allocations VALUES(1,1,'Comida',10000,0,'stamp','stamp');
       UPDATE engagement_progress SET stage=2 WHERE id=1;
       UPDATE personalization_preferences SET theme_id='oceano', space_name='Mi rincón' WHERE id=1;
       INSERT INTO achievement_unlocks VALUES('FIRST_RESERVE','stamp');`);
-    const preserved = ['financial_profile', 'payments', 'engagement_progress',
+    const preserved = ['financial_profile', 'payments', 'spending_plans', 'spending_allocations', 'engagement_progress',
       'personalization_preferences', 'achievement_unlocks'].map(name => sqlite.prepare(`SELECT * FROM ${name}`).all());
     await runMigrations(db);
     assert.equal(sqlite.prepare('PRAGMA user_version').get().user_version, 6);
-    assert.deepEqual(['financial_profile', 'payments', 'engagement_progress',
+    assert.deepEqual(['financial_profile', 'payments', 'spending_plans', 'spending_allocations', 'engagement_progress',
       'personalization_preferences', 'achievement_unlocks'].map(name => sqlite.prepare(`SELECT * FROM ${name}`).all()), preserved);
     const state = await loadSpaceCustomization(db);
     assert.deepEqual(state.overrides, []);

@@ -71,7 +71,8 @@ Avoid:
 | APK size audit | High | Low | P0 | COMPLETE |
 | Curated themes / interests / atmosphere | High | Medium | P0 | COMPLETE |
 | Modular personalized `Tu espacio` | Very high | Medium | P0 | COMPLETE |
-| Alpha 0.2 real-upgrade validation | High | Low/medium | P0 | NEXT |
+| Alpha 0.2 real-upgrade validation | High | Low/medium | P0 | COMPLETE (PREVIEW-02) |
+| Alpha 0.4 standalone release validation | High | Low/medium | P0 | COMPLETE (PREVIEW-04) |
 | Reserve + Libre para usar | Very high | Medium | P0 | COMPLETE (PLAN-01) |
 | “¿Puedo gastar esto?” simulation | Very high | Medium | P0 | COMPLETE (PLAN-01) |
 | Safe spending pace | Very high | Low/medium | P0 | COMPLETE (PLAN-01) |
@@ -273,11 +274,11 @@ Implemented:
 
 Validation: 31 automated tests plus Android QA.
 
-The real Alpha 0.1 → Alpha 0.2 APK update remains to be validated.
+The real Alpha 0.1 → Alpha 0.2 APK update passed PREVIEW-02 validation.
 
 ---
 
-## 8. Phase 3 — Alpha 0.2 release validation — CURRENT
+## 8. Phase 3 — Alpha 0.2 release validation — COMPLETE
 
 ### Objective
 
@@ -298,6 +299,10 @@ Required:
 - dogfood the new identity on physical devices.
 
 Do not add product features inside PREVIEW-02.
+
+### PREVIEW-04 — Alpha 0.4
+
+Packaged Help, editable Tu espacio and Discovery rewards in a standalone preview APK. Install-over from Alpha 0.2, the v5→v6 migration fixture, offline use, asset packaging and size passed validation. Alpha 0.3 has no available standalone artifact, so artifact-level upgrade evidence uses Alpha 0.2 as its source. Follow the release with 7–14 days of physical-device dogfooding before choosing another product iteration.
 
 ### Goal
 

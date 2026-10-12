@@ -12,6 +12,47 @@ and how much is truly available.
 
 The app is not a bank and does not connect to financial institutions.
 
+## Private Android Alpha 0.4 (PREVIEW-04)
+
+Standalone `preview` APK: `0.4.0`, Android `versionCode: 4`, package
+`com.diegomarin.mispagos`, EAS build `18ea75d4-9456-4048-a3d4-ea4103ccb1e1`
+(**FINISHED**). [Build and APK](https://expo.dev/accounts/daegon13/projects/mis-pagos/builds/18ea75d4-9456-4048-a3d4-ea4103ccb1e1).
+The APK measures **112,594,203 bytes** (112.59 MB; 107.38 MiB), up 2,163,897
+bytes (1.9595%) from Alpha 0.2. There is no standalone Alpha 0.3 artifact to
+compare or install. The APK adds the 16 runtime scene assets; a content audit
+found none of the 17 source masters or the calibration master. The PNGs are
+processed as Android resources, so bytewise matching covers the JPEG base only.
+
+Android API 35 accepted `adb install -r` over the installed Alpha 0.2 without
+uninstall or data reset. The signing certificate SHA-256 stayed
+`08f88893a1084ba057469024fa5c0a3a65ebccb1e956516e9c96eb2888d9bb72`,
+and Android retained its first install time. The v3→v6 artifact upgrade preserved
+UYU 1,234.56 balance, two pending movements, one completed, one cancelled,
+Disponible real UYU 1,114.06, engagement stage 2, Lavanda/Nocturno,
+Naturaleza/Hogar and the custom room name. Alpha 0.2 cannot contain a plan or
+achievements. A v5→v6 migration fixture separately preserves a positive plan,
+allocation, finance, engagement, personalization and unlock rows, and checks
+the new customization defaults; it is not an artifact-level v5 upgrade.
+
+Standalone QA covered the five Help categories, glossary, contextual topics
+and a real future-income Proyección prompt; two editable slots through
+Automático→objeto→Vacío→Automático; all seven reward contracts, locked/unlocked
+cards and their Tu espacio CTA; separate Lavanda app theme and Terracota room
+palette, window mood, interest changes, Minimalismo, decoration reset, manual
+choice persistence and duplicate prevention. A current-month 20% reserve,
+100% allocation and spending simulation persisted after a cold restart.
+Temporary expense and income movements covered overdue cancellation, completion
+with “Ya está reflejado” and deletion, then were removed. A temporary balance
+change was restored. Financial figures returned to the pre-QA values.
+
+With Metro absent, Expo Go stopped, ADB reverse removed, and device networking
+disabled, a cold standalone start loaded Home, finance, plan, seven discoveries,
+Help, Tu espacio and its runtime assets/manual choices. Normal and 360×640 dp
+emulator layouts were inspected. One quick post-restart entry to `/space`
+briefly showed its retry state; navigating back and reopening worked, and a
+focused offline cold-restart repetition did not reproduce it. No physical
+device was connected; use `ALPHA_DOGFOODING.md` for the next 7–14 days.
+
 ## SPACE-02 + ACH-02 — Tu espacio editable
 
 El esquema actual es v6 (`006_space_customization`). `/space` muestra la misma escena 4:3 que Home en tamaño mayor y permite anular zonas decorativas mediante Automático, objeto o Vacío. La planta y el escritorio con libros siguen siendo anclas de etapa; `deskLeft` agrega una capa decorativa junto a los libros. Paleta de habitación y ambiente de ventana se guardan aparte de las preferencias generales. Las siete recompensas se derivan de `achievement_unlocks`, incluso para usuarios previos; cada Descubrimiento explica su hito y el control que habilita. Ver `docs/SPACE_CUSTOMIZATION_SYSTEM.md`.
@@ -71,7 +112,7 @@ build evidence, not a standalone APK upgrade or physical-device test.
 
 ## Private Android Alpha 0.2 (PREVIEW-02)
 
-Current release: Mis Pagos `0.2.0`, Android `versionCode: 2`, package
+Previous release: Mis Pagos `0.2.0`, Android `versionCode: 2`, package
 `com.diegomarin.mispagos`. EAS `preview` build
 `f031a929-48ef-44ff-b597-99e48fe94fff` is **FINISHED**.
 [Build / install](https://expo.dev/accounts/daegon13/projects/mis-pagos/builds/f031a929-48ef-44ff-b597-99e48fe94fff).
