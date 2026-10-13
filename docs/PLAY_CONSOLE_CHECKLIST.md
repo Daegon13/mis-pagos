@@ -11,6 +11,7 @@ Ninguna casilla de Play Console está marcada como completa. Este archivo no aut
 ## Contenido de la app
 
 - [ ] URL pública de política de privacidad cargada y accesible.
+  - Página estática preparada en `play-store/privacy/index.html`; faltan identidad/contacto, auditoría y URL HTTPS real (`PUBLIC PRIVACY URL: PENDING`).
 - [ ] Declaración de anuncios: No, tras reconfirmar el AAB.
 - [ ] Acceso a la app: sin cuenta, confirmar en Play.
 - [ ] Público objetivo seleccionado según producto real.
@@ -23,10 +24,14 @@ Ninguna casilla de Play Console está marcada como completa. Este archivo no aut
 
 - [ ] Nombre, descripción breve y descripción completa copiados y comprobados con contadores.
 - [ ] Icono de ficha de marca aprobada cargado.
+  - Archivo listo: `assets/branding/runtime/play-icon-512.png` (512 × 512, RGBA, 378453 bytes).
 - [ ] Feature graphic cargada.
+  - Archivo listo: `play-store/graphics/feature-graphic-1024x500.png` (RGB, sin alfa).
 - [ ] Al menos dos capturas reales de teléfono cargadas; preferiblemente cuatro o más.
+  - Seis capturas reales listas y ordenadas en `play-store/STORE_ASSET_PLAN.md`; verificar en miniatura y con la build final.
 - [ ] Categoría verificada y elegida.
 - [ ] Correo de contacto final confirmado.
+  - `FEEDBACK_EMAIL_REQUIRED`: Ayuda tiene preparados "Enviar comentarios" y "Reportar un error", ocultos hasta aprobar una dirección.
 - [ ] Sitio web, solo si existe y se desea publicarlo.
 
 ## Lanzamiento de prueba
@@ -35,6 +40,7 @@ Ninguna casilla de Play Console está marcada como completa. Este archivo no aut
 - [ ] Clave de subida EAS y continuidad de firma verificadas contra AAB.
 - [ ] AAB subido manualmente con `versionCode` único.
 - [ ] Track Internal Testing creado y QA de distribución de Play realizada.
+  - Verificar icono de launcher en la nueva build y fondos claro/oscuro; foreground adaptativo preparado y máscaras circular, cuadrada redondeada y tipo squircle revisadas en vista previa. Monochrome sigue diferido.
 - [ ] Track Closed Testing creado después de resolver bloqueos.
 - [ ] Lista/grupo de participantes y vínculo de adhesión configurados.
 - [ ] Canal de comentarios confirmado y comunicado a participantes.

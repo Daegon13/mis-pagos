@@ -4,13 +4,14 @@
     "slug": "mis-pagos",
     "version": "0.4.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/branding/runtime/app-icon-1024.png",
     "scheme": "mispagos",
     "userInterfaceStyle": "automatic",
     "ios": {
       "icon": "./assets/expo.icon"
     },
     "android": {
+      "icon": "./assets/branding/runtime/app-icon-1024.png",
       "package": "com.diegomarin.mispagos",
       "versionCode": 4,
       "blockedPermissions": [
@@ -20,10 +21,8 @@
         "android.permission.VIBRATE"
       ],
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/images/android-icon-foreground.png",
-        "backgroundImage": "./assets/images/android-icon-background.png",
-        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+        "backgroundColor": "#023A2D",
+        "foregroundImage": "./assets/branding/runtime/adaptive-foreground.png"
       },
       "predictiveBackGestureEnabled": false
     },

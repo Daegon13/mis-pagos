@@ -12,6 +12,22 @@ and how much is truly available.
 
 The app is not a bank and does not connect to financial institutions.
 
+## BRAND-01 — App icon and Play visuals
+
+Approved source: `assets/branding/source/Calendario y monedas apiladas.png`.
+`app.json` uses its 1024px derivative for Expo and Android; the 512px Play icon is
+378453 bytes. A 1024 × 500 RGB feature graphic and six real Android screenshots
+(1080 × 1920) are staged under `play-store/`. A transparent adaptive foreground
+was derived from the source and checked under circle, rounded-square and squircle
+masks. Monochrome remains deferred because its small silhouette is ambiguous.
+Expo native prebuild and local `assembleDebug` succeeded after installing NDK
+27.1. The final debug APK was installed on a separate Android 35 emulator;
+launcher QA on light and dark backgrounds found the full calendar, check and
+coin stack visible without a white halo or clipping. Static privacy HTML is
+prepared, but its
+public HTTPS URL, public developer/privacy contact, and beta feedback email remain
+pending. See `play-store/STORE_ASSET_PLAN.md`.
+
 ## PRE-BETA-AUDIT-01 — Core audit
 
 The pre-beta baseline was clean and passed 55 tests, typecheck, lint and diff check.
@@ -43,8 +59,9 @@ EAS-managed signing certificate as `preview`. Unneeded legacy storage,
 overlay and vibration permissions are absent from the AAB.
 Ayuda now offers a local Privacidad page. Privacy policy, Data Safety worksheet,
 store copy and Console checklist are drafts. Public privacy URL, privacy/contact
-identity, SDK traffic verification, brand icon, feature graphic, screenshots and
-feedback destination remain manual prerequisites. See `PLAY_STORE_RELEASE.md`.
+identity, SDK traffic verification, launcher validation of the new icon, and
+feedback destination remain manual prerequisites. Brand icon, feature graphic
+and six screenshots are staged but not uploaded. See `PLAY_STORE_RELEASE.md`.
 
 ## Private Android Alpha 0.4 (PREVIEW-04)
 

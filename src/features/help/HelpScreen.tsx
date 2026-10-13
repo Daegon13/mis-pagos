@@ -1,10 +1,29 @@
 import { useState } from "react";
 import { useLocalSearchParams } from "expo-router";
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Linking, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { usePersonalization } from "@/features/personalization/PersonalizationProvider";
 import { HELP_CATEGORIES, HELP_TOPICS, getHelpTopic, type HelpCategoryId } from "./helpContent";
+
+// Fill only after the beta support address has been approved.
+const SUPPORT_EMAIL: string = "";
+const FEEDBACK_BODY = [
+  "¿Qué estabas intentando hacer?", "¿Qué esperabas que ocurriera?", "¿Qué ocurrió?",
+  "¿Hubo algo que no entendieras?", "¿Qué te gustaría que Mis Pagos hiciera automáticamente?",
+  "", "Por favor, evitá incluir información financiera sensible.",
+].join("\n\n");
+const ERROR_BODY = [
+  "¿Qué estabas haciendo?", "¿Qué ocurrió?", "¿Podés repetirlo?",
+  "Modelo de teléfono / versión de Android, si la sabés:",
+  "", "Por favor, evitá incluir información financiera sensible.",
+].join("\n\n");
+
+function openFeedback(subject: string, body: string) {
+  const email = SUPPORT_EMAIL.trim();
+  if (!email) return;
+  void Linking.openURL(`mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`);
+}
 
 export function HelpScreen({ onBack }: { onBack: () => void }) {
   const { topic: linkedTopic } = useLocalSearchParams<{ topic?: string }>();
@@ -88,6 +107,16 @@ export function HelpScreen({ onBack }: { onBack: () => void }) {
           <Text style={[styles.subhead, heading]}>Privacidad →</Text>
           <Text style={[styles.body, body]}>Cómo se guardan y gestionan tus datos.</Text>
         </Pressable>
+        {SUPPORT_EMAIL.trim() ? <>
+          <Pressable accessibilityRole="button" onPress={() => openFeedback("[Mis Pagos Beta] Comentario", FEEDBACK_BODY)}
+            style={[styles.card, { backgroundColor: theme.surface, borderColor: theme.border }]}>
+            <Text style={[styles.subhead, heading]}>Enviar comentarios →</Text>
+          </Pressable>
+          <Pressable accessibilityRole="button" onPress={() => openFeedback("[Mis Pagos Beta] Error", ERROR_BODY)}
+            style={[styles.card, { backgroundColor: theme.surface, borderColor: theme.border }]}>
+            <Text style={[styles.subhead, heading]}>Reportar un error →</Text>
+          </Pressable>
+        </> : null}
       </>}
     </ScrollView>
   </SafeAreaView>;
