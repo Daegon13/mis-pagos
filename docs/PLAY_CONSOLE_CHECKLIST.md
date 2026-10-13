@@ -11,7 +11,7 @@ Ninguna casilla de Play Console está marcada como completa. Este archivo no aut
 ## Contenido de la app
 
 - [ ] URL pública de política de privacidad cargada y accesible.
-  - Página estática preparada en `play-store/privacy/index.html`; faltan identidad/contacto, auditoría y URL HTTPS real (`PUBLIC PRIVACY URL: PENDING`).
+  - WEB-01: sitio y `/privacidad` en `website/` **READY FOR DEPLOYMENT** como archivos estáticos. Faltan despliegue, identidad pública, verificación de SDK/red y URL HTTPS real (`PUBLIC_SITE_URL=PENDING`, `PUBLIC_PRIVACY_URL=PENDING`). El usuario aprobó `mispagos.soporte@gmail.com` para contacto del sitio; sincronizar la política fuente. La política sigue siendo borrador hasta cerrar esos puntos. La página anterior en `play-store/privacy/index.html` continúa como artefacto preparado.
 - [ ] Declaración de anuncios: No, tras reconfirmar el AAB.
 - [ ] Acceso a la app: sin cuenta, confirmar en Play.
 - [ ] Público objetivo seleccionado según producto real.
@@ -30,8 +30,8 @@ Ninguna casilla de Play Console está marcada como completa. Este archivo no aut
 - [ ] Al menos dos capturas reales de teléfono cargadas; preferiblemente cuatro o más.
   - Seis capturas reales listas y ordenadas en `play-store/STORE_ASSET_PLAN.md`; verificar en miniatura y con la build final.
 - [ ] Categoría verificada y elegida.
-- [ ] Correo de contacto final confirmado.
-  - `FEEDBACK_EMAIL_REQUIRED`: Ayuda tiene preparados "Enviar comentarios" y "Reportar un error", ocultos hasta aprobar una dirección.
+- [ ] Correo de contacto aprobado cargado y verificado en Play Console.
+  - `mispagos.soporte@gmail.com` está aprobado para el sitio. Ayuda tiene preparados "Enviar comentarios" y "Reportar un error", pero siguen ocultos hasta configurar y verificar el canal dentro de la app.
 - [ ] Sitio web, solo si existe y se desea publicarlo.
 
 ## Lanzamiento de prueba

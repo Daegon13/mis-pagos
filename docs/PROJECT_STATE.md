@@ -1,5 +1,18 @@
 # Mis Pagos — Current Project State
 
+## WEB-01 — Public website
+
+Static `website/` contains the public homepage and `/privacidad` page for direct
+Vercel deployment (Root Directory `website`, Framework `Other`, no build command).
+Public website: **READY FOR DEPLOYMENT**. Privacy page: **READY FOR DEPLOYMENT**
+as a static page; its policy remains a draft and must not be published as final
+until public developer identity and SDK/network verification are complete.
+Public URLs: **PENDING** (`PUBLIC_SITE_URL=PENDING`,
+`PUBLIC_PRIVACY_URL=PENDING`). The user approved `mispagos.soporte@gmail.com` for
+the site contact, privacy contact and feedback link. The source privacy policy
+still needs synchronization with that contact. No deployment or Play Console
+submission has occurred.
+
 ## Product
 
 Android local-first app initially focused on Latin America.
@@ -25,8 +38,9 @@ Expo native prebuild and local `assembleDebug` succeeded after installing NDK
 launcher QA on light and dark backgrounds found the full calendar, check and
 coin stack visible without a white halo or clipping. Static privacy HTML is
 prepared, but its
-public HTTPS URL, public developer/privacy contact, and beta feedback email remain
-pending. See `play-store/STORE_ASSET_PLAN.md`.
+public HTTPS URL and public developer identity remain pending. The user approved
+`mispagos.soporte@gmail.com` for website support, privacy and feedback; older
+store assets still carry pending email markers. See `play-store/STORE_ASSET_PLAN.md`.
 
 ## PRE-BETA-AUDIT-01 — Core audit
 
@@ -58,9 +72,9 @@ signed AAB manifest. The existing `production` EAS profile made build
 EAS-managed signing certificate as `preview`. Unneeded legacy storage,
 overlay and vibration permissions are absent from the AAB.
 Ayuda now offers a local Privacidad page. Privacy policy, Data Safety worksheet,
-store copy and Console checklist are drafts. Public privacy URL, privacy/contact
+store copy and Console checklist are drafts. Public privacy URL, public developer
 identity, SDK traffic verification, launcher validation of the new icon, and
-feedback destination remain manual prerequisites. Brand icon, feature graphic
+configuring the approved feedback address inside the app remain manual prerequisites. Brand icon, feature graphic
 and six screenshots are staged but not uploaded. See `PLAY_STORE_RELEASE.md`.
 
 ## Private Android Alpha 0.4 (PREVIEW-04)
