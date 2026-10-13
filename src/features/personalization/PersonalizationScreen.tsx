@@ -66,7 +66,7 @@ export function PersonalizationScreen({ onClose }: { onClose: () => void }) {
         </View>
         <View style={styles.section}>
           <Text accessibilityRole="header" style={[styles.sectionTitle, { color: theme.textPrimary }]}>Intereses</Text>
-          <Text style={[styles.description, { color: theme.textSecondary }]}>Opcional · elegí hasta 3 ({selection.interestIds.length}/3)</Text>
+          <Text style={[styles.description, { color: theme.textSecondary }]}>Opcional · elegí hasta 3 ({selection.interestIds.length}/3). Los objetos se muestran cuando tu espacio alcanza la etapa del escritorio.</Text>
           <View style={styles.options}>
             {INTERESTS.map((option) => {
               const selected = selection.interestIds.includes(option.id);
@@ -104,7 +104,8 @@ export function PersonalizationScreen({ onClose }: { onClose: () => void }) {
               backgroundColor: theme.surface, borderColor: theme.border }]} />
           <Text style={[styles.description, { color: theme.textSecondary }]}>Opcional · hasta {MAX_SPACE_NAME_LENGTH} caracteres.</Text>
         </View>
-        <LivingSpace stage={0} surprise={false} selection={selection} preview />
+        <Text accessibilityRole="header" style={[styles.sectionTitle, { color: theme.textPrimary }]}>Vista de intereses · etapa del escritorio</Text>
+        <LivingSpace stage={2} surprise={false} selection={selection} preview />
         {saveError && <Text accessibilityRole="alert" accessibilityLiveRegion="polite" style={{ color: theme.negative }}>{saveError}</Text>}
         {discovery && <Text accessibilityLiveRegion="polite" style={{ color: theme.positive }}>Nuevo descubrimiento: Un espacio más tuyo.</Text>}
         <Pressable accessibilityRole="button" accessibilityState={{ disabled: busy, busy }} disabled={busy}

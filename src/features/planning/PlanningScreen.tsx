@@ -10,6 +10,7 @@ import { localCivilDate } from "@/domain/paymentTiming";
 import { allocationAmounts, monthPeriod, planAmounts, referencePace, remainingDays,
   reserveTarget, simulateSpending, type ReserveMode } from "@/domain/spendingPlan";
 import { formatBalance, minorToInput, parseBalanceMinor } from "@/features/financial-profile/money";
+import { moneyInputProps, percentInputProps } from "@/features/financial-profile/moneyInput";
 import { calculateHome } from "@/features/home/homeSummary";
 import { usePersonalization } from "@/features/personalization/PersonalizationProvider";
 import { attemptUnlock, tryUnlock } from "@/features/achievements/achievementService";
@@ -130,6 +131,7 @@ export function PlanningScreen({ onBack }: { onBack: () => void }) {
       <Text accessibilityRole="header" style={[styles.heading, { color: theme.textPrimary }]}>Planeá lo que querés conservar</Text>
       <Text style={{ color: theme.textSecondary }}>Tu disponible real ya descuenta tus compromisos conocidos. Elegí cuánto querés dejar intacto al terminar el mes.</Text>
       {!ready ? <Text>Cargando...</Text> : available === null ? <>{error && <Text accessibilityRole="alert">{error}</Text>}{action("Reintentar", () => void reload())}</> : <>
+        <View style={[styles.card, { backgroundColor: theme.surface, borderColor: theme.border }]}>
         <View style={styles.row}><Text style={[styles.subhead, { color: theme.textPrimary }]}>Reserva de cierre · {period.periodEnd}</Text>
           <ContextualHelp topicId="reserve" /></View>
         <View style={styles.row}>
@@ -142,11 +144,12 @@ export function PlanningScreen({ onBack }: { onBack: () => void }) {
             <Text style={{ color: theme.textPrimary }}>{percent}%</Text>
           </Pressable>)}</View>}
         <TextInput accessibilityLabel={mode === "percentage" ? "Porcentaje de reserva" : "Monto de reserva"}
-          value={value} onChangeText={text => { setValue(text); setReserveTouched(true); }} keyboardType="numeric" style={[styles.input,
+          value={value} onChangeText={text => { setValue(text); setReserveTouched(true); }} {...(mode === "percentage" ? percentInputProps : moneyInputProps)} style={[styles.input,
             { color: theme.textPrimary, borderColor: theme.border, backgroundColor: theme.surface }]}
           placeholder={mode === "percentage" ? "0 a 100" : "Ej. 6000"} placeholderTextColor={theme.muted} />
         {inputError && <Text accessibilityRole="alert" style={{ color: theme.negative }}>{inputError}</Text>}
-        {amounts && target !== null && <View style={[styles.card, { backgroundColor: theme.surface }]}>
+        </View>
+        {amounts && target !== null && <View style={[styles.card, { backgroundColor: theme.primarySurface, borderColor: theme.border }]}>
           <Text style={{ color: theme.textSecondary }}>Disponible real: {money(available)}</Text>
           <Text style={{ color: theme.textSecondary }}>Reserva objetivo: {money(target)}</Text>
           <View style={[styles.row, { alignItems: "center" }]}><Text style={[styles.subhead, { color: theme.textPrimary }]}>Libre para usar: {money(amounts.freeToUseMinor)}</Text>
@@ -157,6 +160,7 @@ export function PlanningScreen({ onBack }: { onBack: () => void }) {
           {pace && <View style={[styles.row, { alignItems: "center" }]}><Text style={{ color: theme.textSecondary }}>Ritmo de referencia: ≈ {money(pace.displayMinor)} por {pace.unit === "day" ? "día" : "semana"}.</Text>
             <ContextualHelp topicId="pace" /></View>}
         </View>}
+        <View style={[styles.card, { backgroundColor: theme.surface, borderColor: theme.border }]}>
         <Text style={[styles.subhead, { color: theme.textPrimary }]}>Asignaciones opcionales</Text>
         <Text style={{ color: theme.textSecondary }}>Son una guía para repartir tu margen libre. No clasifican tus movimientos.</Text>
         {allocations.map((item, index) => <View key={index} style={styles.allocation}>
@@ -164,13 +168,14 @@ export function PlanningScreen({ onBack }: { onBack: () => void }) {
             onChangeText={name => updateAllocation(index, { name })} placeholder="Nombre" placeholderTextColor={theme.muted}
             style={[styles.input, { flex: 2, color: theme.textPrimary, borderColor: theme.border, backgroundColor: theme.surface }]} />
           <TextInput accessibilityLabel={`Porcentaje asignación ${index + 1}`} value={item.percent}
-            onChangeText={percent => updateAllocation(index, { percent })} keyboardType="numeric" placeholder="%" placeholderTextColor={theme.muted}
+            onChangeText={percent => updateAllocation(index, { percent })} {...percentInputProps} placeholder="%" placeholderTextColor={theme.muted}
             style={[styles.input, { flex: 1, color: theme.textPrimary, borderColor: theme.border, backgroundColor: theme.surface }]} />
           {action("Quitar", () => setAllocations(previous => previous.filter((_, at) => at !== index)))}
           {allocationPreview?.[index] && <Text style={{ color: theme.textSecondary }}>{money(allocationPreview[index].amountMinor)}</Text>}
         </View>)}
         {allocationError && <Text accessibilityRole="alert" style={{ color: theme.negative }}>{allocationError}</Text>}
         {allocations.length < 6 && action("+ Agregar asignación", () => setAllocations(previous => [...previous, { name: "", percent: "" }]))}
+        </View>
         {error && <Text accessibilityRole="alert" style={{ color: theme.negative }}>{error}</Text>}
         {discovery && <Text accessibilityLiveRegion="polite" style={{ color: theme.positive }}>Nuevo descubrimiento: {discovery}.</Text>}
         {simulationUnlockFailed && <View>
@@ -182,13 +187,14 @@ export function PlanningScreen({ onBack }: { onBack: () => void }) {
         </View>}
         {action(busy ? "Guardando..." : existing ? "Guardar cambios" : "Crear plan", () => void save(), true)}
         {existing && <>
+          <View style={[styles.card, { backgroundColor: theme.surface, borderColor: theme.border }]}>
           <Text style={[styles.subhead, { color: theme.textPrimary }]}>¿Puedo gastar esto?</Text>
           <Text style={{ color: theme.textSecondary }}>Simulá un gasto sin cambiar tu saldo, tus movimientos ni tu plan.</Text>
           <TextInput accessibilityLabel="Gasto hipotético" value={spend} onChangeText={setSpend}
-            keyboardType="numeric" placeholder="Ej. 3000" placeholderTextColor={theme.muted}
+            {...moneyInputProps} placeholder="Ej. 3000" placeholderTextColor={theme.muted}
             style={[styles.input, { color: theme.textPrimary, borderColor: theme.border, backgroundColor: theme.surface }]} />
           {action("Simular gasto", () => void runSimulation())}
-          {simulation && <View accessibilityLiveRegion="polite" style={[styles.card, { backgroundColor: theme.surface }]}>
+          {simulation && <View accessibilityLiveRegion="polite" style={[styles.card, { backgroundColor: theme.primarySurface, borderColor: theme.border }]}>
             <Text style={[styles.subhead, { color: theme.textPrimary }]}>{simulation.outcome === "withinFlexible"
               ? "Tus compromisos conocidos y tu reserva siguen cubiertos."
               : simulation.outcome === "usesReserve" ? "Tus compromisos conocidos siguen cubiertos, pero usarías parte de tu reserva."
@@ -200,6 +206,7 @@ export function PlanningScreen({ onBack }: { onBack: () => void }) {
           </View>}
           {spend.length > 0 && (hypothetical === null || hypothetical <= 0) &&
             <Text style={{ color: theme.textSecondary }}>Ingresá un gasto mayor que cero.</Text>}
+          </View>
           {action("Eliminar plan de este mes", confirmRemoval)}
         </>}
         {action("Volver", onBack)}
@@ -209,13 +216,13 @@ export function PlanningScreen({ onBack }: { onBack: () => void }) {
 }
 
 const styles = StyleSheet.create({
-  content: { width: "100%", maxWidth: 560, alignSelf: "center", padding: 24, paddingBottom: 48, gap: 14 },
-  heading: { fontSize: 24, fontWeight: "700" }, subhead: { fontSize: 18, fontWeight: "600" },
+  content: { width: "100%", maxWidth: 560, alignSelf: "center", padding: 24, paddingBottom: 48, gap: 18 },
+  heading: { fontSize: 26, fontWeight: "700" }, subhead: { fontSize: 19, fontWeight: "700" },
   row: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
   action: { alignSelf: "flex-start", minHeight: 44, paddingHorizontal: 14, paddingVertical: 10,
     borderRadius: 12, justifyContent: "center" },
   chip: { paddingHorizontal: 14, paddingVertical: 10, minHeight: 44, borderWidth: 1, borderRadius: 12 },
   input: { minHeight: 48, borderWidth: 1, borderRadius: 12, paddingHorizontal: 12, fontSize: 16 },
-  card: { padding: 16, borderRadius: 16, gap: 8 },
+  card: { padding: 16, borderRadius: 16, borderWidth: 1, gap: 12 },
   allocation: { flexDirection: "row", flexWrap: "wrap", gap: 8, alignItems: "center" },
 });

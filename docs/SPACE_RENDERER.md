@@ -593,11 +593,13 @@ Final canonical slot geometry lives in `src/features/space/spaceScene.ts`. Value
 | `deskCenter` | 820,510,390,320 | 40 |
 | `deskRight` | 1120,515,165,170 | 40 |
 | `floorRight` | 1270,1015,270,390 | 20 |
-| `detailLeft` | 345,510,155,245 | 40 |
+| `detailLeft` | 345,510,220,245 | 40 |
 | `detailCenter` | 765,525,155,105 | 50 |
-| `detailRight` | 1250,515,145,180 | 50 |
+| `detailRight` | 1250,515,145,240 | 50 |
 
-Object z order can override the slot layer where foreground occlusion is intentional. Room tints use theme semantic tokens. Wall alpha is 0.22, or 0.32 for Nocturno; floor alpha is 0.08; window alpha is 0.08, or 0.18 for Nocturno; Cálido uses an additional 0.05 ambient treatment. These treatments leave the base lighting visible.
+Object z order can override the slot layer where foreground occlusion is intentional. Room tints use theme semantic tokens. POLISH-01 makes chosen palettes and window moods more visible: wall alpha is 0.48, or 0.58 for Nocturno; floor alpha is 0.12; window alpha is 0.30, or 0.42 for Nocturno; Cálido adds 0.12 ambient and Nocturno 0.09. The base room lighting remains visible.
+
+POLISH-01 uses the existing shelf for Libros in `detailLeft` and the cat in `detailRight`, keeping `floorRight` available for Música in a mixed profile. These are automatic stage-2 details; the fixed book and plant anchors and the maximum optional density stay intact.
 
 SPACE-02 keeps the books at their previous geometry in `booksAnchor` and adds a separate editable decorative `deskLeft` layer. Home and `/space` render the same automatic scene plus valid manual overrides. See `SPACE_CUSTOMIZATION_SYSTEM.md` for persistence, entitlements and editor semantics.
 

@@ -6,6 +6,7 @@ import { localCivilDate } from "@/domain/paymentTiming";
 import { Action, Feedback, MovementScreen, useMovementStyles } from "@/features/payments/MovementScreen";
 import { useMovementAction, useMovements } from "@/features/payments/useMovements";
 import { formatBalance, parseBalanceMinor } from "./money";
+import { moneyInputProps } from "./moneyInput";
 import { formatCivilDate } from "@/features/payments/civilDate";
 import { usePersonalization } from "@/features/personalization/PersonalizationProvider";
 
@@ -30,7 +31,7 @@ export function BalanceUpdate({ onBack, onSaved }: { onBack: () => void; onSaved
         <Text style={styles.text}>Saldo actual</Text>
         <Text style={styles.amount}>{formatBalance(data.profile.availableBalanceMinor, data.profile.currencyCode)}</Text>
         <Text style={styles.title}>Nuevo saldo ({data.profile.currencyCode})</Text>
-        <TextInput accessibilityLabel="Nuevo saldo" value={value} onChangeText={(text) => { setValue(text); setInputError(null); }} keyboardType="numeric"
+        <TextInput accessibilityLabel="Nuevo saldo" value={value} onChangeText={(text) => { setValue(text); setInputError(null); }} {...moneyInputProps}
           returnKeyType="done" onSubmitEditing={save}
           editable={!action.busy} style={styles.input} placeholder="Ej. 30000" placeholderTextColor={theme.muted} />
         <Text style={styles.text}>Ingresá el dinero que tenés hoy. Puede ser cero o negativo.</Text>

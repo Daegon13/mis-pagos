@@ -1,5 +1,9 @@
 # Mis Pagos — Current Project State
 
+## POLISH-01 — Beta product polish (local implementation)
+
+Web money fields in initial balance, balance update, payment create/edit, fixed reserve and spending simulation now use a text input with a decimal keyboard hint; native keeps decimal pads. Percentage fields use numeric hints. Parsing and stored minor units are unchanged. Home and Plan use clearer blocks; Tu espacio exposes unlocked palette and window controls beside the scene, with stronger existing mask treatments. Intereses previews a labeled stage-2 scene; Libros now adds the shelf and Animales uses a separate detail slot so Música can coexist. Descubrimientos shows example asset images, condition, affected control and blocked/unlocked/in-use state. No schema, dependencies, financial formulas, milestone rules or canonical source assets changed. Automated checks cover markup hints, exact amount parsing, stage and interest composition. Android and web exports complete after Metro is configured for the existing SQLite WASM asset. Chrome confirms cross-origin isolation but startup stops in the existing migrations: `expo-sqlite` web does not support `withExclusiveTransactionAsync`. That affects migrations and several write flows, so interactive desktop keyboard QA and web runtime compatibility remain blocked pending a persistence decision. Android visual QA remains to be performed before beta expansion.
+
 ## WEB-01 — Public website
 
 Static `website/` contains the public homepage and `/privacidad` page for direct

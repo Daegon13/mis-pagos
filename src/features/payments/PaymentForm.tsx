@@ -5,6 +5,7 @@ import { Keyboard, Platform, Pressable, StyleSheet, Text, TextInput, View } from
 import { useCreatePayment } from "./useCreatePayment";
 import type { Payment } from "@/domain/payment";
 import { formatBalance, parseBalanceMinor } from "@/features/financial-profile/money";
+import { moneyInputProps } from "@/features/financial-profile/moneyInput";
 import { civilDateToPickerDate, formatCivilDate, pickerDateToCivilDate } from "./civilDate";
 import { usePersonalization } from "@/features/personalization/PersonalizationProvider";
 import type { ThemeTokens } from "@/features/personalization/themes";
@@ -83,7 +84,7 @@ export function PaymentForm({ currencyCode, onSaved, initial }: PaymentFormProps
           onChangeText={form.setAmount}
           placeholder="Ej. 1500,50"
           placeholderTextColor={theme.muted}
-          keyboardType="decimal-pad"
+          {...moneyInputProps}
           editable={!form.isSaving}
           returnKeyType="next"
           onSubmitEditing={openDate}

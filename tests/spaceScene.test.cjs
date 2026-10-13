@@ -55,7 +55,7 @@ test('interest priority, slot collision, density and unavailable optional assets
   const profile = selection(['animales', 'musica', 'cafe']);
   const scene = resolveSpaceScene(2, profile);
   assert.ok(objects(scene).includes('catFigurine'));
-  assert.ok(!objects(scene).includes('speakerVinyl'));
+  assert.ok(objects(scene).includes('speakerVinyl'));
   assert.equal(new Set(scene.objects.map(object => object.slotId)).size, scene.objects.length);
   assert.ok(scene.objects.filter(object => object.source === 'interest').length <= 3);
   const minimal = resolveSpaceScene(2, selection(['minimalismo', 'gaming', 'musica'], 'minimalista'));
@@ -63,6 +63,22 @@ test('interest priority, slot collision, density and unavailable optional assets
   const available = new Set(Object.keys(SPACE_ASSETS).filter(id => id !== 'catFigurine'));
   assert.ok(!objects(resolveSpaceScene(2, profile, [], available)).includes('catFigurine'));
   assert.ok(objects(resolveSpaceScene(2, profile, [], available)).includes('speakerVinyl'));
+});
+
+test('featured interests have a visible stage-two object without changing stage anchors', () => {
+  const expected = {
+    libros: 'shelf', gaming: 'monitor', musica: 'speakerVinyl', cafe: 'mug',
+    naturaleza: 'plantSmall', animales: 'catFigurine',
+  };
+  for (const [interest, asset] of Object.entries(expected)) {
+    const stageOne = resolveSpaceScene(1, selection([interest]));
+    assert.deepEqual(objects(stageOne), ['plantLarge']);
+    const stageTwo = resolveSpaceScene(2, selection([interest]));
+    assert.ok(stageTwo.objects.some(object => object.assetId === asset && object.source === 'interest'), interest);
+    assert.ok(objects(stageTwo).includes('books'));
+  }
+  const mixed = resolveSpaceScene(2, selection(['libros', 'musica', 'animales']));
+  assert.ok(['shelf', 'speakerVinyl', 'catFigurine'].every(id => objects(mixed).includes(id)));
 });
 
 test('achievements are deduplicated secondary details and cannot advance stage', () => {

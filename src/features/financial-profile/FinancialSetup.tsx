@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
 import { parseBalanceMinor } from "./money";
+import { moneyInputProps } from "./moneyInput";
 import { usePersonalization } from "@/features/personalization/PersonalizationProvider";
 import type { ThemeTokens } from "@/features/personalization/themes";
 
@@ -64,7 +65,7 @@ export function FinancialSetup({ isSaving, error, onSave }: FinancialSetupProps)
           onChangeText={(value) => { setBalance(value); setInputError(null); }}
           placeholder="Ej. 30000"
           placeholderTextColor={theme.muted}
-          keyboardType="numeric"
+          {...moneyInputProps}
           editable={!isSaving}
           onSubmitEditing={submit}
         />

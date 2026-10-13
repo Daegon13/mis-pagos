@@ -29,3 +29,5 @@ Las capacidades se derivan de `achievement_unlocks`; no existe tabla ni moneda d
 | `FIRST_SPENDING_SIMULATION` | `windowMoodOverride` | Ambiente de ventana independiente |
 
 Un control bloqueado no afecta la decoración automática existente. La paleta usa los ocho temas curados y no cambia el tema de la app. El ambiente de ventana reutiliza las atmósferas y tratamientos sutiles existentes, sin clima ni animación. Home y `/space` usan el mismo compositor y renderizador. La pantalla `/space` ofrece vista 4:3, estados Automático/objeto/Vacío, opciones bloqueadas con su Descubrimiento y acceso a personalización para editar nombre e intereses.
+
+POLISH-01 deja los controles desbloqueados de pared/paleta y luz/ventana visibles junto a la escena, sin exigir abrir el editor de objetos. Las muestras de color muestran la paleta antes de elegirla. Descubrimientos distingue bloqueado, desbloqueado y en uso: este último significa que existe una anulación manual en una zona concedida, o una paleta/ambiente propio activo. La vista de objetos en cada tarjeta es un ejemplo de lo que permite el control, no un objeto otorgado automáticamente.

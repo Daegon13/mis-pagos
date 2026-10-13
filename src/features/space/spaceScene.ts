@@ -13,9 +13,9 @@ export const SLOTS = {
   deskCenter: { x: 820, y: 510, maxWidth: 390, maxHeight: 320, anchor: "bottomCenter", zIndex: 40 },
   deskRight: { x: 1120, y: 515, maxWidth: 165, maxHeight: 170, anchor: "bottomCenter", zIndex: 40 },
   floorRight: { x: 1270, y: 1015, maxWidth: 270, maxHeight: 390, anchor: "bottomCenter", zIndex: 20 },
-  detailLeft: { x: 345, y: 510, maxWidth: 155, maxHeight: 245, anchor: "bottomCenter", zIndex: 40 },
+  detailLeft: { x: 345, y: 510, maxWidth: 220, maxHeight: 245, anchor: "bottomCenter", zIndex: 40 },
   detailCenter: { x: 765, y: 525, maxWidth: 155, maxHeight: 105, anchor: "bottomCenter", zIndex: 50 },
-  detailRight: { x: 1250, y: 515, maxWidth: 145, maxHeight: 180, anchor: "bottomCenter", zIndex: 50 },
+  detailRight: { x: 1250, y: 515, maxWidth: 145, maxHeight: 240, anchor: "bottomCenter", zIndex: 50 },
 } as const;
 export type SlotId = keyof typeof SLOTS;
 export type AssetId = "desk" | "shelf" | "monitor" | "deskLamp" | "plantLarge" | "plantSmall" |
@@ -28,7 +28,7 @@ type AssetDefinition = {
 
 export const SPACE_ASSETS: Record<AssetId, AssetDefinition> = {
   desk: { canonicalSourceFilename: "Escritorio escandinavo de madera clara.png", runtimeFilename: "desk.png", source: require("../../../assets/space/runtime/desk.png"), aspectRatio: 600 / 392, preferredWidth: 1020, allowedSlots: ["desk"], interestTags: [], minimumEngagementStage: 2, priority: 100, zIndex: 30 },
-  shelf: { canonicalSourceFilename: "Estantería modular de madera clara.png", runtimeFilename: "shelf.png", source: require("../../../assets/space/runtime/shelf.png"), aspectRatio: 600 / 399, preferredWidth: 250, allowedSlots: ["floorRight"], interestTags: [], minimumEngagementStage: 2, priority: 10, zIndex: 20 },
+  shelf: { canonicalSourceFilename: "Estantería modular de madera clara.png", runtimeFilename: "shelf.png", source: require("../../../assets/space/runtime/shelf.png"), aspectRatio: 600 / 399, preferredWidth: 250, allowedSlots: ["detailLeft", "floorRight"], interestTags: ["libros"], minimumEngagementStage: 2, priority: 55, zIndex: 20 },
   monitor: { canonicalSourceFilename: "Monitor moderno minimalista en fondo transparente.png", runtimeFilename: "monitor.png", source: require("../../../assets/space/runtime/monitor.png"), aspectRatio: 600 / 479, preferredWidth: 320, allowedSlots: ["deskCenter"], interestTags: ["gaming", "tecnologia"], minimumEngagementStage: 2, priority: 80, zIndex: 40 },
   deskLamp: { canonicalSourceFilename: "Lámpara de escritorio verde oliva.png", runtimeFilename: "desk-lamp.png", source: require("../../../assets/space/runtime/desk-lamp.png"), aspectRatio: 263 / 360, preferredWidth: 145, allowedSlots: ["detailLeft", "deskLeft"], interestTags: ["hogar"], minimumEngagementStage: 2, priority: 65, zIndex: 40 },
   plantLarge: { canonicalSourceFilename: "Planta frondosa en maceta crema.png", runtimeFilename: "plant-large.png", source: require("../../../assets/space/runtime/plant-large.png"), aspectRatio: 575 / 600, preferredWidth: 500, allowedSlots: ["floorLeft"], interestTags: ["naturaleza"], minimumEngagementStage: 1, priority: 100, zIndex: 60 },
@@ -38,7 +38,7 @@ export const SPACE_ASSETS: Record<AssetId, AssetDefinition> = {
   gamepad: { canonicalSourceFilename: "Controlador gamer moderno en grafito.png", runtimeFilename: "gamepad.png", source: require("../../../assets/space/runtime/gamepad.png"), aspectRatio: 360 / 230, preferredWidth: 135, allowedSlots: ["detailCenter"], interestTags: ["gaming"], minimumEngagementStage: 2, priority: 55, zIndex: 50 },
   speakerVinyl: { canonicalSourceFilename: "Altavoz moderno y disco de vinilo.png", runtimeFilename: "speaker-vinyl.png", source: require("../../../assets/space/runtime/speaker-vinyl.png"), aspectRatio: 360 / 325, preferredWidth: 205, allowedSlots: ["floorRight"], interestTags: ["musica"], minimumEngagementStage: 2, priority: 55, zIndex: 50 },
   moonLamp: { canonicalSourceFilename: "Lámpara de luna sobre base de madera.png", runtimeFilename: "moon-lamp.png", source: require("../../../assets/space/runtime/moon-lamp.png"), aspectRatio: 292 / 360, preferredWidth: 95, allowedSlots: ["detailRight", "deskRight"], interestTags: ["noche"], minimumEngagementStage: 2, priority: 55, zIndex: 50 },
-  catFigurine: { canonicalSourceFilename: "Gato cerámico minimalista y sereno.png", runtimeFilename: "cat-figurine.png", source: require("../../../assets/space/runtime/cat-figurine.png"), aspectRatio: 206 / 360, preferredWidth: 160, allowedSlots: ["floorRight"], interestTags: ["animales"], minimumEngagementStage: 2, priority: 55, zIndex: 50 },
+  catFigurine: { canonicalSourceFilename: "Gato cerámico minimalista y sereno.png", runtimeFilename: "cat-figurine.png", source: require("../../../assets/space/runtime/cat-figurine.png"), aspectRatio: 206 / 360, preferredWidth: 160, allowedSlots: ["detailRight", "floorRight"], interestTags: ["animales"], minimumEngagementStage: 2, priority: 55, zIndex: 50 },
 };
 
 export interface SpaceSceneObject {
@@ -62,7 +62,7 @@ export function placeAsset(assetId: AssetId, slotId: SlotId, source: SpaceSceneO
 }
 
 const primaryByInterest: Partial<Record<InterestId, AssetId>> = {
-  naturaleza: "plantSmall", libros: "books", gaming: "monitor", musica: "speakerVinyl",
+  naturaleza: "plantSmall", libros: "shelf", gaming: "monitor", musica: "speakerVinyl",
   animales: "catFigurine", cafe: "mug", noche: "moonLamp", tecnologia: "monitor", hogar: "deskLamp",
 };
 
@@ -106,9 +106,9 @@ export function resolveSpaceScene(stage: SpaceStage, selection: PersonalizationS
   objects.sort((a, b) => a.zIndex - b.zIndex || a.assetId.localeCompare(b.assetId));
   return {
     treatments: { atmosphereId: selection.atmosphereId,
-      wallOpacity: selection.atmosphereId === "nocturno" ? 0.32 : 0.22,
-      floorOpacity: 0.08, windowOpacity: selection.atmosphereId === "nocturno" ? 0.18 : 0.08,
-      ambientOpacity: selection.atmosphereId === "calido" ? 0.05 : 0 },
+      wallOpacity: selection.atmosphereId === "nocturno" ? 0.58 : 0.48,
+      floorOpacity: 0.12, windowOpacity: selection.atmosphereId === "nocturno" ? 0.42 : 0.3,
+      ambientOpacity: selection.atmosphereId === "calido" ? 0.12 : selection.atmosphereId === "nocturno" ? 0.09 : 0 },
     objects,
   };
 }

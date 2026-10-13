@@ -97,16 +97,18 @@ export function Home({ profile, onAdd, paymentSaved, onDismissFeedback, onAll, o
               <ContextualHelp topicId="projection" /></View>
             <Text style={styles.projectionAmount}>{money(summary.projectionMinor)}</Text>
             <Text style={styles.caption}>Ese dinero todavía no está disponible.</Text>
-          </View> : <Text style={styles.caption}>Sin ingresos previstos en estos 30 días.</Text>}
-          <View style={styles.section}>
+          </View> : null}
+          <View style={[styles.section, styles.card]}>
             <Text accessibilityRole="header" style={styles.heading}>Tu plan del mes</Text>
             {planningError ? <Text style={styles.caption}>No pudimos cargar tu plan. Tus datos financieros siguen disponibles.</Text>
               : !planning || !planValues || !pace ? <Text style={styles.description}>Planeá cuánto querés conservar este mes.</Text>
                 : <>
-                  <View style={styles.helpRow}><Text style={styles.description}>Reserva de cierre: {money(planning.plan.reserveTargetMinor)}</Text>
+                  <View style={styles.helpRow}><Text style={styles.caption}>Reserva de cierre</Text>
                     <ContextualHelp topicId="reserve" /></View>
-                  <View style={styles.helpRow}><Text style={styles.title}>Libre para usar: {money(planValues.freeToUseMinor)}</Text>
+                  <Text style={styles.title}>{money(planning.plan.reserveTargetMinor)}</Text>
+                  <View style={styles.helpRow}><Text style={styles.caption}>Libre para usar</Text>
                     <ContextualHelp topicId="free-to-use" /></View>
+                  <Text style={styles.planAmount}>{money(planValues.freeToUseMinor)}</Text>
                   {planValues.reserveShortfallMinor > 0 && <Text style={styles.description}>
                     {summary.availableMinor < 0 ? "Tu plan queda sin margen libre por ahora. " : ""}
                     Te faltan {money(planValues.reserveShortfallMinor)} para alcanzar tu reserva.
@@ -121,12 +123,12 @@ export function Home({ profile, onAdd, paymentSaved, onDismissFeedback, onAll, o
           <Pressable accessibilityRole="button" onPress={onAdd} style={({ pressed }) => [styles.button, pressed && styles.pressed]}>
             <Text style={styles.buttonText}>+ Agregar movimiento</Text>
           </Pressable>
-          <View style={styles.section}>
+          <View style={[styles.section, styles.card]}>
             <View style={styles.summaryRow}>
               <Text accessibilityRole="header" style={styles.heading}>Próximos movimientos</Text>
               <Pressable accessibilityRole="button" onPress={onAll} style={styles.dismiss}><Text style={styles.link}>Ver todos</Text></Pressable>
             </View>
-            <Text style={styles.caption}>De hoy a dentro de 30 días, inclusive.</Text>
+            <Text style={styles.caption}>Próximos 30 días</Text>
             {summary.upcoming.length === 0 ? (
               <View style={styles.empty}>
                 <Text style={styles.title}>No tenés movimientos previstos en estos 30 días.</Text>
@@ -170,6 +172,7 @@ export function Home({ profile, onAdd, paymentSaved, onDismissFeedback, onAll, o
 function createStyles(theme: ThemeTokens) { return StyleSheet.create({
   home: { gap: 20 },
   section: { gap: 8 },
+  card: { backgroundColor: theme.surface, borderRadius: 18, padding: 16, borderWidth: 1, borderColor: theme.border },
   helpRow: { flexDirection: "row", flexWrap: "wrap", alignItems: "center", gap: 2 },
   hero: { backgroundColor: theme.primary, borderRadius: 24, padding: 22, gap: 10 },
   horizon: { color: theme.heroMuted, fontSize: 11, fontWeight: "600", letterSpacing: 1 },
@@ -188,8 +191,9 @@ function createStyles(theme: ThemeTokens) { return StyleSheet.create({
   balanceRow: { flexDirection: "row", flexWrap: "wrap", alignItems: "center", gap: 8 },
   balanceLink: { color: theme.heroMuted, fontSize: 12, textDecorationLine: "underline" },
   overdue: { paddingVertical: 8, gap: 4 },
-  projection: { gap: 6, paddingLeft: 14, borderLeftWidth: 3, borderColor: theme.border },
+  projection: { gap: 6, padding: 16, borderRadius: 18, backgroundColor: theme.secondarySurface },
   projectionAmount: { color: theme.textPrimary, fontSize: 24, fontWeight: "600", fontVariant: ["tabular-nums"] },
+  planAmount: { color: theme.primary, fontSize: 28, fontWeight: "700", fontVariant: ["tabular-nums"] },
   heading: { color: theme.textPrimary, fontSize: 21, fontWeight: "600" },
   caption: { color: theme.textSecondary, fontSize: 13, lineHeight: 19 },
   empty: { paddingVertical: 12, gap: 8 },
