@@ -10,8 +10,8 @@ Requisitos verificados en [Play Console Help](https://support.google.com/googlep
 | Icono adaptativo | `assets/branding/runtime/adaptive-foreground.png`: 1024 × 1024 con fondo transparente, derivado de la fuente mediante umbral suave del canal rojo (márgenes originales R=0–4) y centrado en zona segura. `app.json` usa fondo `#023A2D`. Vistas previas circular, cuadrada redondeada y tipo squircle conservan calendario, check y tres monedas. `MONOCHROME_ICON: DEFERRED`: la silueta blanca en 96 px no distingue bien el check ni la pila. |
 | Feature graphic | `play-store/graphics/feature-graphic-1024x500.png`: PNG RGB 24-bit, 1024 × 500, sin alfa; texto grande «Sabé cuánto realmente podés usar» y formas simples de monedas/check con la paleta de marca. |
 | Capturas | Seis capturas de UI Android real, 1080 × 1920, PNG RGB 24-bit, desde APK independiente 0.4.0 anterior a BRAND-01 con datos sintéticos del emulador. La simulación se recortó de una captura real de 1080 × 2400 para mantener la proporción 9:16. Ninguna contiene datos financieros privados ni superposiciones de desarrollo. |
-| Política estática | `play-store/privacy/index.html`; contenido sustantivo del borrador aprobado. `play-store/privacy/README.md` contiene los pasos de publicación. **PUBLIC PRIVACY URL: PENDING.** |
-| Comentarios beta | **FEEDBACK_EMAIL_REQUIRED.** No se encontró dirección aprobada. La UI de Ayuda deja preparados asunto y cuerpo; los accesos solo aparecen al configurar una dirección real. |
+| Política estática | `play-store/privacy/index.html`; borrador sincronizado con Diego Marin y `mispagos.soporte@gmail.com`. URL pública: `https://mis-pagos-website.vercel.app/privacidad`; la actualización local aún requiere despliegue. |
+| Comentarios beta | `mispagos.soporte@gmail.com` aprobado. Ayuda muestra los accesos `mailto:` para comentarios y errores; verificar el cliente de correo Android. |
 
 ## Orden recomendado de capturas
 

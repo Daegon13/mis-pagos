@@ -6,8 +6,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { usePersonalization } from "@/features/personalization/PersonalizationProvider";
 import { HELP_CATEGORIES, HELP_TOPICS, getHelpTopic, type HelpCategoryId } from "./helpContent";
 
-// Fill only after the beta support address has been approved.
-const SUPPORT_EMAIL: string = "";
+const SUPPORT_EMAIL = "mispagos.soporte@gmail.com";
+const PUBLIC_PRIVACY_URL = "https://mis-pagos-website.vercel.app/privacidad";
 const FEEDBACK_BODY = [
   "¿Qué estabas intentando hacer?", "¿Qué esperabas que ocurriera?", "¿Qué ocurrió?",
   "¿Hubo algo que no entendieras?", "¿Qué te gustaría que Mis Pagos hiciera automáticamente?",
@@ -68,7 +68,10 @@ export function HelpScreen({ onBack }: { onBack: () => void }) {
           <Text style={[styles.body, heading]}>Tus saldos, movimientos, planes, preferencias y descubrimientos se guardan en la base de datos de este dispositivo. Mis Pagos no tiene cuenta, sincronización bancaria ni nube propia.</Text>
           <Text style={[styles.body, heading]}>Las funciones principales se pueden usar sin conexión. El paquete incluye componentes de Expo y React Native con capacidad de red; su comportamiento de red final se verifica antes de completar la declaración de privacidad de Google Play. No incluyas datos financieros sensibles al enviar comentarios.</Text>
           <Text style={[styles.body, heading]}>Podés eliminar movimientos y planes desde la app. Desinstalarla elimina sus datos locales del dispositivo; las copias del sistema operativo, si están activadas, pueden tener sus propias reglas de conservación. Mis Pagos no ofrece exportación ni respaldo dentro de la app.</Text>
-          <Text style={[styles.body, heading]}>La política completa y el contacto de privacidad estarán disponibles en la ficha de Google Play antes de distribuir la beta cerrada.</Text>
+          <Text style={[styles.body, heading]}>Responsable: Diego Marin. Contacto de privacidad: {SUPPORT_EMAIL}.</Text>
+          <Pressable accessibilityRole="link" accessibilityLabel="Abrir política de privacidad completa" onPress={() => void Linking.openURL(PUBLIC_PRIVACY_URL)} style={styles.row}>
+            <Text style={[styles.rowText, link]}>Leer la política de privacidad completa →</Text>
+          </Pressable>
         </View>
       </> : category === "glossary" ? <>
         <Text accessibilityRole="header" style={[styles.heading, heading]}>Glosario</Text>

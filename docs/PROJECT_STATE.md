@@ -4,14 +4,14 @@
 
 Static `website/` contains the public homepage and `/privacidad` page for direct
 Vercel deployment (Root Directory `website`, Framework `Other`, no build command).
-Public website: **READY FOR DEPLOYMENT**. Privacy page: **READY FOR DEPLOYMENT**
-as a static page; its policy remains a draft and must not be published as final
-until public developer identity and SDK/network verification are complete.
-Public URLs: **PENDING** (`PUBLIC_SITE_URL=PENDING`,
-`PUBLIC_PRIVACY_URL=PENDING`). The user approved `mispagos.soporte@gmail.com` for
-the site contact, privacy contact and feedback link. The source privacy policy
-still needs synchronization with that contact. No deployment or Play Console
-submission has occurred.
+Public website: **DEPLOYED**, with homepage and `/privacidad` responding over HTTPS.
+The policy remains a draft while SDK/network verification is pending.
+`PUBLIC_SITE_URL=https://mis-pagos-website.vercel.app/` and
+`PUBLIC_PRIVACY_URL=https://mis-pagos-website.vercel.app/privacidad`.
+Responsible person: Diego Marin. Support, privacy and feedback contact:
+`mispagos.soporte@gmail.com`. Local policy and website source are synchronized;
+the updated privacy content still needs deployment. No Play Console submission
+has occurred.
 
 ## Product
 
@@ -37,10 +37,9 @@ Expo native prebuild and local `assembleDebug` succeeded after installing NDK
 27.1. The final debug APK was installed on a separate Android 35 emulator;
 launcher QA on light and dark backgrounds found the full calendar, check and
 coin stack visible without a white halo or clipping. Static privacy HTML is
-prepared, but its
-public HTTPS URL and public developer identity remain pending. The user approved
-`mispagos.soporte@gmail.com` for website support, privacy and feedback; older
-store assets still carry pending email markers. See `play-store/STORE_ASSET_PLAN.md`.
+prepared. Public developer Diego Marin and the HTTPS privacy URL are recorded.
+Support, privacy and feedback use `mispagos.soporte@gmail.com`. See
+`play-store/STORE_ASSET_PLAN.md`.
 
 ## PRE-BETA-AUDIT-01 — Core audit
 
@@ -71,10 +70,11 @@ signed AAB manifest. The existing `production` EAS profile made build
 `2ecbacab-f7ad-4473-a3bf-23435875d555` (77,312,354 bytes) with the same
 EAS-managed signing certificate as `preview`. Unneeded legacy storage,
 overlay and vibration permissions are absent from the AAB.
-Ayuda now offers a local Privacidad page. Privacy policy, Data Safety worksheet,
-store copy and Console checklist are drafts. Public privacy URL, public developer
-identity, SDK traffic verification, launcher validation of the new icon, and
-configuring the approved feedback address inside the app remain manual prerequisites. Brand icon, feature graphic
+Ayuda now offers a local Privacidad page and the approved support address for
+comments and bug reports. Privacy policy, Data Safety worksheet, store copy and
+Console checklist are drafts. Public privacy URL and developer identity are
+recorded; SDK traffic verification, deployment of updated privacy content,
+and Play Console configuration remain manual prerequisites. Brand icon, feature graphic
 and six screenshots are staged but not uploaded. See `PLAY_STORE_RELEASE.md`.
 
 ## Private Android Alpha 0.4 (PREVIEW-04)

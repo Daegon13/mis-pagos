@@ -1,10 +1,12 @@
 # Política de privacidad de Mis Pagos
 
-**Borrador para la beta cerrada — 12 de octubre de 2026.** Antes de publicarlo se deben completar la identidad pública del desarrollador y el contacto de privacidad, y cerrar la verificación de SDK y red indicada en `docs/PLAY_DATA_SAFETY_AUDIT.md`.
+**Borrador para la beta cerrada — 13 de octubre de 2026.** La verificación de SDK y red indicada en `docs/PLAY_DATA_SAFETY_AUDIT.md` sigue pendiente.
 
-**Responsable:** [NOMBRE PÚBLICO DEL DESARROLLADOR — PENDIENTE].
+**Responsable:** Diego Marin.
 
-**Contacto de privacidad:** [CORREO DE PRIVACIDAD — PENDIENTE].
+**Contacto de privacidad:** mispagos.soporte@gmail.com.
+
+**URL pública de esta política:** https://mis-pagos-website.vercel.app/privacidad.
 
 ## Datos que guarda la aplicación
 
@@ -26,6 +28,6 @@ La información financiera local no se cifra por una función propia de Mis Pago
 
 ## Comentarios y contacto
 
-La app todavía no incluye un canal de comentarios configurado. Si más adelante se habilita un correo o formulario, su uso será voluntario y la política se actualizará antes de activarlo. No solicitaremos detalles financieros sensibles para atender comentarios.
+Desde Ayuda podés enviar comentarios o reportar errores a mispagos.soporte@gmail.com mediante tu aplicación de correo. Su uso es voluntario. No solicitaremos detalles financieros sensibles para atender comentarios.
 
-Se notificará cualquier cambio material de esta política mediante una nueva fecha y versión en la página pública. Las consultas de privacidad se dirigirán al contacto indicado arriba, una vez completado antes de la distribución cerrada.
+Se notificará cualquier cambio material de esta política mediante una nueva fecha y versión en la página pública. Las consultas de privacidad se dirigirán al contacto indicado arriba.

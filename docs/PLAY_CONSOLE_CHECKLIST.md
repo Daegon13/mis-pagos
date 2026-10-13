@@ -5,13 +5,13 @@ Ninguna casilla de Play Console está marcada como completa. Este archivo no aut
 ## Cuenta y desarrollador
 
 - [ ] Cuenta y verificación de identidad confirmadas.
-- [ ] Nombre público e información de contacto verificados.
+- [ ] Nombre público e información de contacto verificados en Play Console. Datos aprobados para cargar: Diego Marin y `mispagos.soporte@gmail.com`.
 - [ ] Requisito personal 12/14 verificado en esta cuenta.
 
 ## Contenido de la app
 
-- [ ] URL pública de política de privacidad cargada y accesible.
-  - WEB-01: sitio y `/privacidad` en `website/` **READY FOR DEPLOYMENT** como archivos estáticos. Faltan despliegue, identidad pública, verificación de SDK/red y URL HTTPS real (`PUBLIC_SITE_URL=PENDING`, `PUBLIC_PRIVACY_URL=PENDING`). El usuario aprobó `mispagos.soporte@gmail.com` para contacto del sitio; sincronizar la política fuente. La política sigue siendo borrador hasta cerrar esos puntos. La página anterior en `play-store/privacy/index.html` continúa como artefacto preparado.
+- [ ] URL pública de política de privacidad cargada en Play Console.
+  - Requisito de URL pública accesible: **COMPLETE**. `https://mis-pagos-website.vercel.app/privacidad` respondió 200 por HTTPS; el sitio `https://mis-pagos-website.vercel.app/` también. Responsable: Diego Marin; contacto: `mispagos.soporte@gmail.com`. La versión actualizada de la política aún debe desplegarse y la verificación de SDK/red sigue pendiente para Data Safety. La página en `play-store/privacy/index.html` continúa como artefacto preparado.
 - [ ] Declaración de anuncios: No, tras reconfirmar el AAB.
 - [ ] Acceso a la app: sin cuenta, confirmar en Play.
 - [ ] Público objetivo seleccionado según producto real.
@@ -31,8 +31,8 @@ Ninguna casilla de Play Console está marcada como completa. Este archivo no aut
   - Seis capturas reales listas y ordenadas en `play-store/STORE_ASSET_PLAN.md`; verificar en miniatura y con la build final.
 - [ ] Categoría verificada y elegida.
 - [ ] Correo de contacto aprobado cargado y verificado en Play Console.
-  - `mispagos.soporte@gmail.com` está aprobado para el sitio. Ayuda tiene preparados "Enviar comentarios" y "Reportar un error", pero siguen ocultos hasta configurar y verificar el canal dentro de la app.
-- [ ] Sitio web, solo si existe y se desea publicarlo.
+  - Correo aprobado: `mispagos.soporte@gmail.com`. Ayuda muestra "Enviar comentarios" y "Reportar un error"; queda verificar los enlaces con un cliente de correo Android.
+- [ ] Sitio web `https://mis-pagos-website.vercel.app/` cargado en Play Console.
 
 ## Lanzamiento de prueba
 
