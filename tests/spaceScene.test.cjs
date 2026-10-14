@@ -17,7 +17,10 @@ test('asset and slot registries preserve contract IDs, source mapping and bounde
   const ids = Object.keys(SPACE_ASSETS);
   assert.equal(new Set(ids).size, ids.length);
   assert.deepEqual(ids.sort(), ['desk', 'shelf', 'monitor', 'deskLamp', 'plantLarge', 'plantSmall',
-    'books', 'mug', 'gamepad', 'speakerVinyl', 'moonLamp', 'catFigurine'].sort());
+    'books', 'mug', 'gamepad', 'speakerVinyl', 'moonLamp', 'catFigurine', 'scentedCandle',
+    'candleTrio', 'tarotDeck', 'roseQuartz', 'warmLamp', 'calicoCat', 'catMug', 'catFrame',
+    'peonies', 'driedFlowers', 'perfume', 'vanityOrganizer', 'floralNotebook', 'jewelryBox',
+    'vanityMirror'].sort());
   assert.equal(new Set(Object.keys(SLOTS)).size, 10);
   for (const [id, asset] of Object.entries(SPACE_ASSETS)) {
     assert.ok(fs.existsSync(path.join('assets/assets mis pagos', asset.canonicalSourceFilename)), id);
@@ -47,30 +50,30 @@ test('stages preserve anchors, composition is deterministic, themes do not chang
   assert.ok(objects(stage2).includes('books'));
   assert.ok(objects(stage2).includes('monitor'));
   assert.ok(objects(stage2).includes('speakerVinyl'));
-  assert.deepEqual(objects(stage2), objects(resolveSpaceScene(2, selection(profile.interestIds,
-    profile.atmosphereId, 'ciruela'))));
+  assert.ok(objects(resolveSpaceScene(2, selection(profile.interestIds,
+    profile.atmosphereId, 'ciruela'))).includes('monitor'));
 });
 
 test('interest priority, slot collision, density and unavailable optional assets', () => {
   const profile = selection(['animales', 'musica', 'cafe']);
   const scene = resolveSpaceScene(2, profile);
-  assert.ok(objects(scene).includes('catFigurine'));
+  assert.ok(objects(scene).includes('calicoCat'));
   assert.ok(objects(scene).includes('speakerVinyl'));
   assert.equal(new Set(scene.objects.map(object => object.slotId)).size, scene.objects.length);
   assert.ok(scene.objects.filter(object => object.source === 'interest').length <= 4);
   const reinforced = resolveSpaceScene(2, selection(['gaming', 'musica', 'animales']));
-  assert.ok(['monitor', 'speakerVinyl', 'catFigurine', 'gamepad'].every(id => objects(reinforced).includes(id)));
+  assert.ok(['monitor', 'speakerVinyl', 'calicoCat', 'gamepad'].every(id => objects(reinforced).includes(id)));
   const minimal = resolveSpaceScene(2, selection(['minimalismo', 'gaming', 'musica'], 'minimalista'));
   assert.ok(minimal.objects.filter(object => object.source === 'interest').length <= 1);
-  const available = new Set(Object.keys(SPACE_ASSETS).filter(id => id !== 'catFigurine'));
-  assert.ok(!objects(resolveSpaceScene(2, profile, [], available)).includes('catFigurine'));
+  const available = new Set(Object.keys(SPACE_ASSETS).filter(id => id !== 'calicoCat'));
+  assert.ok(!objects(resolveSpaceScene(2, profile, [], available)).includes('calicoCat'));
   assert.ok(objects(resolveSpaceScene(2, profile, [], available)).includes('speakerVinyl'));
 });
 
 test('featured interests have a visible stage-two object without changing stage anchors', () => {
   const expected = {
     libros: 'shelf', gaming: 'monitor', musica: 'speakerVinyl', cafe: 'mug',
-    naturaleza: 'plantSmall', animales: 'catFigurine',
+    naturaleza: 'peonies', animales: 'calicoCat',
   };
   for (const [interest, asset] of Object.entries(expected)) {
     const stageOne = resolveSpaceScene(1, selection([interest]));
@@ -80,7 +83,22 @@ test('featured interests have a visible stage-two object without changing stage 
     assert.ok(objects(stageTwo).includes('books'));
   }
   const mixed = resolveSpaceScene(2, selection(['libros', 'musica', 'animales']));
-  assert.ok(['shelf', 'speakerVinyl', 'catFigurine'].every(id => objects(mixed).includes(id)));
+  assert.ok(['shelf', 'speakerVinyl', 'calicoCat'].every(id => objects(mixed).includes(id)));
+});
+
+test('pack 02 changes automatic compositions by interest and palette', () => {
+  const interests = ['animales', 'naturaleza', 'arte', 'noche', 'hogar'];
+  const signatures = interests.map(interest => objects(resolveSpaceScene(2, selection([interest]))).join(','));
+  assert.equal(new Set(signatures).size, interests.length);
+  for (const palette of ['peonia', 'ciruela', 'terracota', 'arena', 'noche']) {
+    const scene = resolveSpaceScene(2, selection(['naturaleza', 'hogar'], 'natural', palette));
+    assert.ok(scene.objects.some(object => object.source === 'interest' &&
+      ['peonies', 'driedFlowers', 'roseQuartz', 'warmLamp', 'vanityOrganizer', 'jewelryBox'].includes(object.assetId)));
+    assert.equal(new Set(scene.objects.map(object => object.assetId)).size, scene.objects.length);
+  }
+  const placements = palette => resolveSpaceScene(2, selection(['naturaleza'], 'natural', palette))
+    .objects.filter(object => object.source === 'interest').map(object => [object.assetId, object.slotId]);
+  assert.notDeepEqual(placements('peonia'), placements('terracota'));
 });
 
 test('achievements are deduplicated secondary details and cannot advance stage', () => {

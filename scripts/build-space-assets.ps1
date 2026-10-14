@@ -147,7 +147,22 @@ $objects = @(
   @('gamepad', 'Controlador gamer moderno en grafito.png', 360),
   @('speaker-vinyl', 'Altavoz moderno y disco de vinilo.png', 360),
   @('moon-lamp', 'Lámpara de luna sobre base de madera.png', 360),
-  @('cat-figurine', 'Gato cerámico minimalista y sereno.png', 360)
+  @('cat-figurine', 'Gato cerámico minimalista y sereno.png', 360),
+  @('scented-candle', 'Vela aromática minimalista en tonos cálidos.png', 320),
+  @('candle-trio', 'Trío de velas cálidas y acogedoras.png', 320),
+  @('tarot-deck', 'Mazo de tarot místico con sol y luna.png', 320),
+  @('rose-quartz', 'Cristal de cuarzo rosa sobre base de piedra.png', 320),
+  @('warm-lamp', 'Lámpara minimalista de luz cálida.png', 320),
+  @('calico-cat', 'Gato de cerámica sereno estilo calicó.png', 320),
+  @('cat-mug', 'Taza de gato con orejas rosa y crema.png', 320),
+  @('cat-frame', 'Marco de madera con gato sereno.png', 320),
+  @('peonies', 'Ramo de peonías en jarrón cerámico.png', 320),
+  @('dried-flowers', 'Arreglo seco en jarrón beige.png', 320),
+  @('perfume', 'Perfume esférico rosa con tapón marfil.png', 320),
+  @('vanity-organizer', 'Organizador de tocador en tonos cálidos.png', 320),
+  @('floral-notebook', 'Cuaderno floral con banda rosada.png', 320),
+  @('jewelry-box', 'Joyero oval de terciopelo rosado y dorado.png', 320),
+  @('vanity-mirror', 'Espejo de tocador dorado con base de piedra.png', 320)
 )
 foreach ($entry in $objects) {
   $target = Join-Path $targetDir ($entry[0] + '.png')

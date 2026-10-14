@@ -16,9 +16,13 @@ import type { StoredSlotOverride, StoredVisualPreferences } from "@/data/reposit
 import { themeFor } from "@/features/personalization/themes";
 
 const rewardPreview: Partial<Record<AchievementId, AssetId>> = {
-  FIRST_PERSONALIZED_SPACE: "monitor", FIRST_COMMITMENT: "mug",
-  FIRST_EXPECTED_INCOME: "speakerVinyl", FIRST_RESOLVED_MOVEMENT: "gamepad",
-  FIRST_OVERDUE_RESOLVED: "moonLamp",
+  FIRST_PERSONALIZED_SPACE: "vanityOrganizer", FIRST_COMMITMENT: "floralNotebook",
+  FIRST_EXPECTED_INCOME: "peonies", FIRST_RESOLVED_MOVEMENT: "candleTrio",
+  FIRST_OVERDUE_RESOLVED: "calicoCat",
+};
+const previewLabels: Partial<Record<AssetId, string>> = {
+  vanityOrganizer: "Tocador", floralNotebook: "Cuaderno floral", peonies: "Peonías",
+  candleTrio: "Trío de velas", calicoCat: "Gatito de cerámica",
 };
 
 function rewardInUse(id: AchievementId, overrides: readonly StoredSlotOverride[], visual: StoredVisualPreferences): boolean {
@@ -93,7 +97,7 @@ export function AchievementsScreen({ onBack, onOpenSpace }: { onBack: () => void
               <Text style={[styles.rewardLabel, { color: theme.textSecondary }]}>EN TU ESPACIO</Text>
               <Text style={[styles.title, { color: theme.textPrimary }]}>{reward.title}</Text>
               <Text style={stylesText(theme.textSecondary)}>{reward.shortDescription}</Text>
-              {preview && <Text style={stylesText(theme.textSecondary)}>Ejemplo de objeto que podés elegir en esa zona.</Text>}
+              {preview && <Text style={stylesText(theme.textSecondary)}>{previewLabels[preview]} · Ejemplo para {reward.title.toLowerCase()}.</Text>}
             </View>
             {found && <Pressable accessibilityRole="button" onPress={onOpenSpace} style={styles.action}>
               <Text style={{ color: theme.primary, fontWeight: "600" }}>{reward.ctaLabel} →</Text>

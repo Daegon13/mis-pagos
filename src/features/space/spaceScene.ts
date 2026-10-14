@@ -19,7 +19,10 @@ export const SLOTS = {
 } as const;
 export type SlotId = keyof typeof SLOTS;
 export type AssetId = "desk" | "shelf" | "monitor" | "deskLamp" | "plantLarge" | "plantSmall" |
-  "books" | "mug" | "gamepad" | "speakerVinyl" | "moonLamp" | "catFigurine";
+  "books" | "mug" | "gamepad" | "speakerVinyl" | "moonLamp" | "catFigurine" |
+  "scentedCandle" | "candleTrio" | "tarotDeck" | "roseQuartz" | "warmLamp" |
+  "calicoCat" | "catMug" | "catFrame" | "peonies" | "driedFlowers" |
+  "perfume" | "vanityOrganizer" | "floralNotebook" | "jewelryBox" | "vanityMirror";
 type AssetDefinition = {
   canonicalSourceFilename: string; runtimeFilename: string; source: number; aspectRatio: number;
   preferredWidth: number; allowedSlots: readonly SlotId[]; interestTags: readonly InterestId[];
@@ -39,6 +42,21 @@ export const SPACE_ASSETS: Record<AssetId, AssetDefinition> = {
   speakerVinyl: { canonicalSourceFilename: "Altavoz moderno y disco de vinilo.png", runtimeFilename: "speaker-vinyl.png", source: require("../../../assets/space/runtime/speaker-vinyl.png"), aspectRatio: 360 / 325, preferredWidth: 205, allowedSlots: ["floorRight"], interestTags: ["musica"], minimumEngagementStage: 2, priority: 55, zIndex: 50 },
   moonLamp: { canonicalSourceFilename: "Lámpara de luna sobre base de madera.png", runtimeFilename: "moon-lamp.png", source: require("../../../assets/space/runtime/moon-lamp.png"), aspectRatio: 292 / 360, preferredWidth: 95, allowedSlots: ["detailRight", "deskRight"], interestTags: ["noche"], minimumEngagementStage: 2, priority: 55, zIndex: 50 },
   catFigurine: { canonicalSourceFilename: "Gato cerámico minimalista y sereno.png", runtimeFilename: "cat-figurine.png", source: require("../../../assets/space/runtime/cat-figurine.png"), aspectRatio: 206 / 360, preferredWidth: 160, allowedSlots: ["detailRight", "floorRight"], interestTags: ["animales"], minimumEngagementStage: 2, priority: 55, zIndex: 50 },
+  scentedCandle: { canonicalSourceFilename: "Vela aromática minimalista en tonos cálidos.png", runtimeFilename: "scented-candle.png", source: require("../../../assets/space/runtime/scented-candle.png"), aspectRatio: 294 / 320, preferredWidth: 90, allowedSlots: ["deskRight", "detailCenter"], interestTags: ["noche", "hogar"], minimumEngagementStage: 2, priority: 60, zIndex: 50 },
+  candleTrio: { canonicalSourceFilename: "Trío de velas cálidas y acogedoras.png", runtimeFilename: "candle-trio.png", source: require("../../../assets/space/runtime/candle-trio.png"), aspectRatio: 285 / 320, preferredWidth: 125, allowedSlots: ["detailCenter", "detailRight"], interestTags: ["noche", "hogar"], minimumEngagementStage: 2, priority: 60, zIndex: 50 },
+  tarotDeck: { canonicalSourceFilename: "Mazo de tarot místico con sol y luna.png", runtimeFilename: "tarot-deck.png", source: require("../../../assets/space/runtime/tarot-deck.png"), aspectRatio: 320 / 263, preferredWidth: 125, allowedSlots: ["deskLeft"], interestTags: ["arte", "noche", "libros"], minimumEngagementStage: 2, priority: 70, zIndex: 40 },
+  roseQuartz: { canonicalSourceFilename: "Cristal de cuarzo rosa sobre base de piedra.png", runtimeFilename: "rose-quartz.png", source: require("../../../assets/space/runtime/rose-quartz.png"), aspectRatio: 204 / 320, preferredWidth: 95, allowedSlots: ["detailCenter", "deskRight"], interestTags: ["naturaleza", "noche"], minimumEngagementStage: 2, priority: 65, zIndex: 50 },
+  warmLamp: { canonicalSourceFilename: "Lámpara minimalista de luz cálida.png", runtimeFilename: "warm-lamp.png", source: require("../../../assets/space/runtime/warm-lamp.png"), aspectRatio: 241 / 320, preferredWidth: 125, allowedSlots: ["deskLeft"], interestTags: ["noche", "hogar"], minimumEngagementStage: 2, priority: 65, zIndex: 40 },
+  calicoCat: { canonicalSourceFilename: "Gato de cerámica sereno estilo calicó.png", runtimeFilename: "calico-cat.png", source: require("../../../assets/space/runtime/calico-cat.png"), aspectRatio: 208 / 320, preferredWidth: 115, allowedSlots: ["detailRight", "floorRight"], interestTags: ["animales"], minimumEngagementStage: 2, priority: 70, zIndex: 50 },
+  catMug: { canonicalSourceFilename: "Taza de gato con orejas rosa y crema.png", runtimeFilename: "cat-mug.png", source: require("../../../assets/space/runtime/cat-mug.png"), aspectRatio: 320 / 248, preferredWidth: 92, allowedSlots: ["deskRight"], interestTags: ["animales", "cafe"], minimumEngagementStage: 2, priority: 65, zIndex: 40 },
+  catFrame: { canonicalSourceFilename: "Marco de madera con gato sereno.png", runtimeFilename: "cat-frame.png", source: require("../../../assets/space/runtime/cat-frame.png"), aspectRatio: 273 / 320, preferredWidth: 120, allowedSlots: ["detailLeft", "detailRight"], interestTags: ["animales", "arte"], minimumEngagementStage: 2, priority: 60, zIndex: 40 },
+  peonies: { canonicalSourceFilename: "Ramo de peonías en jarrón cerámico.png", runtimeFilename: "peonies.png", source: require("../../../assets/space/runtime/peonies.png"), aspectRatio: 320 / 304, preferredWidth: 150, allowedSlots: ["detailRight", "floorRight"], interestTags: ["naturaleza", "hogar"], minimumEngagementStage: 2, priority: 75, zIndex: 50 },
+  driedFlowers: { canonicalSourceFilename: "Arreglo seco en jarrón beige.png", runtimeFilename: "dried-flowers.png", source: require("../../../assets/space/runtime/dried-flowers.png"), aspectRatio: 241 / 320, preferredWidth: 135, allowedSlots: ["detailRight", "floorRight"], interestTags: ["naturaleza", "hogar"], minimumEngagementStage: 2, priority: 65, zIndex: 50 },
+  perfume: { canonicalSourceFilename: "Perfume esférico rosa con tapón marfil.png", runtimeFilename: "perfume.png", source: require("../../../assets/space/runtime/perfume.png"), aspectRatio: 259 / 320, preferredWidth: 95, allowedSlots: ["deskRight"], interestTags: ["hogar"], minimumEngagementStage: 2, priority: 60, zIndex: 40 },
+  vanityOrganizer: { canonicalSourceFilename: "Organizador de tocador en tonos cálidos.png", runtimeFilename: "vanity-organizer.png", source: require("../../../assets/space/runtime/vanity-organizer.png"), aspectRatio: 312 / 320, preferredWidth: 135, allowedSlots: ["deskRight"], interestTags: ["hogar"], minimumEngagementStage: 2, priority: 65, zIndex: 40 },
+  floralNotebook: { canonicalSourceFilename: "Cuaderno floral con banda rosada.png", runtimeFilename: "floral-notebook.png", source: require("../../../assets/space/runtime/floral-notebook.png"), aspectRatio: 317 / 320, preferredWidth: 100, allowedSlots: ["deskLeft"], interestTags: ["libros", "arte"], minimumEngagementStage: 2, priority: 60, zIndex: 40 },
+  jewelryBox: { canonicalSourceFilename: "Joyero oval de terciopelo rosado y dorado.png", runtimeFilename: "jewelry-box.png", source: require("../../../assets/space/runtime/jewelry-box.png"), aspectRatio: 320 / 227, preferredWidth: 115, allowedSlots: ["detailCenter", "deskRight"], interestTags: ["hogar"], minimumEngagementStage: 2, priority: 60, zIndex: 50 },
+  vanityMirror: { canonicalSourceFilename: "Espejo de tocador dorado con base de piedra.png", runtimeFilename: "vanity-mirror.png", source: require("../../../assets/space/runtime/vanity-mirror.png"), aspectRatio: 225 / 320, preferredWidth: 115, allowedSlots: ["detailRight"], interestTags: ["arte", "hogar"], minimumEngagementStage: 2, priority: 65, zIndex: 40 },
 };
 
 export interface SpaceSceneObject {
@@ -61,10 +79,31 @@ export function placeAsset(assetId: AssetId, slotId: SlotId, source: SpaceSceneO
     width, height, zIndex: asset.zIndex, source };
 }
 
-const primaryByInterest: Partial<Record<InterestId, AssetId>> = {
-  naturaleza: "plantSmall", libros: "shelf", gaming: "monitor", musica: "speakerVinyl",
-  animales: "catFigurine", cafe: "mug", noche: "moonLamp", tecnologia: "monitor", hogar: "deskLamp",
+const assetsByInterest: Partial<Record<InterestId, readonly AssetId[]>> = {
+  naturaleza: ["peonies", "driedFlowers", "roseQuartz", "plantSmall"],
+  libros: ["shelf", "floralNotebook", "tarotDeck"],
+  gaming: ["monitor", "gamepad"], musica: ["speakerVinyl"],
+  animales: ["calicoCat", "catMug", "catFrame", "catFigurine"],
+  cafe: ["mug", "catMug"],
+  arte: ["tarotDeck", "catFrame", "floralNotebook", "vanityMirror"],
+  noche: ["scentedCandle", "tarotDeck", "roseQuartz", "warmLamp", "candleTrio", "moonLamp"],
+  tecnologia: ["monitor"],
+  hogar: ["warmLamp", "vanityOrganizer", "jewelryBox", "vanityMirror", "perfume",
+    "candleTrio", "driedFlowers", "scentedCandle", "deskLamp", "plantSmall"],
 };
+const paletteAffinity: Partial<Record<PersonalizationSelection["themeId"], readonly AssetId[]>> = {
+  peonia: ["peonies", "calicoCat", "catMug", "roseQuartz", "jewelryBox", "perfume"],
+  ciruela: ["tarotDeck", "roseQuartz", "candleTrio", "catFrame", "vanityMirror"],
+  terracota: ["driedFlowers", "warmLamp", "scentedCandle", "vanityOrganizer"],
+  arena: ["driedFlowers", "warmLamp", "vanityOrganizer", "vanityMirror"],
+  noche: ["scentedCandle", "tarotDeck", "roseQuartz", "candleTrio", "warmLamp"],
+};
+
+function orderedForPalette(ids: readonly AssetId[], paletteId: PersonalizationSelection["themeId"]): AssetId[] {
+  const preferred = paletteAffinity[paletteId] ?? [];
+  return [...ids].sort((a, b) => Number(preferred.includes(b)) - Number(preferred.includes(a)) ||
+    ids.indexOf(a) - ids.indexOf(b));
+}
 
 export function resolveSpaceScene(stage: SpaceStage, selection: PersonalizationSelection,
   achievementUnlocks: readonly AchievementId[] = [], availableAssets?: ReadonlySet<AssetId>): SpaceScene {
@@ -87,13 +126,23 @@ export function resolveSpaceScene(stage: SpaceStage, selection: PersonalizationS
   // A fourth detail can reinforce a selected interest without displacing the other three.
   const optionalLimit = minimal ? 1 : 4;
   if (stage >= 2) {
-    for (const interest of selection.interestIds) {
-      if (optional >= optionalLimit) break;
-      const id = primaryByInterest[interest];
-      if (id && add(id, "interest")) optional++;
+    const interestPools = selection.interestIds.map(interest =>
+      orderedForPalette(assetsByInterest[interest] ?? [], selection.themeId));
+    // Give each selected interest a first choice, then fill free zones with companions.
+    for (let index = 0; index < interestPools.length && optional < optionalLimit; index++) {
+      if (interestPools[index].some(id => {
+        if (!add(id, "interest")) return false;
+        optional++;
+        return true;
+      })) continue;
     }
-    if (optional < optionalLimit && selection.interestIds.includes("gaming") && add("gamepad", "interest")) optional++;
-    if (optional < optionalLimit && selection.interestIds.includes("hogar") && add("plantSmall", "interest")) optional++;
+    for (let depth = 1; depth < 10 && optional < optionalLimit; depth++) {
+      for (const pool of interestPools) {
+        if (optional >= optionalLimit) break;
+        const id = pool[depth];
+        if (id && add(id, "interest")) optional++;
+      }
+    }
     const unlocked = [...new Set(achievementUnlocks)];
     const detailPool: AssetId[] = selection.atmosphereId === "nocturno"
       ? ["moonLamp", "plantSmall", "mug"] : ["mug", "plantSmall", "moonLamp"];

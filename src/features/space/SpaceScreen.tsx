@@ -24,6 +24,11 @@ const ASSET_LABELS: Record<AssetId, string> = {
   plantLarge: "Planta grande", plantSmall: "Planta pequeña", books: "Libros", mug: "Taza",
   gamepad: "Control de juego", speakerVinyl: "Vinilo y parlante", moonLamp: "Lámpara de luna",
   catFigurine: "Figura de gato",
+  scentedCandle: "Vela aromática", candleTrio: "Trío de velas", tarotDeck: "Tarot",
+  roseQuartz: "Cuarzo rosa", warmLamp: "Lámpara cálida", calicoCat: "Gatito de cerámica",
+  catMug: "Taza gatito", catFrame: "Marco con gato", peonies: "Peonías",
+  driedFlowers: "Flores secas", perfume: "Perfume", vanityOrganizer: "Tocador",
+  floralNotebook: "Cuaderno floral", jewelryBox: "Joyero", vanityMirror: "Espejo",
 };
 
 export function SpaceScreen({ onBack, onAchievements, onPersonalize }: {
@@ -157,7 +162,7 @@ export function SpaceScreen({ onBack, onAchievements, onPersonalize }: {
                 <View style={styles.choices}>{eligible.map(id => {
                   const usedElsewhere = state.overrides.some(row => row.slotId !== slot.id && row.assetId === id);
                   return <Pressable key={id} accessibilityRole="button" accessibilityState={{ selected: current?.assetId === id, disabled: usedElsewhere }}
-                    accessibilityLabel={`${ASSET_LABELS[id]}${usedElsewhere ? ", elegido en otra zona" : ""}`}
+                    accessibilityLabel={`${ASSET_LABELS[id]}, ${slot.title}${usedElsewhere ? ", elegido en otra zona" : ""}`}
                     disabled={usedElsewhere} onPress={() => void change(() => chooseSlot(db, slot.id, id))}
                     style={[styles.asset, { backgroundColor: current?.assetId === id ? theme.primarySurface : theme.secondarySurface,
                       borderColor: current?.assetId === id ? theme.primary : theme.border, opacity: usedElsewhere ? 0.55 : 1 }]}>

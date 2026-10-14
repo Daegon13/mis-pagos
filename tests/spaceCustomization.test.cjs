@@ -97,6 +97,8 @@ test('slot writes distinguish Automatic, asset and Empty, validate entitlements 
     await assert.rejects(chooseSlot(db, 'deskCenter', 'mug'), /no corresponde/);
     await chooseSlot(db, 'deskCenter', 'monitor');
     assert.equal((await loadSpaceCustomization(db)).overrides[0].assetId, 'monitor');
+    await chooseSlot(db, 'deskLeft', 'tarotDeck');
+    assert.equal((await loadSpaceCustomization(db)).overrides.find(item => item.slotId === 'deskLeft').assetId, 'tarotDeck');
     await chooseSlot(db, 'deskRight', 'plantSmall');
     await assert.rejects(chooseSlot(db, 'deskLeft', 'plantSmall'), /otra zona/);
     await chooseSlot(db, 'deskRight', null);
@@ -135,6 +137,9 @@ test('scene merge keeps anchors, manual choices, minimalism and deterministic fa
   assert.equal(relocated.objects.filter(item => item.assetId === 'plantSmall').length, 1);
   assert.equal(relocated.objects.find(item => item.assetId === 'plantSmall').slotId, 'deskLeft');
   assert.ok(eligibleAssetsForSlot('deskCenter', 2).includes('monitor'));
+  assert.ok(eligibleAssetsForSlot('detailRight', 2).includes('vanityMirror'));
+  assert.ok(resolveFinalSpaceScene(2, selection(['minimalismo']), unlocks,
+    [row('deskLeft', 'tarotDeck')]).objects.some(item => item.assetId === 'tarotDeck' && item.source === 'manual'));
 });
 
 test('palette and mood follow defaults, then override independently when unlocked', async () => {

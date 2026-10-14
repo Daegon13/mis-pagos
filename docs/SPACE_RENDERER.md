@@ -605,4 +605,26 @@ SPACE-02 keeps the books at their previous geometry in `booksAnchor` and adds a 
 
 SPACE-04 uses the same approved runtime assets. At stage 2, up to four optional objects can appear when a selected interest has a compatible companion (for example, Gaming shows monitor and controller); Minimalismo still limits automatic interest details to one. Interest objects remain secondary to fixed anchors and manual overrides. Custom wall and ambient hex colors tint the existing wall/window masks; no new source art is introduced.
 
+SPACE-ASSET-02 adds the following exact source-to-runtime mappings. The 15 new transparent derivatives are at most 320 px on their longest side and total **2,158,693 bytes**. The original PNGs remain unchanged and outside the production registry.
+
+| Runtime derivative | Physical source filename |
+|---|---|
+| `scented-candle.png` | `Vela aromática minimalista en tonos cálidos.png` |
+| `candle-trio.png` | `Trío de velas cálidas y acogedoras.png` |
+| `tarot-deck.png` | `Mazo de tarot místico con sol y luna.png` |
+| `rose-quartz.png` | `Cristal de cuarzo rosa sobre base de piedra.png` |
+| `warm-lamp.png` | `Lámpara minimalista de luz cálida.png` |
+| `calico-cat.png` | `Gato de cerámica sereno estilo calicó.png` |
+| `cat-mug.png` | `Taza de gato con orejas rosa y crema.png` |
+| `cat-frame.png` | `Marco de madera con gato sereno.png` |
+| `peonies.png` | `Ramo de peonías en jarrón cerámico.png` |
+| `dried-flowers.png` | `Arreglo seco en jarrón beige.png` |
+| `perfume.png` | `Perfume esférico rosa con tapón marfil.png` |
+| `vanity-organizer.png` | `Organizador de tocador en tonos cálidos.png` |
+| `floral-notebook.png` | `Cuaderno floral con banda rosada.png` |
+| `jewelry-box.png` | `Joyero oval de terciopelo rosado y dorado.png` |
+| `vanity-mirror.png` | `Espejo de tocador dorado con base de piedra.png` |
+
+The existing `detailLeft` anchor sits beyond the desk surface. Tarot, the warm lamp, perfume, vanity organizer and vanity mirror therefore use only their compatible desk or right-detail slots, where their bases have visible support. The other approved slot pairings remain available in `SPACE_ASSETS`. No slot geometry changed. Contact-sheet inspection found preserved alpha and no residual background; five local 360 px scene composites showed no clipping or unsupported placement after these restrictions. Android API 35 confirmed the Animales/Peonía scene, a manual Joyero override and a 360×640 viewport; other interest combinations were inspected in local composites.
+
 `/space-calibration` redirects to Home in production. Its master require is behind `__DEV__`; an Android production export excludes both the raw master and calibration derivative. In development it overlays the modular scene on the approved master derivative, supports 0–100% scene opacity, selectable visible objects and temporary ±1/±5/±10 adjustments to x, y, width and zIndex. Accepted values are copied into the static registry; calibration does not persist them.
