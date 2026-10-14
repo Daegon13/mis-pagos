@@ -95,7 +95,7 @@ test('alpha v2 upgrade preserves financial rows and engagement stage; preference
     const homeBefore = calculateHome(123456, payments, new Date(2026, 9, 2));
     await runMigrations(db);
     await runMigrations(db);
-    assert.equal(sqlite.prepare('PRAGMA user_version').get().user_version, 8);
+    assert.equal(sqlite.prepare('PRAGMA user_version').get().user_version, 9);
     assert.equal((await getPersonalizationPreferences(db)).themeId, 'bosque');
     await savePersonalizationPreferences(db, { themeId: 'noche',
       interestIds: ['gaming', 'tecnologia', 'musica'], atmosphereId: 'nocturno', spaceName: 'Base' });
@@ -117,7 +117,7 @@ test('fresh installation creates safe defaults without financial rows', async ()
   const { sqlite, db } = fixture();
   try {
     await runMigrations(db);
-    assert.equal(sqlite.prepare('PRAGMA user_version').get().user_version, 8);
+    assert.equal(sqlite.prepare('PRAGMA user_version').get().user_version, 9);
     const saved = await getPersonalizationPreferences(db);
     assert.equal(saved.themeId, 'bosque');
     assert.deepEqual(saved.interestIds, []);

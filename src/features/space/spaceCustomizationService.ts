@@ -3,10 +3,12 @@ import { listAchievementUnlocks } from "@/data/repositories/achievementRepositor
 import { getSpaceStage } from "@/data/repositories/engagementRepository";
 import { clearDecorationOverrides, clearRoomPaletteOverride, clearWindowMoodOverride,
   getSpaceVisualPreferences, listSlotOverrides, restoreSlotAutomatic, setRoomPaletteOverride,
-  setSlotAssetOverride, setSlotEmpty, setWindowMoodOverride, setCustomSpaceColor } from "@/data/repositories/spaceCustomizationRepository";
+  setSlotAssetOverride, setSlotEmpty, setWindowMoodOverride, setCustomSpaceColor,
+  setAutomaticVariant, setDecorationMode } from "@/data/repositories/spaceCustomizationRepository";
 import { capabilitiesFromUnlocks } from "@/domain/achievementRewards";
 import { isAtmosphereId, isThemeId } from "@/domain/personalization";
-import { isEditableSlotId, normalizeSpaceColor, validateSlotChoice } from "./spaceCustomization";
+import { isEditableSlotId, nextAutomaticVariant, normalizeSpaceColor, validateSlotChoice } from "./spaceCustomization";
+import type { PersonalizationSelection } from "@/domain/personalization";
 
 export async function chooseCustomColor(db: SQLiteDatabase, zone: "wall" | "ambient", input: string): Promise<void> {
   const color = normalizeSpaceColor(input);
@@ -22,6 +24,23 @@ export async function loadSpaceCustomization(db: SQLiteDatabase) {
     getSpaceStage(db), listAchievementUnlocks(db), listSlotOverrides(db), getSpaceVisualPreferences(db),
   ]);
   return { stage, unlocks: unlockRows.map(row => row.achievement_id), overrides, visual };
+}
+
+export async function tryAnotherCombination(db: SQLiteDatabase, selection: PersonalizationSelection): Promise<boolean> {
+  let changed = false;
+  await db.withExclusiveTransactionAsync(async tx => {
+    const { stage, unlocks, visual } = await loadSpaceCustomization(tx);
+    if (visual.decorationMode !== "automatic") return;
+    const next = nextAutomaticVariant(stage, selection, unlocks, visual.automaticVariant);
+    if (next === visual.automaticVariant) return;
+    await setAutomaticVariant(tx, next);
+    changed = true;
+  });
+  return changed;
+}
+
+export async function chooseDecorationMode(db: SQLiteDatabase, mode: "automatic" | "manual"): Promise<void> {
+  await setDecorationMode(db, mode);
 }
 
 export async function chooseSlot(db: SQLiteDatabase, slotId: string, assetId: string | null): Promise<void> {

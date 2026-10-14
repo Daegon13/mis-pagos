@@ -1,6 +1,7 @@
 import type { AchievementId } from "@/domain/achievements";
 import type { SpaceStage } from "@/domain/engagement";
 import type { InterestId, PersonalizationSelection } from "@/domain/personalization";
+import { INTERESTS } from "@/domain/personalization";
 
 export const SCENE_WIDTH = 1448;
 export const SCENE_HEIGHT = 1086;
@@ -23,6 +24,18 @@ export type AssetId = "desk" | "shelf" | "monitor" | "deskLamp" | "plantLarge" |
   "scentedCandle" | "candleTrio" | "tarotDeck" | "roseQuartz" | "warmLamp" |
   "calicoCat" | "catMug" | "catFrame" | "peonies" | "driedFlowers" |
   "perfume" | "vanityOrganizer" | "floralNotebook" | "jewelryBox" | "vanityMirror";
+export const ASSET_LABELS: Record<AssetId, string> = {
+  desk: "Escritorio", shelf: "Estantería", monitor: "Monitor", deskLamp: "Lámpara de escritorio",
+  plantLarge: "Planta grande", plantSmall: "Planta pequeña", books: "Libros", mug: "Taza",
+  gamepad: "Control de juego", speakerVinyl: "Vinilo y parlante", moonLamp: "Lámpara de luna",
+  catFigurine: "Figura de gato", scentedCandle: "Vela aromática", candleTrio: "Trío de velas",
+  tarotDeck: "Tarot", roseQuartz: "Cuarzo rosa", warmLamp: "Lámpara cálida",
+  calicoCat: "Gatito de cerámica", catMug: "Taza gatito", catFrame: "Marco con gato",
+  peonies: "Peonías", driedFlowers: "Flores secas", perfume: "Perfume",
+  vanityOrganizer: "Tocador", floralNotebook: "Cuaderno floral", jewelryBox: "Joyero",
+  vanityMirror: "Espejo",
+};
+export const AUTOMATIC_VARIANT_COUNT = 60;
 type AssetDefinition = {
   canonicalSourceFilename: string; runtimeFilename: string; source: number; aspectRatio: number;
   preferredWidth: number; allowedSlots: readonly SlotId[]; interestTags: readonly InterestId[];
@@ -105,8 +118,19 @@ function orderedForPalette(ids: readonly AssetId[], paletteId: PersonalizationSe
     ids.indexOf(a) - ids.indexOf(b));
 }
 
+export function recommendationLabels(assetId: AssetId): string[] {
+  return SPACE_ASSETS[assetId].interestTags.slice(0, 3).map(tag =>
+    INTERESTS.find(interest => interest.id === tag)?.label ?? tag);
+}
+
+function rotate<T>(items: readonly T[], variant: number): T[] {
+  if (!items.length) return [];
+  const offset = variant % items.length;
+  return [...items.slice(offset), ...items.slice(0, offset)];
+}
+
 export function resolveSpaceScene(stage: SpaceStage, selection: PersonalizationSelection,
-  achievementUnlocks: readonly AchievementId[] = [], availableAssets?: ReadonlySet<AssetId>): SpaceScene {
+  achievementUnlocks: readonly AchievementId[] = [], availableAssets?: ReadonlySet<AssetId>, variant = 0): SpaceScene {
   const minimal = selection.interestIds.includes("minimalismo") || selection.atmosphereId === "minimalista";
   const objects: SpaceSceneObject[] = [];
   const occupied = new Set<SlotId>();
@@ -127,7 +151,7 @@ export function resolveSpaceScene(stage: SpaceStage, selection: PersonalizationS
   const optionalLimit = minimal ? 1 : 4;
   if (stage >= 2) {
     const interestPools = selection.interestIds.map(interest =>
-      orderedForPalette(assetsByInterest[interest] ?? [], selection.themeId));
+      rotate(orderedForPalette(assetsByInterest[interest] ?? [], selection.themeId), variant));
     // Give each selected interest a first choice, then fill free zones with companions.
     for (let index = 0; index < interestPools.length && optional < optionalLimit; index++) {
       if (interestPools[index].some(id => {
@@ -148,7 +172,7 @@ export function resolveSpaceScene(stage: SpaceStage, selection: PersonalizationS
       ? ["moonLamp", "plantSmall", "mug"] : ["mug", "plantSmall", "moonLamp"];
     let discovery = 0;
     const discoveryLimit = Math.min(unlocked.length, minimal ? 1 : 3);
-    for (const id of detailPool) {
+    for (const id of rotate(detailPool, variant)) {
       if (discovery >= discoveryLimit) break;
       if (add(id, "achievement")) discovery++;
     }

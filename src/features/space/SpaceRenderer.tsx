@@ -31,7 +31,8 @@ export function SpaceRenderer({ stage, selection, achievementUnlocks = [], width
   const scene = useMemo(() => resolveFinalSpaceScene(stage, selection, achievementUnlocks, slotOverrides, visualPreferences),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [stage, selection.themeId, selection.atmosphereId, interestKey, unlockKey, overrideKey,
-      visualPreferences.roomPaletteId, visualPreferences.windowMoodId, visualPreferences.wallColor, visualPreferences.ambientColor]);
+      visualPreferences.roomPaletteId, visualPreferences.windowMoodId, visualPreferences.wallColor,
+      visualPreferences.ambientColor, visualPreferences.automaticVariant, visualPreferences.decorationMode]);
   const scale = width / SCENE_WIDTH;
   const imageStyle = { width, height: SCENE_HEIGHT * scale };
   const treatments = scene.treatments;

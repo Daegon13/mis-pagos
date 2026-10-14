@@ -3,11 +3,27 @@ import { capabilitiesFromUnlocks, EDITABLE_SPACE_SLOTS, type EditableSlotId } fr
 import type { SpaceStage } from "@/domain/engagement";
 import { isAtmosphereId, isThemeId, type PersonalizationSelection } from "@/domain/personalization";
 import type { StoredSlotOverride, StoredVisualPreferences } from "@/data/repositories/spaceCustomizationRepository";
-import { placeAsset, resolveSpaceScene, SPACE_ASSETS, type AssetId, type SpaceScene } from "./spaceScene";
+import { AUTOMATIC_VARIANT_COUNT, placeAsset, resolveSpaceScene, SPACE_ASSETS, type AssetId, type SpaceScene } from "./spaceScene";
 
 export const STRUCTURAL_ASSETS: ReadonlySet<AssetId> = new Set(["plantLarge", "desk", "books"]);
 export const EMPTY_VISUAL_PREFERENCES: StoredVisualPreferences = { roomPaletteId: null, windowMoodId: null,
-  wallColor: null, ambientColor: null };
+  wallColor: null, ambientColor: null, automaticVariant: 0, decorationMode: "automatic" };
+
+function compositionKey(scene: SpaceScene): string {
+  return scene.objects.map(object => `${object.slotId}:${object.assetId}`).sort().join("|");
+}
+
+export function nextAutomaticVariant(stage: SpaceStage, selection: PersonalizationSelection,
+  unlocks: readonly AchievementId[], current: number): number {
+  const start = Number.isSafeInteger(current) && current >= 0 ? current % AUTOMATIC_VARIANT_COUNT : 0;
+  const currentKey = compositionKey(resolveSpaceScene(stage, selection, unlocks, undefined, start));
+  for (let step = 1; step < AUTOMATIC_VARIANT_COUNT; step++) {
+    const candidate = (start + step) % AUTOMATIC_VARIANT_COUNT;
+    if (compositionKey(resolveSpaceScene(stage, selection, unlocks, undefined, candidate)) !== currentKey)
+      return candidate;
+  }
+  return start;
+}
 
 export function normalizeSpaceColor(value: string): string | null {
   const trimmed = value.trim();
@@ -59,7 +75,11 @@ export function effectiveAppearance(selection: PersonalizationSelection, unlocks
 export function resolveFinalSpaceScene(stage: SpaceStage, selection: PersonalizationSelection,
   unlocks: readonly AchievementId[], overrides: readonly StoredSlotOverride[] = [],
   visual: StoredVisualPreferences = EMPTY_VISUAL_PREFERENCES): SpaceScene {
-  const automatic = resolveSpaceScene(stage, selection, unlocks);
+  const automatic = resolveSpaceScene(stage, selection, unlocks, undefined, visual.automaticVariant);
+  const { moodId } = effectiveAppearance(selection, unlocks, visual);
+  const treatments = moodId === selection.atmosphereId ? automatic.treatments :
+    resolveSpaceScene(stage, { ...selection, atmosphereId: moodId }, unlocks).treatments;
+  if (visual.decorationMode === "automatic") return { treatments, objects: automatic.objects };
   const capabilities = capabilitiesFromUnlocks(unlocks);
   const applied = new Map<EditableSlotId, AssetId | null>();
   const used = new Set<AssetId>();
@@ -80,8 +100,5 @@ export function resolveFinalSpaceScene(stage: SpaceStage, selection: Personaliza
     if (assetId !== null) objects.push(placeAsset(assetId, slotId, "manual"));
   }
   objects.sort((a, b) => a.zIndex - b.zIndex || a.assetId.localeCompare(b.assetId));
-  const { moodId } = effectiveAppearance(selection, unlocks, visual);
-  const treatments = moodId === selection.atmosphereId ? automatic.treatments :
-    resolveSpaceScene(stage, { ...selection, atmosphereId: moodId }, unlocks).treatments;
   return { treatments, objects };
 }

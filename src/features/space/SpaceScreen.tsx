@@ -6,31 +6,20 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { deriveExistingAchievements } from "@/features/achievements/achievementService";
 import { usePersonalization } from "@/features/personalization/PersonalizationProvider";
-import { ATMOSPHERES, THEMES } from "@/domain/personalization";
+import { ATMOSPHERES, INTERESTS, THEMES } from "@/domain/personalization";
 import { capabilitiesFromUnlocks, EDITABLE_SPACE_SLOTS, rewardForCapability } from "@/domain/achievementRewards";
 import type { AchievementId } from "@/domain/achievements";
 import type { SpaceStage } from "@/domain/engagement";
 import type { StoredSlotOverride, StoredVisualPreferences } from "@/data/repositories/spaceCustomizationRepository";
 import { effectiveAppearance, eligibleAssetsForSlot } from "./spaceCustomization";
-import { chooseCustomColor, choosePalette, chooseSlot, chooseWindowMood, loadSpaceCustomization, resetDecoration, resetSlot } from "./spaceCustomizationService";
+import { chooseCustomColor, chooseDecorationMode, choosePalette, chooseSlot, chooseWindowMood,
+  loadSpaceCustomization, resetDecoration, resetSlot, tryAnotherCombination } from "./spaceCustomizationService";
 import { SpaceRenderer } from "./SpaceRenderer";
-import { SPACE_ASSETS, type AssetId } from "./spaceScene";
+import { ASSET_LABELS, recommendationLabels, SPACE_ASSETS, type AssetId } from "./spaceScene";
 import { themeFor } from "@/features/personalization/themes";
 
 type SpaceState = { stage: SpaceStage; unlocks: AchievementId[]; overrides: StoredSlotOverride[];
   visual: StoredVisualPreferences };
-const ASSET_LABELS: Record<AssetId, string> = {
-  desk: "Escritorio", shelf: "Estantería", monitor: "Monitor", deskLamp: "Lámpara de escritorio",
-  plantLarge: "Planta grande", plantSmall: "Planta pequeña", books: "Libros", mug: "Taza",
-  gamepad: "Control de juego", speakerVinyl: "Vinilo y parlante", moonLamp: "Lámpara de luna",
-  catFigurine: "Figura de gato",
-  scentedCandle: "Vela aromática", candleTrio: "Trío de velas", tarotDeck: "Tarot",
-  roseQuartz: "Cuarzo rosa", warmLamp: "Lámpara cálida", calicoCat: "Gatito de cerámica",
-  catMug: "Taza gatito", catFrame: "Marco con gato", peonies: "Peonías",
-  driedFlowers: "Flores secas", perfume: "Perfume", vanityOrganizer: "Tocador",
-  floralNotebook: "Cuaderno floral", jewelryBox: "Joyero", vanityMirror: "Espejo",
-};
-
 export function SpaceScreen({ onBack, onAchievements, onPersonalize }: {
   onBack: () => void; onAchievements: () => void; onPersonalize: () => void;
 }) {
@@ -44,6 +33,7 @@ export function SpaceScreen({ onBack, onAchievements, onPersonalize }: {
   const [attempt, setAttempt] = useState(0);
   const [wallDraft, setWallDraft] = useState("");
   const [ambientDraft, setAmbientDraft] = useState("");
+  const [combinationNote, setCombinationNote] = useState<string | null>(null);
   const refresh = useCallback(async () => {
     await deriveExistingAchievements(db);
     const loaded = await loadSpaceCustomization(db);
@@ -102,14 +92,15 @@ export function SpaceScreen({ onBack, onAchievements, onPersonalize }: {
         </View>
         <Text style={{ color: theme.textSecondary }}>Etapa {state.stage} · Pared {appearance?.wallColor ?? THEMES.find(item => item.id === appearance?.paletteId)?.label} · Luz {appearance?.ambientColor ?? ATMOSPHERES.find(item => item.id === appearance?.moodId)?.label}</Text>
         <View style={[styles.section, { backgroundColor: theme.surface, borderColor: theme.border }]}>
-          <Text accessibilityRole="header" style={[styles.cardTitle, { color: theme.textPrimary }]}>Pared y paleta</Text>
+          <Text accessibilityRole="header" style={[styles.cardTitle, { color: theme.textPrimary }]}>Pared</Text>
+          <Text style={{ color: theme.textSecondary }}>Elegí el color que querés para la habitación.</Text>
           {capabilities.has("roomPaletteOverride") ? <View style={styles.choices}>
             {button("Seguir tema de la app", state.visual.roomPaletteId === null && !state.visual.wallColor,
               () => void change(() => choosePalette(db, null)), "palette-auto", themeFor(preferences.themeId).spaceWall)}
             {THEMES.map(item => button(item.label, !state.visual.wallColor && state.visual.roomPaletteId === item.id,
               () => void change(() => choosePalette(db, item.id)), `palette-${item.id}`, themeFor(item.id).spaceWall))}
             <Text style={{ color: theme.textSecondary }}>Personalizado · escribí un color hexadecimal (#RRGGBB).</Text>
-            <View style={styles.choiceContent}>
+            <View style={styles.colorRow}>
               <TextInput accessibilityLabel="Color personalizado de pared" value={wallDraft} onChangeText={setWallDraft}
                 autoCapitalize="characters" maxLength={7} placeholder="#8D6FAA" placeholderTextColor={theme.muted}
                 style={[styles.colorInput, { color: theme.textPrimary, backgroundColor: theme.background, borderColor: theme.border }]} />
@@ -119,14 +110,15 @@ export function SpaceScreen({ onBack, onAchievements, onPersonalize }: {
           </View> : locked("roomPaletteOverride")}
         </View>
         <View style={[styles.section, { backgroundColor: theme.surface, borderColor: theme.border }]}>
-          <Text accessibilityRole="header" style={[styles.cardTitle, { color: theme.textPrimary }]}>Luz y ventana</Text>
+          <Text accessibilityRole="header" style={[styles.cardTitle, { color: theme.textPrimary }]}>Ambiente e iluminación</Text>
+          <Text style={{ color: theme.textSecondary }}>Cambiá la sensación de luz y el ambiente del espacio. Es independiente de la pared.</Text>
           {capabilities.has("windowMoodOverride") ? <View style={styles.choices}>
             {button("Seguir atmósfera actual", state.visual.windowMoodId === null && !state.visual.ambientColor,
               () => void change(() => chooseWindowMood(db, null)), "mood-auto")}
             {ATMOSPHERES.map(item => button(item.label, !state.visual.ambientColor && state.visual.windowMoodId === item.id,
               () => void change(() => chooseWindowMood(db, item.id)), `mood-${item.id}`))}
             <Text style={{ color: theme.textSecondary }}>Personalizado · luz y ventana (#RRGGBB).</Text>
-            <View style={styles.choiceContent}>
+            <View style={styles.colorRow}>
               <TextInput accessibilityLabel="Color personalizado de ambiente" value={ambientDraft} onChangeText={setAmbientDraft}
                 autoCapitalize="characters" maxLength={7} placeholder="#8D6FAA" placeholderTextColor={theme.muted}
                 style={[styles.colorInput, { color: theme.textPrimary, backgroundColor: theme.background, borderColor: theme.border }]} />
@@ -135,16 +127,40 @@ export function SpaceScreen({ onBack, onAchievements, onPersonalize }: {
             </View>
           </View> : locked("windowMoodOverride")}
         </View>
-        <Pressable accessibilityRole="button" onPress={() => setEditing(value => !value)}
-          style={[styles.primary, { backgroundColor: theme.primary }]}>
-          <Text style={{ color: theme.textOnPrimary, fontWeight: "700" }}>{editing ? "Cerrar editor" : "Editar espacio"}</Text>
-        </Pressable>
-        <Pressable accessibilityRole="button" onPress={onPersonalize} style={styles.touch}>
-          <Text style={{ color: theme.primary, fontWeight: "600" }}>Cambiar nombre e intereses →</Text>
-        </Pressable>
-        {editing && <>
-          <Text accessibilityRole="header" style={[styles.sectionTitle, { color: theme.textPrimary }]}>Decoración</Text>
-          <Text style={{ color: theme.textSecondary }}>Automático sigue tus intereses. Vacío deja libre esa zona. La planta, el escritorio y los libros marcan etapas y permanecen.</Text>
+        <View style={[styles.section, { backgroundColor: theme.surface, borderColor: theme.border }]}>
+          <Text accessibilityRole="header" style={[styles.cardTitle, { color: theme.textPrimary }]}>Decoración</Text>
+          <Text style={{ color: theme.textSecondary }}>Elegí los objetos o dejá que Mis Pagos los combine según tus intereses.</Text>
+          <Text style={{ color: theme.textSecondary }}>Tus intereses: {preferences.interestIds.length
+            ? preferences.interestIds.slice(0, 3).map(id => INTERESTS.find(item => item.id === id)?.label ?? id).join(" · ")
+            : "ninguno por ahora"}</Text>
+          <Pressable accessibilityRole="button" onPress={onPersonalize} style={styles.touch}>
+            <Text style={{ color: theme.primary, fontWeight: "600" }}>Cambiar intereses →</Text>
+          </Pressable>
+          <View style={styles.choices}>
+            {button("Automático", state.visual.decorationMode === "automatic",
+              () => void change(() => chooseDecorationMode(db, "automatic")), "mode-automatic")}
+            {button("Manual", state.visual.decorationMode === "manual",
+              () => void change(() => chooseDecorationMode(db, "manual")), "mode-manual")}
+          </View>
+          {state.visual.decorationMode === "automatic" ? <>
+            <Text style={{ color: theme.textSecondary }}>Usamos tus intereses para crear distintas versiones de tu espacio.</Text>
+            {preferences.interestIds.length > 0 && <Text style={{ color: theme.primary, fontWeight: "600" }}>Basado en tus intereses</Text>}
+            <Pressable accessibilityRole="button" onPress={() => void change(async () => {
+              const changed = await tryAnotherCombination(db, preferences);
+              setCombinationNote(changed ? null : "No hay otra combinación disponible por ahora.");
+            })} style={[styles.primary, { backgroundColor: theme.primary }]}>
+              <Text style={{ color: theme.textOnPrimary, fontWeight: "700" }}>Probar otra combinación</Text>
+            </Pressable>
+            {combinationNote && <Text accessibilityLiveRegion="polite" style={{ color: theme.textSecondary }}>{combinationNote}</Text>}
+          </> : <>
+            <Text style={{ color: theme.textSecondary }}>Elegí objeto por objeto en las zonas desbloqueadas. Las recomendaciones no limitan tus opciones.</Text>
+            <Pressable accessibilityRole="button" onPress={() => setEditing(value => !value)} style={styles.touch}>
+              <Text style={{ color: theme.primary, fontWeight: "700" }}>{editing ? "Ocultar objetos" : "Elegir objetos"}</Text>
+            </Pressable>
+          </>}
+        </View>
+        {state.visual.decorationMode === "manual" && editing && <>
+          <Text style={{ color: theme.textSecondary }}>Vacío deja libre la zona. Planta, escritorio y libros permanecen según la etapa.</Text>
           {EDITABLE_SPACE_SLOTS.map(slot => {
             const current = state.overrides.find(row => row.slotId === slot.id);
             const unlocked = capabilities.has(slot.capabilityId);
@@ -161,13 +177,16 @@ export function SpaceScreen({ onBack, onAchievements, onPersonalize }: {
                 </View>
                 <View style={styles.choices}>{eligible.map(id => {
                   const usedElsewhere = state.overrides.some(row => row.slotId !== slot.id && row.assetId === id);
+                  const recommendations = recommendationLabels(id);
                   return <Pressable key={id} accessibilityRole="button" accessibilityState={{ selected: current?.assetId === id, disabled: usedElsewhere }}
                     accessibilityLabel={`${ASSET_LABELS[id]}, ${slot.title}${usedElsewhere ? ", elegido en otra zona" : ""}`}
                     disabled={usedElsewhere} onPress={() => void change(() => chooseSlot(db, slot.id, id))}
                     style={[styles.asset, { backgroundColor: current?.assetId === id ? theme.primarySurface : theme.secondarySurface,
                       borderColor: current?.assetId === id ? theme.primary : theme.border, opacity: usedElsewhere ? 0.55 : 1 }]}>
                     <Image source={SPACE_ASSETS[id].source} resizeMode="contain" style={styles.thumbnail} />
-                    <Text style={{ color: theme.textPrimary, textAlign: "center", fontSize: 12 }}>{ASSET_LABELS[id]}</Text>
+                    <Text style={{ color: theme.textPrimary, textAlign: "center", fontSize: 12, fontWeight: "600" }}>{ASSET_LABELS[id]}</Text>
+                    {recommendations.length > 0 && <Text style={{ color: theme.textSecondary, textAlign: "center", fontSize: 11 }}>
+                      Recomendado por: {recommendations.join(" · ")}</Text>}
                   </Pressable>;
                 })}</View>
               </> : unlocked ? <Text style={{ color: theme.textSecondary }}>Las zonas de decoración aparecen con el escritorio en la etapa 2.</Text> : locked(slot.capabilityId)}
@@ -197,8 +216,9 @@ const styles = StyleSheet.create({
   locked: { padding: 12, borderRadius: 12, gap: 6 }, choices: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
   choice: { minHeight: 44, borderWidth: 1, borderRadius: 12, paddingHorizontal: 12, paddingVertical: 10, justifyContent: "center" },
   choiceContent: { flexDirection: "row", alignItems: "center", gap: 8 },
+  colorRow: { flexDirection: "row", flexWrap: "wrap", alignItems: "center", gap: 8 },
   swatch: { width: 22, height: 22, borderRadius: 11, borderWidth: 1, borderColor: "#809088" },
   colorInput: { minWidth: 122, minHeight: 44, borderWidth: 1, borderRadius: 10, paddingHorizontal: 12, fontSize: 16 },
-  asset: { width: 96, minHeight: 112, borderWidth: 1, borderRadius: 12, padding: 6, alignItems: "center", justifyContent: "center", gap: 4 },
+  asset: { width: 132, minHeight: 160, borderWidth: 1, borderRadius: 12, padding: 8, alignItems: "center", justifyContent: "center", gap: 4 },
   thumbnail: { width: 72, height: 72 },
 });

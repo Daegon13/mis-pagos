@@ -11,7 +11,7 @@ import { usePersonalization } from "@/features/personalization/PersonalizationPr
 import { deriveExistingAchievements } from "./achievementService";
 import { ContextualHelp } from "@/features/help/ContextualHelp";
 import { loadSpaceCustomization } from "@/features/space/spaceCustomizationService";
-import { SPACE_ASSETS, type AssetId } from "@/features/space/spaceScene";
+import { ASSET_LABELS, SPACE_ASSETS, type AssetId } from "@/features/space/spaceScene";
 import type { StoredSlotOverride, StoredVisualPreferences } from "@/data/repositories/spaceCustomizationRepository";
 import { themeFor } from "@/features/personalization/themes";
 
@@ -20,18 +20,14 @@ const rewardPreview: Partial<Record<AchievementId, AssetId>> = {
   FIRST_EXPECTED_INCOME: "peonies", FIRST_RESOLVED_MOVEMENT: "candleTrio",
   FIRST_OVERDUE_RESOLVED: "calicoCat",
 };
-const previewLabels: Partial<Record<AssetId, string>> = {
-  vanityOrganizer: "Tocador", floralNotebook: "Cuaderno floral", peonies: "Peonías",
-  candleTrio: "Trío de velas", calicoCat: "Gatito de cerámica",
-};
-
 function rewardInUse(id: AchievementId, overrides: readonly StoredSlotOverride[], visual: StoredVisualPreferences): boolean {
   const reward = ACHIEVEMENT_REWARDS.find(item => item.achievementId === id);
   if (!reward) return false;
   return reward.capabilityIds.some(capability =>
     capability === "roomPaletteOverride" ? visual.roomPaletteId !== null || visual.wallColor !== null :
       capability === "windowMoodOverride" ? visual.windowMoodId !== null || visual.ambientColor !== null :
-        overrides.some(row => EDITABLE_SPACE_SLOTS.some(slot => slot.capabilityId === capability && slot.id === row.slotId)));
+        visual.decorationMode === "manual" && overrides.some(row =>
+          EDITABLE_SPACE_SLOTS.some(slot => slot.capabilityId === capability && slot.id === row.slotId)));
 }
 
 export function AchievementsScreen({ onBack, onOpenSpace }: { onBack: () => void; onOpenSpace: () => void }) {
@@ -97,7 +93,7 @@ export function AchievementsScreen({ onBack, onOpenSpace }: { onBack: () => void
               <Text style={[styles.rewardLabel, { color: theme.textSecondary }]}>EN TU ESPACIO</Text>
               <Text style={[styles.title, { color: theme.textPrimary }]}>{reward.title}</Text>
               <Text style={stylesText(theme.textSecondary)}>{reward.shortDescription}</Text>
-              {preview && <Text style={stylesText(theme.textSecondary)}>{previewLabels[preview]} · Ejemplo para {reward.title.toLowerCase()}.</Text>}
+              {preview && <Text style={stylesText(theme.textSecondary)}>{ASSET_LABELS[preview]} · Ejemplo para {reward.title.toLowerCase()}.</Text>}
             </View>
             {found && <Pressable accessibilityRole="button" onPress={onOpenSpace} style={styles.action}>
               <Text style={{ color: theme.primary, fontWeight: "600" }}>{reward.ctaLabel} →</Text>
