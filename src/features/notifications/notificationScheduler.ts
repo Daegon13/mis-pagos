@@ -34,7 +34,7 @@ export async function refreshNotifications(db: SQLiteDatabase): Promise<void> {
     return;
   }
   if (Platform.OS === "android") await Notifications.setNotificationChannelAsync("recordatorios", {
-    name: "Recordatorios", importance: Notifications.AndroidImportance.DEFAULT, sound: "default",
+    name: "Recordatorios", importance: Notifications.AndroidImportance.DEFAULT,
   });
   const [{ profile, payments }, plan, discoveries, history] = await Promise.all([
     readFinancialSnapshot(db), getCurrentPlan(db), listAchievementUnlocks(db), getNotificationDayHistory(db),
