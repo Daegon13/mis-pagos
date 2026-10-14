@@ -25,8 +25,8 @@ function rewardInUse(id: AchievementId, overrides: readonly StoredSlotOverride[]
   const reward = ACHIEVEMENT_REWARDS.find(item => item.achievementId === id);
   if (!reward) return false;
   return reward.capabilityIds.some(capability =>
-    capability === "roomPaletteOverride" ? visual.roomPaletteId !== null :
-      capability === "windowMoodOverride" ? visual.windowMoodId !== null :
+    capability === "roomPaletteOverride" ? visual.roomPaletteId !== null || visual.wallColor !== null :
+      capability === "windowMoodOverride" ? visual.windowMoodId !== null || visual.ambientColor !== null :
         overrides.some(row => EDITABLE_SPACE_SLOTS.some(slot => slot.capabilityId === capability && slot.id === row.slotId)));
 }
 
@@ -75,7 +75,10 @@ export function AchievementsScreen({ onBack, onOpenSpace }: { onBack: () => void
                 {item.id === "FIRST_RESERVE" ? <View style={styles.swatches}>
                   {(["bosque", "terracota", "lavanda"] as const).map(id => <View key={id}
                     style={[styles.colorSample, { backgroundColor: themeFor(id).spaceWall }]} />)}
-                </View> : <View style={[styles.windowSample, { backgroundColor: theme.spaceWindowTint }]}>
+                  {customization?.visual.wallColor && <View style={[styles.colorSample,
+                    { backgroundColor: customization.visual.wallColor }]} />}
+                </View> : <View style={[styles.windowSample,
+                  { backgroundColor: customization?.visual.ambientColor ?? theme.spaceWindowTint }]}>
                   <Text style={{ color: theme.primary, fontSize: 22 }}>☼</Text>
                 </View>}
               </View>}

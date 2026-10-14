@@ -4,6 +4,7 @@ import type { CreatePaymentInput, Payment } from "@/domain/payment";
 import { isCivilDate, localCivilDate } from "@/domain/paymentTiming";
 import { getPaymentById, listPayments, updatePayment } from "./paymentRepository";
 import { getFinancialProfile, saveFinancialProfile } from "./financialProfileRepository";
+import { notificationDataChanged } from "@/data/notificationChanges";
 
 async function pendingPayment(db: SQLiteDatabase, id: number): Promise<Payment> {
   const payment = await getPaymentById(db, id);
@@ -28,6 +29,7 @@ export async function editPendingPayment(db: SQLiteDatabase, id: number, input: 
     saved = await updatePayment(tx, id, { ...input, status: "pending" });
     if (!saved) throw new Error("Missing movement");
   });
+  notificationDataChanged();
   return saved;
 }
 
@@ -38,6 +40,7 @@ export async function cancelPendingPayment(db: SQLiteDatabase, id: number, now =
     wasOverdue = payment.dueDate < localCivilDate(now);
     await updatePayment(tx, id, { ...payment, status: "cancelled" });
   });
+  notificationDataChanged();
   return { wasOverdue };
 }
 
@@ -61,6 +64,7 @@ export async function completePayment(db: SQLiteDatabase, id: number, adjustBala
       wasOverdue: payment.dueDate < localCivilDate(now) };
   });
   if (!result) throw new Error("Unable to complete movement");
+  notificationDataChanged();
   return result;
 }
 

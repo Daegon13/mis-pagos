@@ -84,7 +84,8 @@ export function resolveSpaceScene(stage: SpaceStage, selection: PersonalizationS
   if (stage >= 1) add("plantLarge", "anchor");
   if (stage >= 2) { add("desk", "anchor"); add("books", "anchor"); }
   let optional = 0;
-  const optionalLimit = minimal ? 1 : 3;
+  // A fourth detail can reinforce a selected interest without displacing the other three.
+  const optionalLimit = minimal ? 1 : 4;
   if (stage >= 2) {
     for (const interest of selection.interestIds) {
       if (optional >= optionalLimit) break;

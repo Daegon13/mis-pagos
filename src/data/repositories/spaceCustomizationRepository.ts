@@ -1,7 +1,8 @@
 import type { SQLiteDatabase } from "expo-sqlite";
 
 export type StoredSlotOverride = { slotId: string; assetId: string | null; updatedAt: string };
-export type StoredVisualPreferences = { roomPaletteId: string | null; windowMoodId: string | null };
+export type StoredVisualPreferences = { roomPaletteId: string | null; windowMoodId: string | null;
+  wallColor: string | null; ambientColor: string | null };
 
 export async function listSlotOverrides(db: SQLiteDatabase): Promise<StoredSlotOverride[]> {
   const rows = await db.getAllAsync<{ slot_id: string; asset_id: string | null; updated_at: string }>(
@@ -33,28 +34,36 @@ export async function clearDecorationOverrides(db: SQLiteDatabase): Promise<void
 }
 
 export async function getSpaceVisualPreferences(db: SQLiteDatabase): Promise<StoredVisualPreferences> {
-  const row = await db.getFirstAsync<{ room_palette_id: string | null; window_mood_id: string | null }>(
-    "SELECT room_palette_id, window_mood_id FROM space_visual_preferences WHERE id = 1");
+  const row = await db.getFirstAsync<{ room_palette_id: string | null; window_mood_id: string | null;
+    wall_color: string | null; ambient_color: string | null }>(
+    "SELECT room_palette_id, window_mood_id, wall_color, ambient_color FROM space_visual_preferences WHERE id = 1");
   if (!row) throw new Error("Missing space visual preferences");
-  return { roomPaletteId: row.room_palette_id, windowMoodId: row.window_mood_id };
+  return { roomPaletteId: row.room_palette_id, windowMoodId: row.window_mood_id,
+    wallColor: row.wall_color, ambientColor: row.ambient_color };
 }
 
 export async function setRoomPaletteOverride(db: SQLiteDatabase, paletteId: string): Promise<void> {
-  await db.runAsync("UPDATE space_visual_preferences SET room_palette_id = ?, updated_at = ? WHERE id = 1",
+  await db.runAsync("UPDATE space_visual_preferences SET room_palette_id = ?, wall_color = NULL, updated_at = ? WHERE id = 1",
     paletteId, new Date().toISOString());
 }
 
 export async function clearRoomPaletteOverride(db: SQLiteDatabase): Promise<void> {
-  await db.runAsync("UPDATE space_visual_preferences SET room_palette_id = NULL, updated_at = ? WHERE id = 1",
+  await db.runAsync("UPDATE space_visual_preferences SET room_palette_id = NULL, wall_color = NULL, updated_at = ? WHERE id = 1",
     new Date().toISOString());
 }
 
 export async function setWindowMoodOverride(db: SQLiteDatabase, moodId: string): Promise<void> {
-  await db.runAsync("UPDATE space_visual_preferences SET window_mood_id = ?, updated_at = ? WHERE id = 1",
+  await db.runAsync("UPDATE space_visual_preferences SET window_mood_id = ?, ambient_color = NULL, updated_at = ? WHERE id = 1",
     moodId, new Date().toISOString());
 }
 
 export async function clearWindowMoodOverride(db: SQLiteDatabase): Promise<void> {
-  await db.runAsync("UPDATE space_visual_preferences SET window_mood_id = NULL, updated_at = ? WHERE id = 1",
+  await db.runAsync("UPDATE space_visual_preferences SET window_mood_id = NULL, ambient_color = NULL, updated_at = ? WHERE id = 1",
     new Date().toISOString());
+}
+
+export async function setCustomSpaceColor(db: SQLiteDatabase, zone: "wall" | "ambient", color: string): Promise<void> {
+  const column = zone === "wall" ? "wall_color" : "ambient_color";
+  await db.runAsync(`UPDATE space_visual_preferences SET ${column} = ?, updated_at = ? WHERE id = 1`,
+    color, new Date().toISOString());
 }

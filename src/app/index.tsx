@@ -1,4 +1,4 @@
-import { Stack, useLocalSearchParams, useRouter } from "expo-router";
+import { Stack, useLocalSearchParams, useRouter, type Href } from "expo-router";
 import { Pressable, ScrollView, Text, View, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -23,6 +23,10 @@ export default function Index() {
             onPress={() => router.push("/help")}
             style={[styles.help, { borderColor: theme.border }]}>
             <Text style={{ color: theme.primary, fontSize: 19, fontWeight: "600" }}>?</Text>
+          </Pressable>}
+          {profile && <Pressable accessibilityRole="button" accessibilityLabel="Preferencias de notificaciones"
+            onPress={() => router.push("/notifications" as Href)} style={[styles.help, { borderColor: theme.border }]}>
+            <Text style={{ color: theme.primary, fontSize: 19 }}>🔔</Text>
           </Pressable>}
         </View>
         {isLoading ? (

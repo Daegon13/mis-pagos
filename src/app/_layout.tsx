@@ -4,6 +4,7 @@ import { StatusBar } from "expo-status-bar";
 
 import { DATABASE_NAME, initializeDatabase } from "@/data/db/database";
 import { PersonalizationProvider, usePersonalization } from "@/features/personalization/PersonalizationProvider";
+import { NotificationCoordinator } from "@/features/notifications/NotificationCoordinator";
 
 function ThemedNavigation() {
   const { theme } = usePersonalization();
@@ -17,7 +18,7 @@ function ThemedNavigation() {
 export default function RootLayout() {
   return (
     <SQLiteProvider databaseName={DATABASE_NAME} onInit={initializeDatabase}>
-      <PersonalizationProvider><ThemedNavigation /></PersonalizationProvider>
+      <PersonalizationProvider><NotificationCoordinator /><ThemedNavigation /></PersonalizationProvider>
     </SQLiteProvider>
   );
 }

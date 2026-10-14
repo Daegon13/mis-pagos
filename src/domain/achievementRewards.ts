@@ -37,11 +37,11 @@ export const ACHIEVEMENT_REWARDS: readonly AchievementRewardDefinition[] = [
     howToUnlock: "Completá o cancelá un movimiento que ya estaba vencido.",
     capabilityIds: ["editDetailRight"], ctaLabel: "Usar en Tu espacio" },
   { achievementId: "FIRST_RESERVE", title: "Paleta propia para Tu espacio",
-    shortDescription: "Elegí los colores de la habitación sin cambiar el tema de la app.",
+    shortDescription: "Elegí un preset o color personalizado para la pared sin cambiar el tema de la app.",
     howToUnlock: "Creá una reserva objetivo positiva en el plan del mes.",
     capabilityIds: ["roomPaletteOverride"], ctaLabel: "Usar en Tu espacio" },
   { achievementId: "FIRST_SPENDING_SIMULATION", title: "Ambiente de ventana",
-    shortDescription: "Elegí el ambiente visual de la ventana por separado.",
+    shortDescription: "Elegí el ambiente o un color personalizado para la luz y la ventana.",
     howToUnlock: "Hacé tu primera simulación válida en ¿Puedo gastar esto?",
     capabilityIds: ["windowMoodOverride"], ctaLabel: "Usar en Tu espacio" },
 ];

@@ -14,7 +14,7 @@ const { ACHIEVEMENTS } = load('src/domain/achievements.ts');
 const { ACHIEVEMENT_REWARDS, capabilitiesFromUnlocks } = load('src/domain/achievementRewards.ts');
 const { resolveSpaceScene } = load('src/features/space/spaceScene.ts');
 const { resolveFinalSpaceScene, effectiveAppearance, eligibleAssetsForSlot } = load('src/features/space/spaceCustomization.ts');
-const { chooseSlot, resetSlot, resetDecoration, choosePalette, chooseWindowMood, loadSpaceCustomization } =
+const { chooseSlot, resetSlot, resetDecoration, choosePalette, chooseWindowMood, chooseCustomColor, loadSpaceCustomization } =
   load('src/features/space/spaceCustomizationService.ts');
 
 function fixture() {
@@ -40,7 +40,7 @@ const row = (slotId, assetId) => ({ slotId, assetId, updatedAt: 'stamp' });
 const selection = (interestIds = [], atmosphereId = 'natural', themeId = 'bosque') =>
   ({ ...DEFAULT_SELECTION, interestIds, atmosphereId, themeId });
 
-test('v5 to v6 preserves financial, planning, engagement, personalization and unlock rows', async () => {
+test('v5 to v8 preserves financial, planning, engagement, personalization and unlock rows', async () => {
   const { db, sqlite } = fixture();
   try {
     for (const migration of [initialMigration, engagementMigration, personalizationMigration,
@@ -56,12 +56,12 @@ test('v5 to v6 preserves financial, planning, engagement, personalization and un
     const preserved = ['financial_profile', 'payments', 'spending_plans', 'spending_allocations', 'engagement_progress',
       'personalization_preferences', 'achievement_unlocks'].map(name => sqlite.prepare(`SELECT * FROM ${name}`).all());
     await runMigrations(db);
-    assert.equal(sqlite.prepare('PRAGMA user_version').get().user_version, 6);
+    assert.equal(sqlite.prepare('PRAGMA user_version').get().user_version, 8);
     assert.deepEqual(['financial_profile', 'payments', 'spending_plans', 'spending_allocations', 'engagement_progress',
       'personalization_preferences', 'achievement_unlocks'].map(name => sqlite.prepare(`SELECT * FROM ${name}`).all()), preserved);
     const state = await loadSpaceCustomization(db);
     assert.deepEqual(state.overrides, []);
-    assert.deepEqual(state.visual, { roomPaletteId: null, windowMoodId: null });
+    assert.deepEqual(state.visual, { roomPaletteId: null, windowMoodId: null, wallColor: null, ambientColor: null });
     assert.deepEqual(resolveFinalSpaceScene(2, selection(), state.unlocks, state.overrides, state.visual),
       resolveSpaceScene(2, selection(), state.unlocks));
   } finally { sqlite.close(); }
@@ -149,14 +149,37 @@ test('palette and mood follow defaults, then override independently when unlocke
     await chooseWindowMood(db, 'nocturno');
     const state = await loadSpaceCustomization(db);
     const profile = selection([], 'natural', 'bosque');
-    assert.deepEqual(effectiveAppearance(profile, state.unlocks, state.visual), { paletteId: 'oceano', moodId: 'nocturno' });
+    assert.deepEqual(effectiveAppearance(profile, state.unlocks, state.visual),
+      { paletteId: 'oceano', moodId: 'nocturno', wallColor: null, ambientColor: null });
     assert.equal(resolveFinalSpaceScene(2, profile, state.unlocks, [], state.visual).treatments.atmosphereId, 'nocturno');
     assert.equal(sqlite.prepare('SELECT theme_id FROM personalization_preferences').get().theme_id, 'bosque');
     await choosePalette(db, null);
     await chooseWindowMood(db, null);
     assert.deepEqual(effectiveAppearance(profile, state.unlocks, (await loadSpaceCustomization(db)).visual),
-      { paletteId: 'bosque', moodId: 'natural' });
+      { paletteId: 'bosque', moodId: 'natural', wallColor: null, ambientColor: null });
     await assert.rejects(choosePalette(db, 'bogus'), /desconocida/);
     await assert.rejects(chooseWindowMood(db, 'bogus'), /desconocido/);
+  } finally { sqlite.close(); }
+});
+
+test('custom wall and ambient colors persist independently and presets clear only their own custom value', async () => {
+  const { db, sqlite } = fixture();
+  try {
+    await runMigrations(db);
+    await assert.rejects(chooseCustomColor(db, 'wall', '#abcdef'), /desbloqueado/);
+    sqlite.exec(`INSERT INTO achievement_unlocks VALUES('FIRST_RESERVE','stamp');
+      INSERT INTO achievement_unlocks VALUES('FIRST_SPENDING_SIMULATION','stamp');`);
+    await assert.rejects(chooseCustomColor(db, 'wall', '#bad'), /hexadecimal/);
+    await chooseCustomColor(db, 'wall', 'abcdef');
+    await chooseCustomColor(db, 'ambient', '#123456');
+    let visual = (await loadSpaceCustomization(db)).visual;
+    assert.equal(visual.wallColor, '#ABCDEF');
+    assert.equal(visual.ambientColor, '#123456');
+    await choosePalette(db, 'oceano');
+    visual = (await loadSpaceCustomization(db)).visual;
+    assert.equal(visual.wallColor, null);
+    assert.equal(visual.ambientColor, '#123456');
+    await chooseWindowMood(db, null);
+    assert.equal((await loadSpaceCustomization(db)).visual.ambientColor, null);
   } finally { sqlite.close(); }
 });

@@ -83,7 +83,7 @@ test('reserve, allocations, pace and all simulation outcomes remain tied to Home
   }
 });
 
-test('schema v6 persists representative state across reopen and enforces singleton, uniqueness and FK constraints', async () => {
+test('schema v8 persists representative state across reopen and enforces singleton, uniqueness and FK constraints', async () => {
   const directory = mkdtempSync(join(tmpdir(), 'mis-pagos-audit-'));
   const filename = join(directory, 'audit.db');
   const open = () => {
@@ -124,7 +124,7 @@ test('schema v6 persists representative state across reopen and enforces singlet
     connection.sqlite.close();
     connection = open();
     await runMigrations(connection.db);
-    assert.equal(connection.sqlite.prepare('PRAGMA user_version').get().user_version, 6);
+    assert.equal(connection.sqlite.prepare('PRAGMA user_version').get().user_version, 8);
     assert.equal(connection.sqlite.prepare('PRAGMA integrity_check').get().integrity_check, 'ok');
     assert.deepEqual(connection.sqlite.prepare('PRAGMA foreign_key_check').all(), []);
     assert.equal((await getFinancialProfile(connection.db)).availableBalanceMinor, 30000);

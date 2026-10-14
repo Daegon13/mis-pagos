@@ -1,5 +1,7 @@
 # PRE-BETA-AUDIT-01 — Hoja de trabajo de Data Safety
 
+**Actualización NOTIF-01 (13 de octubre de 2026):** el código incluye `expo-notifications` para avisos locales y el manifiesto Android de release generado localmente incorpora `POST_NOTIFICATIONS`, `RECEIVE_BOOT_COMPLETED` y `WAKE_LOCK`. No se solicitaron tokens push. Las observaciones de tráfico de la APK anterior no cubren este SDK. Mantener las respuestas de recolección, compartición y cifrado en **MANUAL VERIFICATION STILL REQUIRED** hasta revisar el paquete nuevo entregado por Play y su comportamiento de red.
+
 **Borrador, no enviado a Play Console (12 de octubre de 2026).** Los estados se refieren a la versión `0.4.0`/`versionCode 4`. [Google Play](https://support.google.com/googleplay/android-developer/answer/10787469) exige incluir la actividad de SDK; la recolección implica transmisión fuera del dispositivo, no solo SQLite local. La auditoría y sus límites están en `PLAY_DATA_SAFETY_AUDIT.md`.
 
 | Pregunta | Estado y evidencia | Acción pendiente |

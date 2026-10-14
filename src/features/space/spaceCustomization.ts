@@ -6,7 +6,15 @@ import type { StoredSlotOverride, StoredVisualPreferences } from "@/data/reposit
 import { placeAsset, resolveSpaceScene, SPACE_ASSETS, type AssetId, type SpaceScene } from "./spaceScene";
 
 export const STRUCTURAL_ASSETS: ReadonlySet<AssetId> = new Set(["plantLarge", "desk", "books"]);
-export const EMPTY_VISUAL_PREFERENCES: StoredVisualPreferences = { roomPaletteId: null, windowMoodId: null };
+export const EMPTY_VISUAL_PREFERENCES: StoredVisualPreferences = { roomPaletteId: null, windowMoodId: null,
+  wallColor: null, ambientColor: null };
+
+export function normalizeSpaceColor(value: string): string | null {
+  const trimmed = value.trim();
+  const raw = trimmed.startsWith("#") ? trimmed.slice(1) : trimmed;
+  if (!/^[0-9a-fA-F]{6}$/.test(raw)) return null;
+  return `#${raw.toUpperCase()}`;
+}
 
 export function isEditableSlotId(value: string): value is EditableSlotId {
   return EDITABLE_SPACE_SLOTS.some(slot => slot.id === value);
@@ -43,6 +51,8 @@ export function effectiveAppearance(selection: PersonalizationSelection, unlocks
       ? visual.roomPaletteId : selection.themeId,
     moodId: capabilities.has("windowMoodOverride") && isAtmosphereId(visual.windowMoodId)
       ? visual.windowMoodId : selection.atmosphereId,
+    wallColor: capabilities.has("roomPaletteOverride") && visual.wallColor ? normalizeSpaceColor(visual.wallColor) : null,
+    ambientColor: capabilities.has("windowMoodOverride") && visual.ambientColor ? normalizeSpaceColor(visual.ambientColor) : null,
   };
 }
 

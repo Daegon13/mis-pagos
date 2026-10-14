@@ -2,6 +2,7 @@ import type { SQLiteDatabase } from "expo-sqlite";
 import { monthPeriod, reserveTarget, validateAllocations,
   type AllocationInput, type ReserveMode, type SpendingAllocation, type SpendingPlan } from "@/domain/spendingPlan";
 import { localCivilDate } from "@/domain/paymentTiming";
+import { notificationDataChanged } from "@/data/notificationChanges";
 
 type PlanRow = { id: number; period_start: string; period_end: string; reserve_mode: ReserveMode;
   reserve_percent_basis_points: number | null; reserve_target_minor: number;
@@ -60,10 +61,12 @@ export async function saveCurrentPlan(db: SQLiteDatabase, input: { mode: Reserve
         VALUES (?, ?, ?, ?, ?, ?)`, id, item.name, item.percentageBasisPoints, index, timestamp, timestamp);
     }
   });
+  notificationDataChanged();
   return getCurrentPlan(db, today);
 }
 
 export async function deleteCurrentPlan(db: SQLiteDatabase, today = localCivilDate()) {
   const period = monthPeriod(today);
   await db.runAsync("DELETE FROM spending_plans WHERE period_start = ?", period.periodStart);
+  notificationDataChanged();
 }

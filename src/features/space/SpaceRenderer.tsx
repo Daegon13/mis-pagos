@@ -31,20 +31,20 @@ export function SpaceRenderer({ stage, selection, achievementUnlocks = [], width
   const scene = useMemo(() => resolveFinalSpaceScene(stage, selection, achievementUnlocks, slotOverrides, visualPreferences),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [stage, selection.themeId, selection.atmosphereId, interestKey, unlockKey, overrideKey,
-      visualPreferences.roomPaletteId, visualPreferences.windowMoodId]);
+      visualPreferences.roomPaletteId, visualPreferences.windowMoodId, visualPreferences.wallColor, visualPreferences.ambientColor]);
   const scale = width / SCENE_WIDTH;
   const imageStyle = { width, height: SCENE_HEIGHT * scale };
   const treatments = scene.treatments;
   return <View style={[styles.scene, imageStyle]}>
     <Image source={room} resizeMode="stretch" style={[styles.layer, imageStyle, { zIndex: 0 }]} />
     <Image source={wallMask} resizeMode="stretch" style={[styles.layer, imageStyle,
-      { tintColor: theme.spaceWall, opacity: treatments.wallOpacity, zIndex: 10 }]} />
+      { tintColor: appearance.wallColor ?? theme.spaceWall, opacity: treatments.wallOpacity, zIndex: 10 }]} />
     <Image source={floorMask} resizeMode="stretch" style={[styles.layer, imageStyle,
       { tintColor: theme.spaceFloorTint, opacity: treatments.floorOpacity, zIndex: 11 }]} />
     <Image source={windowMask} resizeMode="stretch" style={[styles.layer, imageStyle,
-      { tintColor: theme.spaceWindowTint, opacity: treatments.windowOpacity, zIndex: 12 }]} />
-    {treatments.ambientOpacity > 0 && <View style={[styles.layer, imageStyle, { backgroundColor: theme.spaceAmbientTint,
-      opacity: treatments.ambientOpacity, zIndex: 13 }]} />}
+      { tintColor: appearance.ambientColor ?? theme.spaceWindowTint, opacity: treatments.windowOpacity, zIndex: 12 }]} />
+    {(treatments.ambientOpacity > 0 || appearance.ambientColor) && <View style={[styles.layer, imageStyle, { backgroundColor: appearance.ambientColor ?? theme.spaceAmbientTint,
+      opacity: appearance.ambientColor ? 0.12 : treatments.ambientOpacity, zIndex: 13 }]} />}
     {scene.objects.map(object => {
       const offset = calibrationOffsets?.[object.assetId];
       const objectWidth = Math.max(1, object.width + (offset?.width ?? 0));

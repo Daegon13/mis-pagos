@@ -7,6 +7,7 @@ import type {
   PaymentType,
   UpdatePaymentInput,
 } from "@/domain/payment";
+import { notificationDataChanged } from "@/data/notificationChanges";
 
 interface PaymentRow {
   id: number;
@@ -98,7 +99,7 @@ export async function createPayment(
   if (created === null) {
     throw new Error("Unable to retrieve payment after successful insert");
   }
-
+  notificationDataChanged();
   return created;
 }
 
@@ -167,5 +168,6 @@ export async function deletePayment(
 ): Promise<boolean> {
   validatePaymentId(id);
   const result = await db.runAsync("DELETE FROM payments WHERE id = ?", id);
+  if (result.changes === 1) notificationDataChanged();
   return result.changes === 1;
 }

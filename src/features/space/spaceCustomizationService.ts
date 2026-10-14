@@ -3,10 +3,19 @@ import { listAchievementUnlocks } from "@/data/repositories/achievementRepositor
 import { getSpaceStage } from "@/data/repositories/engagementRepository";
 import { clearDecorationOverrides, clearRoomPaletteOverride, clearWindowMoodOverride,
   getSpaceVisualPreferences, listSlotOverrides, restoreSlotAutomatic, setRoomPaletteOverride,
-  setSlotAssetOverride, setSlotEmpty, setWindowMoodOverride } from "@/data/repositories/spaceCustomizationRepository";
+  setSlotAssetOverride, setSlotEmpty, setWindowMoodOverride, setCustomSpaceColor } from "@/data/repositories/spaceCustomizationRepository";
 import { capabilitiesFromUnlocks } from "@/domain/achievementRewards";
 import { isAtmosphereId, isThemeId } from "@/domain/personalization";
-import { isEditableSlotId, validateSlotChoice } from "./spaceCustomization";
+import { isEditableSlotId, normalizeSpaceColor, validateSlotChoice } from "./spaceCustomization";
+
+export async function chooseCustomColor(db: SQLiteDatabase, zone: "wall" | "ambient", input: string): Promise<void> {
+  const color = normalizeSpaceColor(input);
+  if (!color) throw new Error("Ingresá un color hexadecimal de 6 caracteres, por ejemplo #8D6FAA.");
+  const capability = zone === "wall" ? "roomPaletteOverride" : "windowMoodOverride";
+  if (!capabilitiesFromUnlocks((await listAchievementUnlocks(db)).map(row => row.achievement_id)).has(capability))
+    throw new Error("Este color todavía no está desbloqueado.");
+  await setCustomSpaceColor(db, zone, color);
+}
 
 export async function loadSpaceCustomization(db: SQLiteDatabase) {
   const [stage, unlockRows, overrides, visual] = await Promise.all([

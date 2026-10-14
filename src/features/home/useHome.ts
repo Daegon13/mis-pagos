@@ -26,7 +26,7 @@ export function useHome(paymentSaved?: string) {
   const [achievementCount, setAchievementCount] = useState<number | null>(null);
   const [achievementUnlocks, setAchievementUnlocks] = useState<AchievementId[]>([]);
   const [slotOverrides, setSlotOverrides] = useState<StoredSlotOverride[]>([]);
-  const [visualPreferences, setVisualPreferences] = useState<StoredVisualPreferences>({ roomPaletteId: null, windowMoodId: null });
+  const [visualPreferences, setVisualPreferences] = useState<StoredVisualPreferences>({ roomPaletteId: null, windowMoodId: null, wallColor: null, ambientColor: null });
   const [surprise, setSurprise] = useState(false);
   const [feedback, setFeedback] = useState<{ id: string; availableMinor: number } | null>(null);
   const handledSave = useRef<string | null>(null);
@@ -82,7 +82,7 @@ export function useHome(paymentSaved?: string) {
           const [slots, visual] = await Promise.all([listSlotOverrides(db), getSpaceVisualPreferences(db)]);
           if (active && current === request) { setSlotOverrides(slots); setVisualPreferences(visual); }
         } catch {
-          if (active && current === request) { setSlotOverrides([]); setVisualPreferences({ roomPaletteId: null, windowMoodId: null }); }
+          if (active && current === request) { setSlotOverrides([]); setVisualPreferences({ roomPaletteId: null, windowMoodId: null, wallColor: null, ambientColor: null }); }
         }
       } catch {
         if (active && current === request) {

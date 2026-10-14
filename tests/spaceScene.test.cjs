@@ -57,7 +57,9 @@ test('interest priority, slot collision, density and unavailable optional assets
   assert.ok(objects(scene).includes('catFigurine'));
   assert.ok(objects(scene).includes('speakerVinyl'));
   assert.equal(new Set(scene.objects.map(object => object.slotId)).size, scene.objects.length);
-  assert.ok(scene.objects.filter(object => object.source === 'interest').length <= 3);
+  assert.ok(scene.objects.filter(object => object.source === 'interest').length <= 4);
+  const reinforced = resolveSpaceScene(2, selection(['gaming', 'musica', 'animales']));
+  assert.ok(['monitor', 'speakerVinyl', 'catFigurine', 'gamepad'].every(id => objects(reinforced).includes(id)));
   const minimal = resolveSpaceScene(2, selection(['minimalismo', 'gaming', 'musica'], 'minimalista'));
   assert.ok(minimal.objects.filter(object => object.source === 'interest').length <= 1);
   const available = new Set(Object.keys(SPACE_ASSETS).filter(id => id !== 'catFigurine'));

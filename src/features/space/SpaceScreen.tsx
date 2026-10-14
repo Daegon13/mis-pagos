@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 import { useFocusEffect } from "expo-router";
 import { useSQLiteContext } from "expo-sqlite";
-import { Image, Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions } from "react-native";
+import { Image, Pressable, ScrollView, StyleSheet, Text, TextInput, View, useWindowDimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { deriveExistingAchievements } from "@/features/achievements/achievementService";
@@ -12,7 +12,7 @@ import type { AchievementId } from "@/domain/achievements";
 import type { SpaceStage } from "@/domain/engagement";
 import type { StoredSlotOverride, StoredVisualPreferences } from "@/data/repositories/spaceCustomizationRepository";
 import { effectiveAppearance, eligibleAssetsForSlot } from "./spaceCustomization";
-import { choosePalette, chooseSlot, chooseWindowMood, loadSpaceCustomization, resetDecoration, resetSlot } from "./spaceCustomizationService";
+import { chooseCustomColor, choosePalette, chooseSlot, chooseWindowMood, loadSpaceCustomization, resetDecoration, resetSlot } from "./spaceCustomizationService";
 import { SpaceRenderer } from "./SpaceRenderer";
 import { SPACE_ASSETS, type AssetId } from "./spaceScene";
 import { themeFor } from "@/features/personalization/themes";
@@ -37,9 +37,14 @@ export function SpaceScreen({ onBack, onAchievements, onPersonalize }: {
   const [editing, setEditing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [attempt, setAttempt] = useState(0);
+  const [wallDraft, setWallDraft] = useState("");
+  const [ambientDraft, setAmbientDraft] = useState("");
   const refresh = useCallback(async () => {
     await deriveExistingAchievements(db);
-    setState(await loadSpaceCustomization(db));
+    const loaded = await loadSpaceCustomization(db);
+    setState(loaded);
+    setWallDraft(loaded.visual.wallColor ?? "");
+    setAmbientDraft(loaded.visual.ambientColor ?? "");
     setError(null);
   }, [db]);
   useFocusEffect(useCallback(() => {
@@ -49,7 +54,8 @@ export function SpaceScreen({ onBack, onAchievements, onPersonalize }: {
       try {
         await deriveExistingAchievements(db);
         const loaded = await loadSpaceCustomization(db);
-        if (active) { setState(loaded); setError(null); }
+        if (active) { setState(loaded); setWallDraft(loaded.visual.wallColor ?? "");
+          setAmbientDraft(loaded.visual.ambientColor ?? ""); setError(null); }
       } catch { if (active) setError("No pudimos cargar Tu espacio. Intentá de nuevo."); }
     })();
     return () => { active = false; };
@@ -89,23 +95,39 @@ export function SpaceScreen({ onBack, onAchievements, onPersonalize }: {
           <SpaceRenderer stage={state.stage} selection={preferences} achievementUnlocks={state.unlocks}
             slotOverrides={state.overrides} visualPreferences={state.visual} width={previewWidth} />
         </View>
-        <Text style={{ color: theme.textSecondary }}>Etapa {state.stage} · Pared {THEMES.find(item => item.id === appearance?.paletteId)?.label} · Luz {ATMOSPHERES.find(item => item.id === appearance?.moodId)?.label}</Text>
+        <Text style={{ color: theme.textSecondary }}>Etapa {state.stage} · Pared {appearance?.wallColor ?? THEMES.find(item => item.id === appearance?.paletteId)?.label} · Luz {appearance?.ambientColor ?? ATMOSPHERES.find(item => item.id === appearance?.moodId)?.label}</Text>
         <View style={[styles.section, { backgroundColor: theme.surface, borderColor: theme.border }]}>
           <Text accessibilityRole="header" style={[styles.cardTitle, { color: theme.textPrimary }]}>Pared y paleta</Text>
           {capabilities.has("roomPaletteOverride") ? <View style={styles.choices}>
-            {button("Seguir tema de la app", state.visual.roomPaletteId === null,
+            {button("Seguir tema de la app", state.visual.roomPaletteId === null && !state.visual.wallColor,
               () => void change(() => choosePalette(db, null)), "palette-auto", themeFor(preferences.themeId).spaceWall)}
-            {THEMES.map(item => button(item.label, state.visual.roomPaletteId === item.id,
+            {THEMES.map(item => button(item.label, !state.visual.wallColor && state.visual.roomPaletteId === item.id,
               () => void change(() => choosePalette(db, item.id)), `palette-${item.id}`, themeFor(item.id).spaceWall))}
+            <Text style={{ color: theme.textSecondary }}>Personalizado · escribí un color hexadecimal (#RRGGBB).</Text>
+            <View style={styles.choiceContent}>
+              <TextInput accessibilityLabel="Color personalizado de pared" value={wallDraft} onChangeText={setWallDraft}
+                autoCapitalize="characters" maxLength={7} placeholder="#8D6FAA" placeholderTextColor={theme.muted}
+                style={[styles.colorInput, { color: theme.textPrimary, backgroundColor: theme.background, borderColor: theme.border }]} />
+              {button("Aplicar pared", !!state.visual.wallColor, () => void change(() => chooseCustomColor(db, "wall", wallDraft)), "wall-custom",
+                state.visual.wallColor ?? undefined)}
+            </View>
           </View> : locked("roomPaletteOverride")}
         </View>
         <View style={[styles.section, { backgroundColor: theme.surface, borderColor: theme.border }]}>
           <Text accessibilityRole="header" style={[styles.cardTitle, { color: theme.textPrimary }]}>Luz y ventana</Text>
           {capabilities.has("windowMoodOverride") ? <View style={styles.choices}>
-            {button("Seguir atmósfera actual", state.visual.windowMoodId === null,
+            {button("Seguir atmósfera actual", state.visual.windowMoodId === null && !state.visual.ambientColor,
               () => void change(() => chooseWindowMood(db, null)), "mood-auto")}
-            {ATMOSPHERES.map(item => button(item.label, state.visual.windowMoodId === item.id,
+            {ATMOSPHERES.map(item => button(item.label, !state.visual.ambientColor && state.visual.windowMoodId === item.id,
               () => void change(() => chooseWindowMood(db, item.id)), `mood-${item.id}`))}
+            <Text style={{ color: theme.textSecondary }}>Personalizado · luz y ventana (#RRGGBB).</Text>
+            <View style={styles.choiceContent}>
+              <TextInput accessibilityLabel="Color personalizado de ambiente" value={ambientDraft} onChangeText={setAmbientDraft}
+                autoCapitalize="characters" maxLength={7} placeholder="#8D6FAA" placeholderTextColor={theme.muted}
+                style={[styles.colorInput, { color: theme.textPrimary, backgroundColor: theme.background, borderColor: theme.border }]} />
+              {button("Aplicar ambiente", !!state.visual.ambientColor, () => void change(() => chooseCustomColor(db, "ambient", ambientDraft)), "ambient-custom",
+                state.visual.ambientColor ?? undefined)}
+            </View>
           </View> : locked("windowMoodOverride")}
         </View>
         <Pressable accessibilityRole="button" onPress={() => setEditing(value => !value)}
@@ -171,6 +193,7 @@ const styles = StyleSheet.create({
   choice: { minHeight: 44, borderWidth: 1, borderRadius: 12, paddingHorizontal: 12, paddingVertical: 10, justifyContent: "center" },
   choiceContent: { flexDirection: "row", alignItems: "center", gap: 8 },
   swatch: { width: 22, height: 22, borderRadius: 11, borderWidth: 1, borderColor: "#809088" },
+  colorInput: { minWidth: 122, minHeight: 44, borderWidth: 1, borderRadius: 10, paddingHorizontal: 12, fontSize: 16 },
   asset: { width: 96, minHeight: 112, borderWidth: 1, borderRadius: 12, padding: 6, alignItems: "center", justifyContent: "center", gap: 4 },
   thumbnail: { width: 72, height: 72 },
 });

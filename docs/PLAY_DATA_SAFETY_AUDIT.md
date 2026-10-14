@@ -1,5 +1,13 @@
 # PLAY-01 — SDK, permisos y datos
 
+## NOTIF-01 — revisión local del nuevo SDK (13 de octubre de 2026)
+
+Esta sección actualiza el inventario de permisos. Los párrafos de PRE-BETA-AUDIT-01 siguientes describen **la APK y el AAB anteriores a NOTIF-01**, no la versión actual del código. `expo-notifications` `~57.0.22` se agregó para avisos locales; el código no obtiene push tokens ni configura servidor o backend. El permiso se solicita solo si la persona habilita los avisos. Preferencias y programación se guardan localmente en SQLite.
+
+El manifiesto Android **fusionado de release generado localmente** (`:app:processReleaseMainManifest`, exit 0) declara `INTERNET`, `ACCESS_NETWORK_STATE`, `RECEIVE_BOOT_COMPLETED`, `POST_NOTIFICATIONS`, `WAKE_LOCK` y `com.diegomarin.mispagos.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION`. `POST_NOTIFICATIONS` permite mostrar avisos en Android 13+; `RECEIVE_BOOT_COMPLETED` restaura alarmas tras reiniciar; `WAKE_LOCK` viene del SDK. Los permisos heredados para mensajería remota, Install Referrer y badges fueron excluidos con `blockedPermissions` y están ausentes del manifiesto fusionado. Debug tiene permisos adicionales de desarrollo y no equivale a release.
+
+El SDK nativo todavía incorpora componentes de Firebase Messaging aunque el código no los invoque. La inspección del manifiesto **no prueba ausencia de tráfico ni resuelve Data Safety**. Se requiere una nueva build final, pruebas de entrega local y verificación de tráfico/SDK del paquete entregado por Play. La observación anterior de 0 bytes y el AAB `0.4.0` anterior no cubren NOTIF-01.
+
 Fecha: 12 de octubre de 2026. Auditoría de código/configuración, dependencias instaladas y observación limitada de la APK independiente `0.4.0`. La instalación entregada por Play aún no se observó. **MANUAL VERIFICATION STILL REQUIRED** significa que no se debe convertir la inferencia en una respuesta definitiva de Data Safety.
 
 ## Resultado PRE-BETA-AUDIT-01

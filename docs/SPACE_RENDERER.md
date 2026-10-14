@@ -426,7 +426,7 @@ Do not render every unlocked achievement as an object.
 Initial maximum:
 
 - structural anchors as required by stage;
-- up to 3 optional interest/detail objects;
+- up to 4 optional interest/detail objects in SPACE-04 when a selected interest has a companion asset;
 - up to 3 achievement/discovery details.
 
 `Minimalismo` should reduce optional detail density.
@@ -602,5 +602,7 @@ Object z order can override the slot layer where foreground occlusion is intenti
 POLISH-01 uses the existing shelf for Libros in `detailLeft` and the cat in `detailRight`, keeping `floorRight` available for Música in a mixed profile. These are automatic stage-2 details; the fixed book and plant anchors and the maximum optional density stay intact.
 
 SPACE-02 keeps the books at their previous geometry in `booksAnchor` and adds a separate editable decorative `deskLeft` layer. Home and `/space` render the same automatic scene plus valid manual overrides. See `SPACE_CUSTOMIZATION_SYSTEM.md` for persistence, entitlements and editor semantics.
+
+SPACE-04 uses the same approved runtime assets. At stage 2, up to four optional objects can appear when a selected interest has a compatible companion (for example, Gaming shows monitor and controller); Minimalismo still limits automatic interest details to one. Interest objects remain secondary to fixed anchors and manual overrides. Custom wall and ambient hex colors tint the existing wall/window masks; no new source art is introduced.
 
 `/space-calibration` redirects to Home in production. Its master require is behind `__DEV__`; an Android production export excludes both the raw master and calibration derivative. In development it overlays the modular scene on the approved master derivative, supports 0–100% scene opacity, selectable visible objects and temporary ±1/±5/±10 adjustments to x, y, width and zIndex. Accepted values are copied into the static registry; calibration does not persist them.

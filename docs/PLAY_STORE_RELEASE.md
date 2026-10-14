@@ -1,5 +1,9 @@
 # PLAY-01 — Preparación de Google Play
 
+## NOTIF-01 — Permisos pendientes de release
+
+El manifiesto fusionado de **release local** con `expo-notifications` agrega `POST_NOTIFICATIONS`, `RECEIVE_BOOT_COMPLETED` y `WAKE_LOCK`; conserva `INTERNET`, `ACCESS_NETWORK_STATE` y el permiso propio de receptor. Los permisos heredados de push, Install Referrer y badges se bloquearon en `app.json`. La persona debe activar los avisos y aceptar el permiso Android. La lista de permisos del AAB 0.4.0 citada más abajo corresponde al artefacto **anterior** a NOTIF-01. Antes de subir un AAB nuevo, comprobar el manifiesto firmado, la entrega local tras reinicio y el comportamiento de SDK/red; ver `PLAY_DATA_SAFETY_AUDIT.md`.
+
 Estado: **AAB técnico preparado; ficha y declaraciones manuales pendientes. No se ha enviado nada a Play Console**. Alcance: Internal Testing → Closed Testing, nunca producción en esta tarea.
 
 ## Identidad y Android
