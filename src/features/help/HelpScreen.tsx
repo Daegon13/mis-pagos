@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter, type Href } from "expo-router";
 import { Linking, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -26,6 +26,7 @@ function openFeedback(subject: string, body: string) {
 }
 
 export function HelpScreen({ onBack }: { onBack: () => void }) {
+  const router = useRouter();
   const { topic: linkedTopic } = useLocalSearchParams<{ topic?: string }>();
   const { theme } = usePersonalization();
   const [category, setCategory] = useState<HelpCategoryId | "glossary" | "privacy" | null>(null);
@@ -66,6 +67,7 @@ export function HelpScreen({ onBack }: { onBack: () => void }) {
         <Text style={[styles.lead, body]}>Cómo se manejan tus datos en Mis Pagos.</Text>
         <View style={[styles.card, { backgroundColor: theme.surface, borderColor: theme.border }]}>
           <Text style={[styles.body, heading]}>Tus saldos, movimientos, planes, preferencias y descubrimientos se guardan en la base de datos de este dispositivo. Mis Pagos no tiene cuenta, sincronización bancaria ni nube propia.</Text>
+          <Text style={[styles.body, heading]}>Las respuestas del laboratorio beta también se guardan acá. Solo se comparten si tocás «Enviar mis respuestas» y enviás el correo después de revisarlo.</Text>
           <Text style={[styles.body, heading]}>Las funciones principales se pueden usar sin conexión. El paquete incluye componentes de Expo y React Native con capacidad de red; su comportamiento de red final se verifica antes de completar la declaración de privacidad de Google Play. No incluyas datos financieros sensibles al enviar comentarios.</Text>
           <Text style={[styles.body, heading]}>Podés eliminar movimientos y planes desde la app. Desinstalarla elimina sus datos locales del dispositivo; las copias del sistema operativo, si están activadas, pueden tener sus propias reglas de conservación. Mis Pagos no ofrece exportación ni respaldo dentro de la app.</Text>
           <Text style={[styles.body, heading]}>Responsable: Diego Marin. Contacto de privacidad: {SUPPORT_EMAIL}.</Text>
@@ -104,6 +106,13 @@ export function HelpScreen({ onBack }: { onBack: () => void }) {
           style={[styles.card, { backgroundColor: theme.primarySurface, borderColor: theme.border }]}>
           <Text style={[styles.subhead, heading]}>Glosario →</Text>
           <Text style={[styles.body, body]}>Encontrá una definición rápida.</Text>
+        </Pressable>
+        <Pressable accessibilityRole="button" accessibilityLabel="Abrir Ayudanos a decidir"
+          onPress={() => router.push("/help/beta-feedback" as Href)}
+          style={[styles.card, { backgroundColor: theme.primarySurface, borderColor: theme.border }]}>
+          <Text style={[styles.subhead, heading]}>Ayudanos a decidir →</Text>
+          <Text style={[styles.body, body]}>Probamos ideas para las próximas versiones. Elegí qué te serviría y ayudanos a decidir qué construir.</Text>
+          <Text style={[styles.body, body]}>Tus respuestas quedan en este dispositivo hasta que decidas enviarlas.</Text>
         </Pressable>
         <Pressable accessibilityRole="button" accessibilityLabel="Abrir privacidad" onPress={() => setCategory("privacy")}
           style={[styles.card, { backgroundColor: theme.surface, borderColor: theme.border }]}>

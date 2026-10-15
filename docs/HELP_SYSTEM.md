@@ -14,6 +14,8 @@ El registro `src/features/help/helpContent.ts` es la fuente única del contenido
 
 PLAY-01 agrega **Privacidad** como entrada informativa independiente al final de la portada de Ayuda. Explica el almacenamiento local, los límites de la auditoría de red y la eliminación de datos sin alterar las cinco categorías ni el glosario. La política completa está en `docs/legal/PRIVACY_POLICY.md` y en `https://mis-pagos-website.vercel.app/privacidad`; Ayuda muestra el contacto `mispagos.soporte@gmail.com` y abre la URL pública al pedir el texto completo. El resumen local sigue disponible sin red.
 
+BETA-FEEDBACK-01 agrega **Ayudanos a decidir** como entrada destacada. Sus respuestas y comentario opcional quedan en SQLite local hasta que la persona abra y envíe explícitamente un borrador de correo. Puede revisar el contenido antes de enviarlo; cancelar el correo conserva las respuestas. El registro y el contrato están en `docs/BETA_FEEDBACK_SYSTEM.md`. No altera las cinco categorías educativas, el glosario ni los cálculos financieros.
+
 ## Significado de los términos
 
 - **Saldo actual**: cifra registrada como disponible hoy; se actualiza manualmente o al completar un movimiento eligiendo ajustar el saldo.

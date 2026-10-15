@@ -46,7 +46,7 @@ const selection = (interestIds = [], atmosphereId = 'natural', themeId = 'bosque
   ({ ...DEFAULT_SELECTION, interestIds, atmosphereId, themeId });
 const manualVisual = { ...EMPTY_VISUAL_PREFERENCES, decorationMode: 'manual' };
 
-test('v5 to v9 preserves financial, planning, engagement, personalization and unlock rows', async () => {
+test('v5 to v10 preserves financial, planning, engagement, personalization and unlock rows', async () => {
   const { db, sqlite } = fixture();
   try {
     for (const migration of [initialMigration, engagementMigration, personalizationMigration,
@@ -62,7 +62,7 @@ test('v5 to v9 preserves financial, planning, engagement, personalization and un
     const preserved = ['financial_profile', 'payments', 'spending_plans', 'spending_allocations', 'engagement_progress',
       'personalization_preferences', 'achievement_unlocks'].map(name => sqlite.prepare(`SELECT * FROM ${name}`).all());
     await runMigrations(db);
-    assert.equal(sqlite.prepare('PRAGMA user_version').get().user_version, 9);
+    assert.equal(sqlite.prepare('PRAGMA user_version').get().user_version, 10);
     assert.deepEqual(['financial_profile', 'payments', 'spending_plans', 'spending_allocations', 'engagement_progress',
       'personalization_preferences', 'achievement_unlocks'].map(name => sqlite.prepare(`SELECT * FROM ${name}`).all()), preserved);
     const state = await loadSpaceCustomization(db);
