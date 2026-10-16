@@ -96,6 +96,13 @@ export function HelpScreen({ onBack }: { onBack: () => void }) {
       </> : <>
         <Text accessibilityRole="header" style={[styles.heading, heading]}>Cómo funciona Mis Pagos</Text>
         <Text style={[styles.lead, body]}>¿Qué querés entender mejor?</Text>
+        <Pressable accessibilityRole="button" accessibilityLabel="Abrir Ayudanos a decidir"
+          onPress={() => router.push("/help/beta-feedback" as Href)}
+          style={[styles.card, { backgroundColor: theme.primarySurface, borderColor: theme.border }]}>
+          <Text style={[styles.subhead, heading]}>Ayudanos a decidir →</Text>
+          <Text style={[styles.body, body]}>Probamos ideas para las próximas versiones. Elegí qué te serviría y ayudanos a decidir qué construir.</Text>
+          <Text style={[styles.body, body]}>Tus respuestas quedan en este dispositivo hasta que decidas enviarlas.</Text>
+        </Pressable>
         {HELP_CATEGORIES.map(item => <Pressable key={item.id} accessibilityRole="button"
           accessibilityLabel={`Abrir ${item.title}`} onPress={() => setCategory(item.id)}
           style={[styles.card, { backgroundColor: theme.surface, borderColor: theme.border }]}>
@@ -106,13 +113,6 @@ export function HelpScreen({ onBack }: { onBack: () => void }) {
           style={[styles.card, { backgroundColor: theme.primarySurface, borderColor: theme.border }]}>
           <Text style={[styles.subhead, heading]}>Glosario →</Text>
           <Text style={[styles.body, body]}>Encontrá una definición rápida.</Text>
-        </Pressable>
-        <Pressable accessibilityRole="button" accessibilityLabel="Abrir Ayudanos a decidir"
-          onPress={() => router.push("/help/beta-feedback" as Href)}
-          style={[styles.card, { backgroundColor: theme.primarySurface, borderColor: theme.border }]}>
-          <Text style={[styles.subhead, heading]}>Ayudanos a decidir →</Text>
-          <Text style={[styles.body, body]}>Probamos ideas para las próximas versiones. Elegí qué te serviría y ayudanos a decidir qué construir.</Text>
-          <Text style={[styles.body, body]}>Tus respuestas quedan en este dispositivo hasta que decidas enviarlas.</Text>
         </Pressable>
         <Pressable accessibilityRole="button" accessibilityLabel="Abrir privacidad" onPress={() => setCategory("privacy")}
           style={[styles.card, { backgroundColor: theme.surface, borderColor: theme.border }]}>

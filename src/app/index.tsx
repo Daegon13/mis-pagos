@@ -25,8 +25,8 @@ export default function Index() {
             <Text style={{ color: theme.primary, fontSize: 19, fontWeight: "600" }}>?</Text>
           </Pressable>}
           {profile && <Pressable accessibilityRole="button" accessibilityLabel="Preferencias de notificaciones"
-            onPress={() => router.push("/notifications" as Href)} style={[styles.help, { borderColor: theme.border }]}>
-            <Text style={{ color: theme.primary, fontSize: 19 }}>🔔</Text>
+            onPress={() => router.push("/notifications" as Href)} style={[styles.notifications, { borderColor: theme.border }]}>
+            <Text style={{ color: theme.primary, fontSize: 13, fontWeight: "600" }}>Notificaciones</Text>
           </Pressable>}
         </View>
         {isLoading ? (
@@ -66,7 +66,8 @@ const styles = StyleSheet.create({
   content: { flexGrow: 1, width: "100%", maxWidth: 560, alignSelf: "center", padding: 24, paddingBottom: 40, gap: 24 },
   header: { flexDirection: "row", gap: 12, alignItems: "center" },
   help: { width: 44, height: 44, borderWidth: 1, borderRadius: 22, alignItems: "center", justifyContent: "center" },
-  brand: { color: "#163B30", fontSize: 21, fontWeight: "700" },
+  notifications: { minHeight: 44, borderWidth: 1, borderRadius: 22, alignItems: "center", justifyContent: "center", paddingHorizontal: 10 },
+  brand: { color: "#163B30", fontSize: 21, fontWeight: "700", flex: 1 },
   section: { gap: 12 },
   description: { color: "#52645C", fontSize: 16, lineHeight: 24 },
   retry: { alignSelf: "flex-start", minHeight: 48, justifyContent: "center", paddingHorizontal: 20, borderRadius: 12, backgroundColor: "#163B30" },

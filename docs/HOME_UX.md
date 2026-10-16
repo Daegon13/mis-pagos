@@ -90,6 +90,7 @@ the domain. Date display and manual balance dates use human Spanish wording.
 ## Home hierarchy
 
 BETA-UX-01 muestra una tarjeta compacta «Ayudanos a mejorar Mis Pagos» después del contenido financiero principal. «Dar mi opinión» abre directamente `/help/beta-feedback`; la tarjeta no desplaza la jerarquía de Disponible real.
+RC-UX-FIX-01 muestra el progreso de las 12 preguntas principales cuando hay respuestas y hace visible «Notificaciones» en la cabecera. La interpretación de vencidos, proyección, plan y próximos movimientos se agrupan en superficies suaves como en el polish aprobado de `3aa3094`.
 
 PLAN-01 añade, después de la información financiera principal, una sección compacta y secundaria. Sin plan activo ofrece crear el plan del mes; con plan muestra reserva de cierre, `Libre para usar`, faltante cuando corresponda y un solo ritmo de referencia. La acción abre la pantalla del plan y la simulación. Las asignaciones detalladas permanecen fuera de Home. La advertencia financiera y el valor negativo de `Disponible real` siguen visibles.
 

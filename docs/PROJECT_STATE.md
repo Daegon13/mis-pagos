@@ -1,8 +1,14 @@
 # Mis Pagos — Current Project State
 
+## RC-UX-FIX-01 — Pre-RC navigation and color controls
+
+Home conserva las superficies aprobadas en `3aa3094` para Disponible real, proyección, plan y próximos movimientos; la interpretación de vencidos ahora usa la misma tarjeta suave. La tarjeta beta muestra progreso de preguntas principales cuando hay respuestas y Ayuda presenta su entrada antes de las categorías. Notificaciones tiene una entrada textual visible en la cabecera de Home. Tu espacio y personalización usan navegación de regreso con fallback, y Pared/Ambiente tienen selector visual con vista previa, Cancelar, Aplicar y hexadecimal opcional. No cambiaron cálculos financieros ni scheduler.
+
+QA local: 75 tests, typecheck, lint, diff check y APK QA Android release pasaron. Android a 360×640 verificó Home en Noche/Peonía, acceso a feedback desde Home/Ayuda, Volver de Tu espacio, picker de pared/ambiente con vista previa, cancelar, aplicación y persistencia tras reapertura, y preferencias de notificaciones con interruptor global y categorías persistentes y horario visible. Los valores de QA se restauraron. La entrega/cancelación real de recordatorios y los gates de distribución beta siguen pendientes.
+
 ## BETA-UX-01 — Discoverability polish
 
-Home muestra una entrada directa a `/help/beta-feedback` después del contenido financiero; Ayuda conserva la suya. El CTA de correo y el progreso de las 12 preguntas principales permanecen visibles al recorrer feedback. En Tu espacio, una única vista compacta permanece visible sobre los controles en móvil; en pantallas anchas, se ubica junto a ellos. La QA visual interactiva de este cambio sigue pendiente.
+Home muestra una entrada directa a `/help/beta-feedback` después del contenido financiero; Ayuda conserva la suya. El CTA de correo y el progreso de las 12 preguntas principales permanecen visibles al recorrer feedback. En Tu espacio, una única vista compacta permanece visible sobre los controles en móvil; en pantallas anchas, se ubica junto a ellos. RC-UX-FIX-01 verificó la navegación y las superficies principales en Android a 360×640.
 
 ## BETA-FEEDBACK-01 — Laboratorio beta local
 

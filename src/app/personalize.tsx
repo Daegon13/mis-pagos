@@ -6,6 +6,6 @@ export default function PersonalizeRoute() {
   const router = useRouter();
   return <>
     <Stack.Screen options={{ headerShown: false }} />
-    <PersonalizationScreen onClose={() => router.dismissTo("/")} />
+    <PersonalizationScreen onClose={() => router.canGoBack() ? router.back() : router.replace("/space")} />
   </>;
 }

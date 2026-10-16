@@ -3,6 +3,7 @@
 Laboratorio voluntario dentro de Ayuda (`/help/beta-feedback`) para comparar preferencias sobre decisiones posibles del producto. Las preguntas describen hipótesis, no funciones prometidas. Se priorizan 12 preguntas principales; las otras preguntas CORE y las OPTIONAL están disponibles por sección. Ninguna respuesta es obligatoria y todas se pueden cambiar.
 
 BETA-UX-01 agrega una entrada directa desde Home, manteniendo la de Ayuda. El progreso de las 12 preguntas principales y «Enviar mis respuestas» quedan en una barra inferior visible durante el scroll, respetando el área segura. Sin respuesta ni comentario, el botón permanece visible pero inactivo; no exige completar todas las preguntas.
+RC-UX-FIX-01 muestra en la tarjeta de Home el progreso cuando hay respuestas y ubica «Ayudanos a decidir» al inicio de Ayuda. Ambas entradas abren la misma ruta; las preguntas, el envío y la persistencia no cambian.
 
 El registro `src/features/help/betaFeedbackQuestions.ts` contiene 25 IDs estables, sección, prioridad, texto, opciones con IDs estables y las 12 preguntas destacadas. Secciones: Tu dinero (4), Automatización y comodidad (4), Recordatorios (4), Tu espacio (6), Privacidad y dispositivos (4) y Futuro de Mis Pagos (3). Para agregar o retirar preguntas se edita el registro; las respuestas de IDs retirados pueden quedar en SQLite, pero el exportador solo incluye preguntas vigentes. No se requieren migraciones por cambios de copy o prioridad.
 

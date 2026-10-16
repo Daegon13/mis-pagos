@@ -43,7 +43,7 @@ export function PersonalizationScreen({ onClose }: { onClose: () => void }) {
   return <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
     <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled" keyboardDismissMode="on-drag">
-        <Pressable accessibilityRole="button" onPress={onClose} style={styles.skip}>
+        <Pressable accessibilityRole="button" onPress={onClose} style={styles.skip} hitSlop={8}>
           <Text style={[styles.link, { color: theme.primary }]}>Omitir / Volver</Text>
         </Pressable>
         <Text accessibilityRole="header" style={[styles.heading, { color: theme.textPrimary }]}>Hagamos Mis Pagos un poco más tuyo</Text>
@@ -120,7 +120,7 @@ export function PersonalizationScreen({ onClose }: { onClose: () => void }) {
 const styles = StyleSheet.create({
   container: { flex: 1 },
   content: { flexGrow: 1, maxWidth: 560, width: "100%", alignSelf: "center", padding: 24, paddingBottom: 48, gap: 20 },
-  skip: { minHeight: 44, alignSelf: "flex-start", justifyContent: "center" },
+  skip: { minHeight: 44, alignSelf: "flex-start", justifyContent: "center", paddingHorizontal: 12 },
   link: { fontSize: 16, fontWeight: "600" },
   heading: { fontSize: 28, lineHeight: 35, fontWeight: "700" },
   description: { fontSize: 14, lineHeight: 21 },

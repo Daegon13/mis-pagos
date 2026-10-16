@@ -3,6 +3,7 @@
 ## Alcance y permiso
 
 Android e iOS programan avisos del dispositivo. No hay backend, push token ni uso de notificaciones remotas. La opción global empieza apagada; al activarla se solicita el permiso nativo. Si se deniega, permanece apagada. En web la pantalla informa que los avisos del dispositivo se configuran en Android. La versión web del proyecto todavía tiene el bloqueo SQLite documentado en `PROJECT_STATE.md`.
+RC-UX-FIX-01 hace visible el acceso «Notificaciones» en la cabecera de Home; la ruta, preferencias y programación de avisos siguen siendo las de NOTIF-01.
 
 El manifiesto fusionado de release generado localmente declara `POST_NOTIFICATIONS`, `RECEIVE_BOOT_COMPLETED` y `WAKE_LOCK` además de los permisos previos. Los permisos de mensajería remota y badges se excluyen en `app.json`. La auditoría y los límites de verificación están en `PLAY_DATA_SAFETY_AUDIT.md`.
 

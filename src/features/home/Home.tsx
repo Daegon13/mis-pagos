@@ -1,3 +1,6 @@
+import { useCallback, useState } from "react";
+import { useFocusEffect } from "expo-router";
+import { useSQLiteContext } from "expo-sqlite";
 import { Pressable, StyleSheet, Text, View, useWindowDimensions } from "react-native";
 
 import type { FinancialProfile } from "@/domain/financialProfile";
@@ -10,6 +13,8 @@ import type { ThemeTokens } from "@/features/personalization/themes";
 import { localCivilDate } from "@/domain/paymentTiming";
 import { planAmounts, referencePace, remainingDays } from "@/domain/spendingPlan";
 import { ContextualHelp } from "@/features/help/ContextualHelp";
+import { loadBetaFeedback } from "@/data/repositories/betaFeedbackRepository";
+import { betaProgress } from "@/features/help/betaFeedbackQuestions";
 
 const months = ["ENE", "FEB", "MAR", "ABR", "MAY", "JUN", "JUL", "AGO", "SEP", "OCT", "NOV", "DIC"];
 
@@ -18,6 +23,14 @@ export function Home({ profile, onAdd, paymentSaved, onDismissFeedback, onAll, o
   onAll: () => void; onOpen: (id: number) => void; onBalance: () => void; onPersonalize: () => void; onPlan: () => void; onAchievements: () => void; onOpenSpace: () => void; onBetaFeedback: () => void; balanceSaved?: string; discovery?: boolean;
 }) {
   const { theme } = usePersonalization();
+  const db = useSQLiteContext();
+  const [feedbackProgress, setFeedbackProgress] = useState<{ answered: number; total: number } | null>(null);
+  useFocusEffect(useCallback(() => {
+    let active = true;
+    void loadBetaFeedback(db).then(data => { if (active) setFeedbackProgress(betaProgress(data.answers)); })
+      .catch(() => { if (active) setFeedbackProgress(null); });
+    return () => { active = false; };
+  }, [db]));
   const styles = createStyles(theme);
   const { summary, planning, planningError, error, retry, stage, spaceError, surprise, feedback, achievementCount,
     achievementUnlocks, slotOverrides, visualPreferences } = useHome(paymentSaved);
@@ -70,7 +83,7 @@ export function Home({ profile, onAdd, paymentSaved, onDismissFeedback, onAll, o
               <Text style={styles.link}>Entendido</Text>
             </Pressable>
           </View>}
-          {interpretation && <View style={styles.section}>
+          {interpretation && <View style={[styles.section, styles.card]}>
             <Text style={styles.title}>{interpretation.title}</Text>
             <Text style={styles.description}>{interpretation.kind === "shortfall"
               ? `Tus compromisos superan tu saldo actual en ${money(interpretation.shortfallMinor)}.`
@@ -101,6 +114,8 @@ export function Home({ profile, onAdd, paymentSaved, onDismissFeedback, onAll, o
           <View style={[styles.section, styles.card]}>
             <Text accessibilityRole="header" style={styles.title}>Ayudanos a mejorar Mis Pagos</Text>
             <Text style={styles.description}>Estamos probando ideas para las próximas versiones. Tus respuestas nos ayudan a decidir qué construir.</Text>
+            {feedbackProgress && feedbackProgress.answered > 0 && <Text style={styles.caption}>
+              {feedbackProgress.answered} de {feedbackProgress.total} preguntas principales</Text>}
             <Pressable accessibilityRole="button" onPress={onBetaFeedback} style={styles.dismiss}>
               <Text style={styles.link}>Dar mi opinión →</Text>
             </Pressable>
