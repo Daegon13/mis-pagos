@@ -26,7 +26,8 @@ export function SpaceScreen({ onBack, onAchievements, onPersonalize }: {
   const db = useSQLiteContext();
   const { preferences, theme } = usePersonalization();
   const { width } = useWindowDimensions();
-  const previewWidth = Math.min(512, Math.max(240, width - 48));
+  const wide = width >= 800;
+  const previewWidth = wide ? Math.min(420, Math.floor(width * 0.4) - 48) : Math.min(240, width - 32);
   const [state, setState] = useState<SpaceState | null>(null);
   const [editing, setEditing] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -80,17 +81,22 @@ export function SpaceScreen({ onBack, onAchievements, onPersonalize }: {
   };
 
   return <SafeAreaView style={{ flex: 1, backgroundColor: theme.background }} edges={["bottom"]}>
-    <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+    <View style={[styles.header, wide && styles.wideHeader]}>
       <Pressable accessibilityRole="button" onPress={onBack} style={styles.touch}><Text style={{ color: theme.primary }}>← Volver</Text></Pressable>
       <Text accessibilityRole="header" style={[styles.heading, { color: theme.textPrimary }]}>{preferences.spaceName || "Tu espacio"}</Text>
-      <Text style={{ color: theme.textSecondary }}>Elegí los colores, la luz y los detalles de tu habitación.</Text>
-      {state && <>
+    </View>
+    <View style={[styles.layout, wide && styles.wideLayout]}>
+      {state && <View style={[styles.previewPanel, wide && styles.widePreviewPanel]}>
         <View accessible accessibilityLabel={`Tu espacio, etapa ${state.stage}, paleta ${appearance?.paletteId}, ambiente ${appearance?.moodId}`}
           style={[styles.preview, { width: previewWidth, height: previewWidth * 3 / 4 }]}>
           <SpaceRenderer stage={state.stage} selection={preferences} achievementUnlocks={state.unlocks}
             slotOverrides={state.overrides} visualPreferences={state.visual} width={previewWidth} />
         </View>
-        <Text style={{ color: theme.textSecondary }}>Etapa {state.stage} · Pared {appearance?.wallColor ?? THEMES.find(item => item.id === appearance?.paletteId)?.label} · Luz {appearance?.ambientColor ?? ATMOSPHERES.find(item => item.id === appearance?.moodId)?.label}</Text>
+        <Text style={[styles.previewCaption, { color: theme.textSecondary }]}>Etapa {state.stage} · Pared {appearance?.wallColor ?? THEMES.find(item => item.id === appearance?.paletteId)?.label} · Luz {appearance?.ambientColor ?? ATMOSPHERES.find(item => item.id === appearance?.moodId)?.label}</Text>
+      </View>}
+      <ScrollView style={styles.controls} contentContainerStyle={[styles.content, wide && styles.wideContent]} keyboardShouldPersistTaps="handled">
+      <Text style={{ color: theme.textSecondary }}>Elegí los colores, la luz y los detalles de tu habitación.</Text>
+      {state && <>
         <View style={[styles.section, { backgroundColor: theme.surface, borderColor: theme.border }]}>
           <Text accessibilityRole="header" style={[styles.cardTitle, { color: theme.textPrimary }]}>Pared</Text>
           <Text style={{ color: theme.textSecondary }}>Elegí el color que querés para la habitación.</Text>
@@ -203,11 +209,21 @@ export function SpaceScreen({ onBack, onAchievements, onPersonalize }: {
         </Pressable>}</View>}
       {!state && !error && <Text style={{ color: theme.textSecondary }}>Cargando Tu espacio...</Text>}
     </ScrollView>
+    </View>
   </SafeAreaView>;
 }
 
 const styles = StyleSheet.create({
-  content: { width: "100%", maxWidth: 560, alignSelf: "center", padding: 24, paddingBottom: 56, gap: 14 },
+  header: { paddingHorizontal: 16, paddingTop: 4, paddingBottom: 4 },
+  wideHeader: { width: "100%", maxWidth: 1100, alignSelf: "center" },
+  layout: { flex: 1 },
+  wideLayout: { flexDirection: "row", width: "100%", maxWidth: 1100, alignSelf: "center" },
+  previewPanel: { alignItems: "center", paddingHorizontal: 12, paddingBottom: 4 },
+  widePreviewPanel: { width: "44%", paddingTop: 16, justifyContent: "flex-start" },
+  previewCaption: { textAlign: "center", fontSize: 12, marginTop: 4 },
+  controls: { flex: 1 },
+  content: { width: "100%", maxWidth: 560, alignSelf: "center", paddingHorizontal: 16, paddingTop: 8, paddingBottom: 48, gap: 12 },
+  wideContent: { paddingTop: 16, paddingHorizontal: 20 },
   touch: { minHeight: 44, alignSelf: "flex-start", justifyContent: "center", paddingHorizontal: 4 },
   heading: { fontSize: 28, fontWeight: "700" }, sectionTitle: { fontSize: 22, fontWeight: "700", marginTop: 12 },
   preview: { borderRadius: 18, overflow: "hidden", alignSelf: "center" },

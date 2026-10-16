@@ -1,5 +1,9 @@
 # Mis Pagos — Current Project State
 
+## BETA-UX-01 — Discoverability polish
+
+Home muestra una entrada directa a `/help/beta-feedback` después del contenido financiero; Ayuda conserva la suya. El CTA de correo y el progreso de las 12 preguntas principales permanecen visibles al recorrer feedback. En Tu espacio, una única vista compacta permanece visible sobre los controles en móvil; en pantallas anchas, se ubica junto a ellos. La QA visual interactiva de este cambio sigue pendiente.
+
 ## BETA-FEEDBACK-01 — Laboratorio beta local
 
 **Implementation status: PASS. Distribution QA: PENDING.** Ayuda ofrece «Ayudanos a decidir» en `/help/beta-feedback`. El registro central tiene 25 preguntas en seis secciones, 12 destacadas para la primera pasada, respuestas editables y comentario opcional. SQLite v10 guarda IDs de pregunta/opción, tiempos de primera respuesta y actualización, y comentario local. El correo se prepara únicamente tras tocar «Enviar mis respuestas»; no hay backend, analítica ni transmisión automática. El exportador no lee datos financieros. Los 71 tests locales, typecheck y lint pasan. En Android API 35 se verificaron la ruta, progreso, edición, OPTIONAL, comentario, persistencia tras cierre real y fallback sin cliente de correo. A 360×640 se corrigió el scroll conservado al abrir una sección y se comprobó la cabecera visible. Un perfil limpio completó onboarding y mostró 0/12. La QA de distribución debe probar una actualización real a v10 con identidad y firma compatibles y revisar un borrador real de correo con una cuenta configurada. La instalación histórica `com.diegomarin.mispagos` no admite el APK QA `com.diegomarin.mispagos.qa` como actualización. Véase `docs/BETA_FEEDBACK_SYSTEM.md`.

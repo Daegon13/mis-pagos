@@ -13,9 +13,9 @@ import { ContextualHelp } from "@/features/help/ContextualHelp";
 
 const months = ["ENE", "FEB", "MAR", "ABR", "MAY", "JUN", "JUL", "AGO", "SEP", "OCT", "NOV", "DIC"];
 
-export function Home({ profile, onAdd, paymentSaved, onDismissFeedback, onAll, onOpen, onBalance, balanceSaved, onPersonalize, onPlan, onAchievements, onOpenSpace, discovery }: {
+export function Home({ profile, onAdd, paymentSaved, onDismissFeedback, onAll, onOpen, onBalance, balanceSaved, onPersonalize, onPlan, onAchievements, onOpenSpace, onBetaFeedback, discovery }: {
   profile: FinancialProfile; onAdd: () => void; paymentSaved?: string; onDismissFeedback: () => void;
-  onAll: () => void; onOpen: (id: number) => void; onBalance: () => void; onPersonalize: () => void; onPlan: () => void; onAchievements: () => void; onOpenSpace: () => void; balanceSaved?: string; discovery?: boolean;
+  onAll: () => void; onOpen: (id: number) => void; onBalance: () => void; onPersonalize: () => void; onPlan: () => void; onAchievements: () => void; onOpenSpace: () => void; onBetaFeedback: () => void; balanceSaved?: string; discovery?: boolean;
 }) {
   const { theme } = usePersonalization();
   const styles = createStyles(theme);
@@ -98,6 +98,13 @@ export function Home({ profile, onAdd, paymentSaved, onDismissFeedback, onAll, o
             <Text style={styles.projectionAmount}>{money(summary.projectionMinor)}</Text>
             <Text style={styles.caption}>Ese dinero todavía no está disponible.</Text>
           </View> : null}
+          <View style={[styles.section, styles.card]}>
+            <Text accessibilityRole="header" style={styles.title}>Ayudanos a mejorar Mis Pagos</Text>
+            <Text style={styles.description}>Estamos probando ideas para las próximas versiones. Tus respuestas nos ayudan a decidir qué construir.</Text>
+            <Pressable accessibilityRole="button" onPress={onBetaFeedback} style={styles.dismiss}>
+              <Text style={styles.link}>Dar mi opinión →</Text>
+            </Pressable>
+          </View>
           <View style={[styles.section, styles.card]}>
             <Text accessibilityRole="header" style={styles.heading}>Tu plan del mes</Text>
             {planningError ? <Text style={styles.caption}>No pudimos cargar tu plan. Tus datos financieros siguen disponibles.</Text>

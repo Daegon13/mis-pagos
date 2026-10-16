@@ -116,18 +116,26 @@ export function BetaFeedbackScreen({ onBack }: { onBack: () => void }) {
           <Text style={secondary}>{comment.length}/1000</Text>
         </View>
         <Text style={secondary}>Podés revisar el mensaje antes de enviarlo. No incluimos tus datos financieros de la app; revisá también tu comentario.</Text>
-        <Pressable accessibilityRole="button" onPress={() => void send()} style={[styles.send, { backgroundColor: theme.primary }]}>
-          <Text style={{ color: theme.textOnPrimary, fontWeight: "700" }}>Enviar mis respuestas</Text>
-        </Pressable>
       </>)}
       {!!message && <Text accessibilityRole="alert" style={[styles.notice, secondary]}>{message}</Text>}
       {!ready && !message && <Text style={secondary}>Cargando respuestas...</Text>}
     </ScrollView>
+    <View style={[styles.footer, { backgroundColor: theme.surface, borderColor: theme.border }]}>
+      {ready && <Text style={[styles.progress, secondary]}>{progress.answered} de {progress.total} preguntas principales respondidas</Text>}
+      <Pressable accessibilityRole="button" accessibilityState={{ disabled: !ready || (!Object.keys(answers).length && !comment.trim()) }}
+        disabled={!ready || (!Object.keys(answers).length && !comment.trim())}
+        onPress={() => void send()} style={[styles.send, { backgroundColor: theme.primary,
+          opacity: !ready || (!Object.keys(answers).length && !comment.trim()) ? 0.5 : 1 }]}>
+        <Text style={{ color: theme.textOnPrimary, fontWeight: "700" }}>Enviar mis respuestas</Text>
+      </Pressable>
+    </View>
   </SafeAreaView>;
 }
 
 const styles = StyleSheet.create({
-  content: { width: "100%", maxWidth: 560, alignSelf: "center", padding: 20, paddingBottom: 48, gap: 12 },
+  content: { width: "100%", maxWidth: 560, alignSelf: "center", padding: 20, paddingBottom: 32, gap: 12 },
+  footer: { width: "100%", borderTopWidth: 1, paddingHorizontal: 20, paddingTop: 8, paddingBottom: 8 },
+  progress: { textAlign: "center", fontSize: 13, marginBottom: 6 },
   back: { minHeight: 44, justifyContent: "center", alignSelf: "flex-start", paddingRight: 20 },
   heading: { fontSize: 27, lineHeight: 34, fontWeight: "700" },
   lead: { fontSize: 16, lineHeight: 24 },

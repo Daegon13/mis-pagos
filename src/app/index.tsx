@@ -49,6 +49,7 @@ export default function Index() {
             onPersonalize={() => router.push("/personalize")}
             onAchievements={() => router.push("./achievements")}
             onOpenSpace={() => router.push("/space")}
+            onBetaFeedback={() => router.push("/help/beta-feedback")}
             onPlan={() => router.push("./plan")}
             onAdd={() => router.push("/payments/new")} />
         )}

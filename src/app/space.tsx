@@ -4,7 +4,7 @@ import { SpaceScreen } from "@/features/space/SpaceScreen";
 export default function SpaceRoute() {
   const router = useRouter();
   return <>
-    <Stack.Screen options={{ title: "Tu espacio" }} />
+    <Stack.Screen options={{ headerShown: false }} />
     <SpaceScreen onBack={() => router.back()} onAchievements={() => router.push("/achievements")}
       onPersonalize={() => router.push("/personalize")} />
   </>;

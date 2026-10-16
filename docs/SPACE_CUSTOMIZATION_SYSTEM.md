@@ -1,5 +1,7 @@
 # SPACE-02 — Edición de Tu espacio
 
+BETA-UX-01 mantiene una única vista en vivo de la habitación visible mientras se recorren Pared, Ambiente e iluminación y Decoración. En móvil aparece compacta sobre el scroll de controles; en ancho grande aparece junto a ellos. Los cambios siguen usando el estado y renderer existentes.
+
 Este contrato rige la edición manual de Tu espacio y las recompensas de Descubrimientos. `SPACE_RENDERER.md` conserva la geometría y los recursos visuales.
 
 ## Composición
