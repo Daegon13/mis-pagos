@@ -1,5 +1,9 @@
 # Mis Pagos — Current Project State
 
+## RC 0.5.0 — AAB candidato para Android
+
+EAS `production` terminó la build `e1f8966d-553c-4e78-9cd3-4637ba50aae6` desde el commit `d254706` y `app.json` local con versión `0.5.0` / Android versionCode `5`. El AAB firmado usa `com.diegomarin.mispagos` y la credencial EAS existente. Pasaron la validación del bundle y las comprobaciones de manifiesto, SDK y firma. El AAB es un release candidate; siguen pendientes la entrega por Play y la QA de distribución. Véase `docs/PLAY_STORE_RELEASE.md`.
+
 ## RC-UX-FIX-01 — Pre-RC navigation and color controls
 
 Home conserva las superficies aprobadas en `3aa3094` para Disponible real, proyección, plan y próximos movimientos; la interpretación de vencidos ahora usa la misma tarjeta suave. La tarjeta beta muestra progreso de preguntas principales cuando hay respuestas y Ayuda presenta su entrada antes de las categorías. Notificaciones tiene una entrada textual visible en la cabecera de Home. Tu espacio y personalización usan navegación de regreso con fallback, y Pared/Ambiente tienen selector visual con vista previa, Cancelar, Aplicar y hexadecimal opcional. No cambiaron cálculos financieros ni scheduler.

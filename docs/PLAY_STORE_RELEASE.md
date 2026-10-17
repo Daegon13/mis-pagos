@@ -1,5 +1,12 @@
 # PLAY-01 — Preparación de Google Play
 
+## RC 0.5.0 / versionCode 5 — AAB generado
+
+- EAS `production` build `e1f8966d-553c-4e78-9cd3-4637ba50aae6`: **FINISHED**. Fuente: commit `d254706` y `app.json` local con `0.5.0` / `5`.
+- [AAB candidato](https://expo.dev/artifacts/eas/d7xjnA-8buPM9RPIWWU_AYpj84MZAexBctNwyKEYwRM.aab), 80,052,997 bytes; SHA-256 `56929B65816D5F7AC987022D08B0745C2382FF6AF830F4A83079DEBB16E2BA01`.
+- `bundletool validate` pasó. Manifiesto: `com.diegomarin.mispagos`, `0.5.0`/`5`, minSdk 24 y targetSdk 36. `jarsigner -verify` indicó `jar verified`; SHA-256 del certificado de carga `08:F8:88:93:A1:08:4B:A0:57:46:90:24:FA:5C:0A:3A:65:EB:CC:B1:E9:56:51:6E:9C:96:EB:28:88:D9:BB:72`, igual al de la credencial EAS existente.
+- Artefacto generado y descargado localmente; no enviado a Play Console. Siguen pendientes la QA de actualización/entrega por Play y los controles de distribución y Data Safety descritos abajo.
+
 ## NOTIF-01 — Permisos pendientes de release
 
 El manifiesto fusionado de **release local** con `expo-notifications` agrega `POST_NOTIFICATIONS`, `RECEIVE_BOOT_COMPLETED` y `WAKE_LOCK`; conserva `INTERNET`, `ACCESS_NETWORK_STATE` y el permiso propio de receptor. Los permisos heredados de push, Install Referrer y badges se bloquearon en `app.json`. La persona debe activar los avisos y aceptar el permiso Android. La lista de permisos del AAB 0.4.0 citada más abajo corresponde al artefacto **anterior** a NOTIF-01. Antes de subir un AAB nuevo, comprobar el manifiesto firmado, la entrega local tras reinicio y el comportamiento de SDK/red; ver `PLAY_DATA_SAFETY_AUDIT.md`.
@@ -9,7 +16,7 @@ Estado: **AAB técnico preparado; ficha y declaraciones manuales pendientes. No 
 ## Identidad y Android
 
 - Nombre `Mis Pagos`; paquete fijo `com.diegomarin.mispagos`; proyecto EAS `@daegon13/mis-pagos` sin cambio.
-- Versión `0.4.0`, `versionCode` 4. Es mayor que la Alpha 0.2 subida solo a EAS; comprobar unicidad en Play Console antes de la primera carga y aumentar el código en cualquier actualización posterior.
+- Candidato actual: versión `0.5.0`, `versionCode` 5. El AAB anterior fue `0.4.0`/4; comprobar unicidad en Play Console antes de la primera carga y aumentar el código en cualquier actualización posterior.
 - Expo SDK 57.0.24; React Native 0.86.3; Node 22.
 - **Requisito actual de Google Play para apps móviles nuevas y actualizaciones: target API 36+.** [Android Developers](https://developer.android.com/google/play/requirements/target-sdk).
 - `react-native/gradle/libs.versions.toml` instalado fija `compileSdk=36`, `targetSdk=36`, `minSdk=24`; el proyecto Android generado usa esos valores mediante `expo-root-project` y `rootProject.ext`. El manifiesto del **AAB firmado** confirma `compileSdk=36`, `targetSdk=36`, `minSdk=24`. [Matriz oficial Expo SDK 57](https://docs.expo.dev/versions/latest/). **Estado API 36: PASS.**
@@ -18,7 +25,7 @@ Estado: **AAB técnico preparado; ficha y declaraciones manuales pendientes. No 
 
 - `eas.json` ya define `production` como Android `app-bundle`; `preview` conserva el APK interno. No se necesita perfil duplicado. Google Play recibirá un **AAB**, no un APK.
 - EAS gestiona la credencial remota Android de tipo JKS. `preview` y `production` muestran la misma configuración de credencial `Sc2AMg_pRZ` y el SHA-256 público `08:F8:88:93:A1:08:4B:A0:57:46:90:24:FA:5C:0A:3A:65:EB:CC:B1:E9:56:51:6E:9C:96:EB:28:88:D9:BB:72`; coincide con la firma comprobada de PREVIEW-04. No se exportó clave ni contraseña. La inscripción a Play App Signing se hará manualmente y debe comprobarse el certificado de subida aceptado por Play.
-- Build profile: `production`; build ID `2ecbacab-f7ad-4473-a3bf-23435875d555` **FINISHED**. [Artefacto AAB](https://expo.dev/artifacts/eas/QOv4zmJqIVZHoGpfoFTwWLCdiVhAmIA0RdZVfIlw0u0.aab), **77,312,354 bytes**. `bundletool validate` pasó; el manifiesto confirma paquete, versión, código y SDK. `keytool -printcert -jarfile` mostró el mismo SHA-256 de las builds preview; `jarsigner -verify` indicó `jar verified`. La verificación estricta advierte que el certificado de carga Android es autofirmado, habitual antes de Play App Signing.
+- AAB anterior `0.4.0`/4: build profile `production`, build ID `2ecbacab-f7ad-4473-a3bf-23435875d555` **FINISHED**. [Artefacto AAB anterior](https://expo.dev/artifacts/eas/QOv4zmJqIVZHoGpfoFTwLCdiVhAmIA0RdZVfIlw0u0.aab), **77,312,354 bytes**. `bundletool validate` pasó; el manifiesto confirma paquete, versión, código y SDK. `keytool -printcert -jarfile` mostró el mismo SHA-256 de las builds preview; `jarsigner -verify` indicó `jar verified`. La verificación estricta advierte que el certificado de carga Android es autofirmado, habitual antes de Play App Signing.
 - El AAB se mantiene fuera de Git. No hay configuración de subida automática a Play.
 
 ## Datos, política y entrega
