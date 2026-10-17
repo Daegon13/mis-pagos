@@ -1,0 +1,32 @@
+name: Publish approved planning issues
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/ISSUE_QUEUE.md'
+      - 'scripts/sync-planned-issues.mjs'
+      - '.github/workflows/sync-planned-issues.yml'
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: planning-issues-${{ github.repository }}
+  cancel-in-progress: false
+
+jobs:
+  sync-issues:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate and publish approved issues
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DRY_RUN: 'false'
+        run: node scripts/sync-planned-issues.mjs
