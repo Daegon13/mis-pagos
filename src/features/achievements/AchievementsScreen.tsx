@@ -67,6 +67,8 @@ export function AchievementsScreen({ onBack, onOpenSpace }: { onBack: () => void
           if (!reward) return null;
           const inUse = found && customization ? rewardInUse(item.id, customization.overrides, customization.visual) : false;
           const preview = rewardPreview[item.id];
+          const waitsForDesk = found && customization !== null && customization.stage < 2 &&
+            reward.capabilityIds.some(capability => EDITABLE_SPACE_SLOTS.some(slot => slot.capabilityId === capability));
           return <View key={item.id} style={[styles.card, { backgroundColor: theme.surface, borderColor: theme.border }]}>
             <View style={styles.topRow}>
               {preview ? <View style={[styles.preview, { backgroundColor: theme.secondarySurface }]}>
@@ -85,17 +87,20 @@ export function AchievementsScreen({ onBack, onOpenSpace }: { onBack: () => void
               <View style={styles.topText}>
                 <Text style={[styles.title, { color: theme.textPrimary }]}>{item.title}</Text>
                 <Text style={{ color: inUse ? theme.positive : found ? theme.primary : theme.textSecondary, fontWeight: "700" }}>
-                  {inUse ? "En uso" : found ? "Desbloqueado" : "Bloqueado"}</Text>
+                  {inUse ? "En uso" : found ? "Descubierto" : "Bloqueado"}</Text>
               </View>
             </View>
-            <Text style={stylesText(theme.textSecondary)}>Para desbloquear · {reward.howToUnlock}</Text>
+            {!found && <Text style={stylesText(theme.textSecondary)}>Cómo descubrirlo · {reward.howToUnlock}</Text>}
             <View style={[styles.rewardBlock, { backgroundColor: theme.secondarySurface }]}>
               <Text style={[styles.rewardLabel, { color: theme.textSecondary }]}>EN TU ESPACIO</Text>
               <Text style={[styles.title, { color: theme.textPrimary }]}>{reward.title}</Text>
               <Text style={stylesText(theme.textSecondary)}>{reward.shortDescription}</Text>
-              {preview && <Text style={stylesText(theme.textSecondary)}>{ASSET_LABELS[preview]} · Ejemplo para {reward.title.toLowerCase()}.</Text>}
+              {preview && <Text style={stylesText(theme.textSecondary)}>Ejemplo de objeto disponible · {ASSET_LABELS[preview]}</Text>}
             </View>
-            {found && <Pressable accessibilityRole="button" onPress={onOpenSpace} style={styles.action}>
+            {waitsForDesk && <Text style={stylesText(theme.textSecondary)}>
+              Esta opción estará disponible cuando Tu espacio termine de tomar forma.
+            </Text>}
+            {found && !waitsForDesk && <Pressable accessibilityRole="button" onPress={onOpenSpace} style={styles.action}>
               <Text style={{ color: theme.primary, fontWeight: "600" }}>{reward.ctaLabel} →</Text>
             </Pressable>}
           </View>;

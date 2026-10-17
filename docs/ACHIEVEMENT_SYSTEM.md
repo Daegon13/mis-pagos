@@ -24,6 +24,8 @@ the history without points or competitive progress.
 VIS-01 adds bounded secondary scene details from existing unlock IDs. It does not
 change unlock rules, persistence or engagement stages; interactive Android QA for
 that visual mapping is pending.
+PRE-BETA-SPACE-FIX-01 usa dos IDs financieros distintos ya desbloqueados para
+alcanzar la etapa 2, sin alterar las reglas de desbloqueo ni sus recompensas.
 
 Achievements exist to help the user understand that `Tu espacio` can continue evolving and to create memory around meaningful financial-organization milestones.
 

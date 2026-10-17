@@ -723,6 +723,12 @@ The current product contains:
 - preferences editable later;
 - financial independence.
 
+PRE-BETA-SPACE-FIX-01 conserva etapa 1 al registrar un primer movimiento pendiente
+desde hoy. Etapa 2 requiere dos Descubrimientos financieros distintos desbloqueados:
+compromiso, ingreso, movimiento resuelto, vencido resuelto, reserva o simulación.
+Personalizar el espacio no cuenta para la etapa. La etapa persistida nunca retrocede;
+véase D-022 en `DECISIONS.md`.
+
 PERS-01 added no new visual asset bytes and no new dependency.
 
 ### ACH-01 discovery layer — implemented

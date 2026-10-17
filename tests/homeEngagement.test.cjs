@@ -49,17 +49,28 @@ test('interpretation: empty, income-only, exactly covered, shortfall and negativ
   assert.equal(financialFeedback(calculateHome(-100, [payment('expense')], now)).shortfallMinor, 200);
 });
 
-test('three milestones ignore money, repeated/split transactions, past and inactive payments', () => {
-  assert.equal(spaceStage([], now), 0);
+test('stage one keeps pending organization; stage two needs distinct financial discoveries', () => {
+  assert.equal(spaceStage([], [], now), 0);
   for (const type of ['expense', 'income']) {
-    assert.equal(spaceStage([payment(type)], now), 1);
-    assert.equal(spaceStage(Array.from({ length: 100 }, () => payment(type, { amountMinor: 1 })), now), 1);
-    assert.equal(spaceStage([payment(type, { amountMinor: Number.MAX_SAFE_INTEGER })], now), 1);
+    assert.equal(spaceStage([payment(type)], [], now), 1);
+    assert.equal(spaceStage(Array.from({ length: 100 }, () => payment(type, { amountMinor: 1 })), [], now), 1);
+    assert.equal(spaceStage([payment(type, { amountMinor: Number.MAX_SAFE_INTEGER })], [], now), 1);
   }
-  assert.equal(spaceStage([payment('expense'), payment('income', { dueDate: '2027-01-01' })], now), 2);
+  const expense = [payment('expense')];
+  assert.equal(spaceStage(expense, ['FIRST_COMMITMENT'], now), 1);
+  assert.equal(spaceStage(expense, ['FIRST_COMMITMENT', 'FIRST_COMMITMENT'], now), 1);
+  assert.equal(spaceStage(expense, ['FIRST_COMMITMENT', 'FIRST_PERSONALIZED_SPACE'], now), 1);
+  assert.equal(spaceStage([], ['FIRST_PERSONALIZED_SPACE'], now), 0);
+  for (const second of ['FIRST_RESERVE', 'FIRST_RESOLVED_MOVEMENT', 'FIRST_EXPECTED_INCOME']) {
+    assert.equal(spaceStage(expense, ['FIRST_COMMITMENT', second], now), 2);
+  }
+  assert.equal(spaceStage([payment('expense'), payment('income', { dueDate: '2027-01-01' })],
+    ['FIRST_COMMITMENT', 'FIRST_EXPECTED_INCOME'], now), 2);
+  assert.equal(spaceStage([payment('expense'), payment('income')], [], now), 1);
   assert.equal(spaceStage([payment('expense', { dueDate: '2026-09-27' }),
-    payment('expense', { status: 'completed' }), payment('income', { status: 'cancelled' })], now), 0);
-  assert.equal(spaceStage([payment('expense', { dueDate: '2026-09-28' })], new Date(2026, 8, 29)), 0);
+    payment('expense', { status: 'completed' }), payment('income', { status: 'cancelled' })], [], now), 0);
+  assert.equal(spaceStage([payment('expense', { dueDate: '2026-09-28' })], [], new Date(2026, 8, 29)), 0);
+  assert.equal(spaceStage([], ['FIRST_RESERVE', 'FIRST_SPENDING_SIMULATION'], now), 2);
 });
 
 test('forward migration, atomic non-regression, one surprise, and financial independence on SQLite', async () => {

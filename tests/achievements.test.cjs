@@ -1,6 +1,9 @@
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const { DatabaseSync } = require('node:sqlite');
+const { mkdtempSync, rmdirSync, unlinkSync } = require('node:fs');
+const { tmpdir } = require('node:os');
+const { join } = require('node:path');
 const { load } = require('./helpers/load.cjs');
 
 const { ACHIEVEMENTS, derivableAchievements, isPersonalized } = load('src/domain/achievements.ts');
@@ -11,12 +14,15 @@ const { engagementMigration } = load('src/data/db/migrations/002_engagement.ts')
 const { personalizationMigration } = load('src/data/db/migrations/003_personalization.ts');
 const { spendingPlanMigration } = load('src/data/db/migrations/004_spending_plan.ts');
 const { unlockAchievement, listAchievementUnlocks } = load('src/data/repositories/achievementRepository.ts');
+const { getSpaceStage } = load('src/data/repositories/engagementRepository.ts');
+const { saveCurrentPlan, deleteCurrentPlan } = load('src/data/repositories/spendingPlanRepository.ts');
+const { savePersonalizationPreferences } = load('src/data/repositories/personalizationRepository.ts');
 const { tryUnlock, attemptUnlock, deriveExistingAchievements } = load('src/features/achievements/achievementService.ts');
 const { createPayment, deletePayment } = load('src/data/repositories/paymentRepository.ts');
 const { completePayment, cancelPendingPayment } = load('src/data/repositories/paymentLifecycle.ts');
 
-function fixture() {
-  const sqlite = new DatabaseSync(':memory:');
+function fixture(path = ':memory:') {
+  const sqlite = new DatabaseSync(path);
   sqlite.exec('PRAGMA foreign_keys = ON');
   const db = {
     execAsync: async sql => sqlite.exec(sql),
@@ -103,6 +109,80 @@ test('retroactive rules exclude cancelled and unsupported event history', () => 
   assert.deepEqual(ids, ['FIRST_EXPECTED_INCOME', 'FIRST_RESOLVED_MOVEMENT']);
   assert.equal(isPersonalized(DEFAULT_SELECTION), false);
   assert.equal(isPersonalized({ ...DEFAULT_SELECTION, spaceName: '  Mi rincÃ³n ' }), true);
+});
+
+test('clean profiles advance through distinct financial discoveries and keep earned stage', async () => {
+  const futureExpense = db => createPayment(db, { type: 'expense', title: 'Gasto', amountMinor: 100,
+    dueDate: '2099-01-01', notes: '' });
+  const futureIncome = db => createPayment(db, { type: 'income', title: 'Ingreso', amountMinor: 100,
+    dueDate: '2099-01-01', notes: '' });
+  const reserve = db => saveCurrentPlan(db, { mode: 'fixed', value: 100,
+    availableRealMinor: 10000, allocations: [] });
+  const profiles = [
+    { name: 'solo gasto', act: async db => { await futureExpense(db); }, stage: 1,
+      unlocks: ['FIRST_COMMITMENT'] },
+    { name: 'gasto e ingreso', act: async db => { await futureExpense(db); await futureIncome(db); }, stage: 2,
+      unlocks: ['FIRST_COMMITMENT', 'FIRST_EXPECTED_INCOME'] },
+    { name: 'gasto y reserva', act: async db => { await futureExpense(db); await reserve(db); }, stage: 2,
+      unlocks: ['FIRST_COMMITMENT', 'FIRST_RESERVE'] },
+    { name: 'gasto completado', act: async db => {
+      const payment = await futureExpense(db);
+      await deriveExistingAchievements(db);
+      await completePayment(db, payment.id, false);
+    }, stage: 2, unlocks: ['FIRST_COMMITMENT', 'FIRST_RESOLVED_MOVEMENT'] },
+    { name: 'personalización inmediata', act: async db => {
+      await savePersonalizationPreferences(db, { ...DEFAULT_SELECTION, interestIds: ['naturaleza'] });
+    }, stage: 0, unlocks: ['FIRST_PERSONALIZED_SPACE'] },
+    { name: 'simulación', act: async db => {
+      await reserve(db);
+      assert.equal(await attemptUnlock(db, 'FIRST_SPENDING_SIMULATION'), 'new');
+    }, stage: 2, unlocks: ['FIRST_RESERVE', 'FIRST_SPENDING_SIMULATION'] },
+  ];
+  for (const profile of profiles) {
+    const { db, sqlite } = fixture();
+    try {
+      await runMigrations(db);
+      sqlite.exec("INSERT INTO financial_profile VALUES(1,'UYU',10000,'2026-10-17','stamp','stamp')");
+      await profile.act(db);
+      const progress = await deriveExistingAchievements(db);
+      assert.equal(progress.stage, profile.stage, profile.name);
+      assert.equal(await getSpaceStage(db), profile.stage, profile.name);
+      assert.deepEqual(new Set(progress.unlocks), new Set(profile.unlocks), profile.name);
+      if (profile.stage === 2) {
+        const persisted = await deriveExistingAchievements(db);
+        assert.equal(persisted.surprise, false, profile.name);
+        assert.equal(persisted.stage, 2, profile.name);
+      }
+    } finally { sqlite.close(); }
+  }
+});
+
+test('stage two survives removal of its source actions and a closed database reopen', async () => {
+  const directory = mkdtempSync(join(tmpdir(), 'mis-pagos-space-stage-'));
+  const file = join(directory, 'stage.sqlite');
+  let current = fixture(file);
+  try {
+    await runMigrations(current.db);
+    current.sqlite.exec("INSERT INTO financial_profile VALUES(1,'UYU',10000,'2026-10-17','stamp','stamp')");
+    const expense = await createPayment(current.db, { type: 'expense', title: 'Gasto', amountMinor: 100,
+      dueDate: '2099-01-01', notes: '' });
+    await saveCurrentPlan(current.db, { mode: 'fixed', value: 100,
+      availableRealMinor: 10000, allocations: [] });
+    assert.equal((await deriveExistingAchievements(current.db)).stage, 2);
+    await deleteCurrentPlan(current.db);
+    await deletePayment(current.db, expense.id);
+    current.sqlite.close();
+    current = fixture(file);
+    assert.equal(await getSpaceStage(current.db), 2);
+    const progress = await deriveExistingAchievements(current.db);
+    assert.equal(progress.stage, 2);
+    assert.equal(progress.surprise, false);
+    assert.deepEqual(new Set(progress.unlocks), new Set(['FIRST_COMMITMENT', 'FIRST_RESERVE']));
+  } finally {
+    current.sqlite.close();
+    unlinkSync(file);
+    rmdirSync(directory);
+  }
 });
 
 test('overdue eligibility is captured immediately before successful resolution', async () => {

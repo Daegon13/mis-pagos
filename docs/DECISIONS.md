@@ -154,3 +154,10 @@ Cada entrada incluye estado, contexto, decisión y consecuencias. Estados posibl
 - **Contexto:** Los hitos útiles deben sobrevivir cambios de saldo, apariencia y etapa, sin premiar riqueza ni volumen.
 - **Decisión:** `005_achievements` agrega `achievement_unlocks` con ID único y fecha técnica. Siete hitos activos se definen en código; sólo se persiste el desbloqueo. La evaluación cosmética ocurre después de la acción primaria y sus fallos no revierten finanzas. Se derivan retrospectivamente movimiento pendiente o completado, resolución completada, reserva actual positiva y personalización no predeterminada. Simulación y resolución de vencidos requieren un evento nuevo comprobable; el cierre de período queda futuro.
 - **Consecuencias:** La etapa de `Tu espacio` sigue independiente. Eliminar datos o cambiar apariencia no quita desbloqueos. Un fallo de persistencia cosmética se reintenta cuando vuelva a existir evidencia derivable.
+
+## D-022 — Etapa 2 por hitos financieros distintos
+
+- **Estado:** Aceptada; autorizada por PRE-BETA-SPACE-FIX-01. Sustituye el criterio de etapa 2 de D-019 y la independencia entre etapa y Descubrimientos indicada en D-021.
+- **Contexto:** Exigir gasto e ingreso pendientes al mismo tiempo impedía alcanzar el escritorio a quienes organizan solo un tipo de movimiento, incluso después de otros hitos útiles.
+- **Decisión:** La etapa 1 conserva el primer movimiento pendiente desde hoy. La etapa 2 se alcanza con al menos dos IDs distintos desbloqueados entre `FIRST_COMMITMENT`, `FIRST_EXPECTED_INCOME`, `FIRST_RESOLVED_MOVEMENT`, `FIRST_OVERDUE_RESOLVED`, `FIRST_RESERVE` y `FIRST_SPENDING_SIMULATION`. `FIRST_PERSONALIZED_SPACE` no cuenta. No se usan importes, cantidad de movimientos ni rachas.
+- **Consecuencias:** La etapa sigue guardada en `engagement_progress` y solo puede avanzar. Los desbloqueos permanecen en su tabla; no hay migración ni cambio de finanzas. Al leer Home, Descubrimientos o Tu espacio se derivan los hitos que el estado actual permite reconstruir antes de actualizar la etapa.

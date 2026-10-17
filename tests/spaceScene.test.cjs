@@ -101,7 +101,7 @@ test('pack 02 changes automatic compositions by interest and palette', () => {
   assert.notDeepEqual(placements('peonia'), placements('terracota'));
 });
 
-test('achievements are deduplicated secondary details and cannot advance stage', () => {
+test('scene resolver keeps its supplied stage while discoveries add bounded details', () => {
   const unlocked = ['FIRST_RESERVE', 'FIRST_RESERVE', 'FIRST_SPENDING_SIMULATION'];
   assert.deepEqual(objects(resolveSpaceScene(0, selection(), unlocked)), []);
   assert.deepEqual(objects(resolveSpaceScene(1, selection(), unlocked)), ['plantLarge']);

@@ -30,7 +30,7 @@ export function LivingSpace({ stage, surprise, onPersonalize, onAchievements, ac
         {preview ? "Vista previa" : selection.spaceName || "Tu espacio"}
       </Text>{!preview && <ContextualHelp topicId="space" />}</View>
       <Text style={[styles.caption, { color: theme.textSecondary }]}>{descriptions[stage]}</Text>
-      {surprise && <Text accessibilityLiveRegion="polite" style={[styles.surprise, { color: theme.positive }]}>Algo cambió en tu espacio.</Text>}
+      {surprise && <Text accessibilityLiveRegion="polite" style={[styles.surprise, { color: theme.positive }]}>Tu espacio tomó forma: apareció el escritorio.</Text>}
       {onOpenSpace && <Pressable accessibilityRole="button" onPress={onOpenSpace} style={styles.link}>
         <Text style={[styles.linkText, { color: theme.primary }]}>Abrir Tu espacio →</Text>
       </Pressable>}

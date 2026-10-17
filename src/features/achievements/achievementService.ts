@@ -1,8 +1,10 @@
 import type { SQLiteDatabase } from "expo-sqlite";
-import { unlockAchievement } from "@/data/repositories/achievementRepository";
+import { listAchievementUnlocks, unlockAchievement } from "@/data/repositories/achievementRepository";
+import { advanceSpace } from "@/data/repositories/engagementRepository";
 import { getPersonalizationPreferences } from "@/data/repositories/personalizationRepository";
 import { getCurrentPlan } from "@/data/repositories/spendingPlanRepository";
 import { derivableAchievements, type AchievementId } from "@/domain/achievements";
+import { spaceStage } from "@/domain/engagement";
 import { readFinancialSnapshot } from "@/data/repositories/paymentLifecycle";
 import { notificationDataChanged } from "@/data/notificationChanges";
 
@@ -18,11 +20,14 @@ export async function tryUnlock(db: SQLiteDatabase, id: AchievementId): Promise<
   return await attemptUnlock(db, id) === "new";
 }
 
-export async function deriveExistingAchievements(db: SQLiteDatabase): Promise<void> {
+export async function deriveExistingAchievements(db: SQLiteDatabase) {
   const [{ payments }, plan, preferences] = await Promise.all([
     readFinancialSnapshot(db), getCurrentPlan(db), getPersonalizationPreferences(db),
   ]);
   for (const id of derivableAchievements(payments, plan !== null && plan.plan.reserveTargetMinor > 0, preferences)) {
     if (await unlockAchievement(db, id)) notificationDataChanged();
   }
+  const unlocks = (await listAchievementUnlocks(db)).map(row => row.achievement_id);
+  const progress = await advanceSpace(db, spaceStage(payments, unlocks));
+  return { ...progress, unlocks };
 }

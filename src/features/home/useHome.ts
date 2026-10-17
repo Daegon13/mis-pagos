@@ -4,12 +4,10 @@ import { useFocusEffect } from "expo-router";
 import { useSQLiteContext } from "expo-sqlite";
 
 import { readFinancialSnapshot } from "@/data/repositories/paymentLifecycle";
-import { advanceSpace } from "@/data/repositories/engagementRepository";
-import { spaceStage, type SpaceStage } from "@/domain/engagement";
+import type { SpaceStage } from "@/domain/engagement";
 import { calculateHome, type HomeSummary } from "./homeSummary";
 import { getCurrentPlan } from "@/data/repositories/spendingPlanRepository";
 import { deriveExistingAchievements } from "@/features/achievements/achievementService";
-import { listAchievementUnlocks } from "@/data/repositories/achievementRepository";
 import type { AchievementId } from "@/domain/achievements";
 import { getSpaceVisualPreferences, listSlotOverrides, type StoredSlotOverride,
   type StoredVisualPreferences } from "@/data/repositories/spaceCustomizationRepository";
@@ -60,24 +58,16 @@ export function useHome(paymentSaved?: string) {
         }
         // Cosmetic persistence must never block the financial summary.
         try {
-          const progress = await advanceSpace(db, spaceStage(payments));
+          const progress = await deriveExistingAchievements(db);
           if (active && current === request) {
             setStage((previous) => Math.max(previous ?? 0, progress.stage) as SpaceStage);
             setSpaceError(false);
             if (progress.surprise) setSurprise(true);
+            setAchievementCount(progress.unlocks.length);
+            setAchievementUnlocks(progress.unlocks);
           }
         } catch {
-          if (active && current === request) setSpaceError(true);
-        }
-        try {
-          await deriveExistingAchievements(db);
-          const unlocks = await listAchievementUnlocks(db);
-          if (active && current === request) {
-            setAchievementCount(unlocks.length);
-            setAchievementUnlocks(unlocks.map(unlock => unlock.achievement_id));
-          }
-        } catch {
-          if (active && current === request) { setAchievementCount(null); setAchievementUnlocks([]); }
+          if (active && current === request) { setSpaceError(true); setAchievementCount(null); setAchievementUnlocks([]); }
         }
         try {
           const [slots, visual] = await Promise.all([listSlotOverrides(db), getSpaceVisualPreferences(db)]);
