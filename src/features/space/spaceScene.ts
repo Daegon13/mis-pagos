@@ -6,6 +6,18 @@ import { INTERESTS } from "@/domain/personalization";
 export const SCENE_WIDTH = 1448;
 export const SCENE_HEIGHT = 1086;
 
+// Semantic depth describes what a layer represents. The legacy zIndex remains the
+// static painter order, including deliberate overlaps such as the foreground plant.
+export type SpaceDepthBand = "background" | "room" | "window" | "furniture" | "object" | "detail";
+export type SpaceDepth = Readonly<{ band: SpaceDepthBand; zIndex: number }>;
+export const SCENE_LAYERS = {
+  background: { band: "background", zIndex: 0 },
+  wall: { band: "room", zIndex: 10 },
+  floor: { band: "room", zIndex: 11 },
+  window: { band: "window", zIndex: 12 },
+  ambient: { band: "room", zIndex: 13 },
+} as const satisfies Record<string, SpaceDepth>;
+
 export const SLOTS = {
   floorLeft: { x: 255, y: 1030, maxWidth: 500, maxHeight: 610, anchor: "bottomCenter", zIndex: 60 },
   desk: { x: 800, y: 1040, maxWidth: 1020, maxHeight: 680, anchor: "bottomCenter", zIndex: 30 },
@@ -72,9 +84,21 @@ export const SPACE_ASSETS: Record<AssetId, AssetDefinition> = {
   vanityMirror: { canonicalSourceFilename: "Espejo de tocador dorado con base de piedra.png", runtimeFilename: "vanity-mirror.png", source: require("../../../assets/space/runtime/vanity-mirror.png"), aspectRatio: 225 / 320, preferredWidth: 115, allowedSlots: ["detailRight"], interestTags: ["arte", "hogar"], minimumEngagementStage: 2, priority: 65, zIndex: 40 },
 };
 
+const FURNITURE_ASSETS: ReadonlySet<AssetId> = new Set(["desk", "shelf"]);
+const DETAIL_ASSETS: ReadonlySet<AssetId> = new Set([
+  "mug", "gamepad", "moonLamp", "catFigurine", "scentedCandle", "candleTrio",
+  "tarotDeck", "roseQuartz", "calicoCat", "catMug", "catFrame", "perfume",
+  "floralNotebook", "jewelryBox",
+]);
+
+export function depthForAsset(assetId: AssetId): SpaceDepth {
+  return { band: FURNITURE_ASSETS.has(assetId) ? "furniture" :
+    DETAIL_ASSETS.has(assetId) ? "detail" : "object", zIndex: SPACE_ASSETS[assetId].zIndex };
+}
+
 export interface SpaceSceneObject {
   assetId: AssetId; slotId: SlotId; x: number; y: number; width: number; height: number;
-  zIndex: number; source: "anchor" | "interest" | "achievement" | "manual";
+  zIndex: number; depth: SpaceDepth; source: "anchor" | "interest" | "achievement" | "manual";
 }
 export interface SpaceScene {
   treatments: { atmosphereId: PersonalizationSelection["atmosphereId"];
@@ -89,7 +113,7 @@ export function placeAsset(assetId: AssetId, slotId: SlotId, source: SpaceSceneO
   const width = Math.min(asset.preferredWidth, slot.maxWidth, slot.maxHeight * asset.aspectRatio);
   const height = width / asset.aspectRatio;
   return { assetId, slotId, x: slot.x - width / 2, y: slot.y - height,
-    width, height, zIndex: asset.zIndex, source };
+    width, height, zIndex: asset.zIndex, depth: depthForAsset(assetId), source };
 }
 
 const assetsByInterest: Partial<Record<InterestId, readonly AssetId[]>> = {

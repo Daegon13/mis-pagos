@@ -7,7 +7,7 @@ import type { PersonalizationSelection } from "@/domain/personalization";
 import type { StoredSlotOverride, StoredVisualPreferences } from "@/data/repositories/spaceCustomizationRepository";
 import { themeFor } from "@/features/personalization/themes";
 import { effectiveAppearance, resolveFinalSpaceScene, EMPTY_VISUAL_PREFERENCES } from "./spaceCustomization";
-import { SCENE_HEIGHT, SCENE_WIDTH, SPACE_ASSETS, type AssetId } from "./spaceScene";
+import { SCENE_HEIGHT, SCENE_WIDTH, SCENE_LAYERS, SPACE_ASSETS, type AssetId } from "./spaceScene";
 
 const room = require("../../../assets/space/runtime/empty-room.jpg");
 const wallMask = require("../../../assets/space/runtime/wall-mask.png");
@@ -37,15 +37,15 @@ export function SpaceRenderer({ stage, selection, achievementUnlocks = [], width
   const imageStyle = { width, height: SCENE_HEIGHT * scale };
   const treatments = scene.treatments;
   return <View style={[styles.scene, imageStyle]}>
-    <Image source={room} resizeMode="stretch" style={[styles.layer, imageStyle, { zIndex: 0 }]} />
+    <Image source={room} resizeMode="stretch" style={[styles.layer, imageStyle, { zIndex: SCENE_LAYERS.background.zIndex }]} />
     <Image source={wallMask} resizeMode="stretch" style={[styles.layer, imageStyle,
-      { tintColor: appearance.wallColor ?? theme.spaceWall, opacity: treatments.wallOpacity, zIndex: 10 }]} />
+      { tintColor: appearance.wallColor ?? theme.spaceWall, opacity: treatments.wallOpacity, zIndex: SCENE_LAYERS.wall.zIndex }]} />
     <Image source={floorMask} resizeMode="stretch" style={[styles.layer, imageStyle,
-      { tintColor: theme.spaceFloorTint, opacity: treatments.floorOpacity, zIndex: 11 }]} />
+      { tintColor: theme.spaceFloorTint, opacity: treatments.floorOpacity, zIndex: SCENE_LAYERS.floor.zIndex }]} />
     <Image source={windowMask} resizeMode="stretch" style={[styles.layer, imageStyle,
-      { tintColor: appearance.ambientColor ?? theme.spaceWindowTint, opacity: treatments.windowOpacity, zIndex: 12 }]} />
+      { tintColor: appearance.ambientColor ?? theme.spaceWindowTint, opacity: treatments.windowOpacity, zIndex: SCENE_LAYERS.window.zIndex }]} />
     {(treatments.ambientOpacity > 0 || appearance.ambientColor) && <View style={[styles.layer, imageStyle, { backgroundColor: appearance.ambientColor ?? theme.spaceAmbientTint,
-      opacity: appearance.ambientColor ? 0.12 : treatments.ambientOpacity, zIndex: 13 }]} />}
+      opacity: appearance.ambientColor ? 0.12 : treatments.ambientOpacity, zIndex: SCENE_LAYERS.ambient.zIndex }]} />}
     {scene.objects.map(object => {
       const offset = calibrationOffsets?.[object.assetId];
       const objectWidth = Math.max(1, object.width + (offset?.width ?? 0));
@@ -53,7 +53,7 @@ export function SpaceRenderer({ stage, selection, achievementUnlocks = [], width
       return <Image key={object.assetId} source={SPACE_ASSETS[object.assetId].source} resizeMode="stretch"
         style={{ position: "absolute", left: (object.x + (offset?.x ?? 0)) * scale,
           top: (object.y + (offset?.y ?? 0)) * scale, width: objectWidth * scale,
-          height: objectHeight * scale, zIndex: object.zIndex + (offset?.zIndex ?? 0) }} />;
+          height: objectHeight * scale, zIndex: object.depth.zIndex + (offset?.zIndex ?? 0) }} />;
     })}
   </View>;
 }
