@@ -1,5 +1,9 @@
 # Mis Pagos — Current Project State
 
+## PRO-00 — Free/Pro boundary
+
+`docs/PRO_PRODUCT_STRATEGY.md` defines what stays Free and which additions may be considered for Pro. `src/domain/entitlement.ts` provides a replaceable `free | pro` query that defaults to Free when no source is available or a source fails. No feature is gated, and billing, purchases and financial calculations are unchanged.
+
 ## RC 0.5.0 — AAB candidato para Android
 
 EAS `production` terminó la build `e1f8966d-553c-4e78-9cd3-4637ba50aae6` desde el commit `d254706` y `app.json` local con versión `0.5.0` / Android versionCode `5`. El AAB firmado usa `com.diegomarin.mispagos` y la credencial EAS existente. Pasaron la validación del bundle y las comprobaciones de manifiesto, SDK y firma. El AAB es un release candidate; siguen pendientes la entrega por Play y la QA de distribución. Véase `docs/PLAY_STORE_RELEASE.md`.
