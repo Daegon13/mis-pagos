@@ -451,6 +451,23 @@ Conceptual ranges:
 
 Do not rely accidentally on JSX declaration order as the product contract.
 
+### SPACE-3D-01 semantic depth metadata
+
+The 1448×1086 canvas and the existing static painter order remain authoritative.
+`SCENE_LAYERS` assigns stable depth bands and z-index values to the background,
+wall, floor, window and ambient treatment. Every placed asset exposes `depth`
+with a semantic band (`furniture`, `object` or `detail`) and its existing z-index.
+The band describes the layer's role; it does not change placement or sort order.
+In particular, the foreground plant retains z-index 60 even though its band is
+`object`. The renderer reads these z-index values in static mode, including
+calibration offsets, so the current scene stays visually compatible.
+
+The scene resolver still selects the same assets, slots, stage anchors, automatic
+variants and reward details. Manual overrides use the same `placeAsset` depth
+mapping. Depth carries no financial data and creates no new persisted state.
+Future 2.5D work may consume the bands, but must define its own motion and
+occlusion behavior without changing this static contract.
+
 ---
 
 ## 15. Master-reference calibration
