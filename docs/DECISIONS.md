@@ -161,3 +161,10 @@ Cada entrada incluye estado, contexto, decisión y consecuencias. Estados posibl
 - **Contexto:** Exigir gasto e ingreso pendientes al mismo tiempo impedía alcanzar el escritorio a quienes organizan solo un tipo de movimiento, incluso después de otros hitos útiles.
 - **Decisión:** La etapa 1 conserva el primer movimiento pendiente desde hoy. La etapa 2 se alcanza con al menos dos IDs distintos desbloqueados entre `FIRST_COMMITMENT`, `FIRST_EXPECTED_INCOME`, `FIRST_RESOLVED_MOVEMENT`, `FIRST_OVERDUE_RESOLVED`, `FIRST_RESERVE` y `FIRST_SPENDING_SIMULATION`. `FIRST_PERSONALIZED_SPACE` no cuenta. No se usan importes, cantidad de movimientos ni rachas.
 - **Consecuencias:** La etapa sigue guardada en `engagement_progress` y solo puede avanzar. Los desbloqueos permanecen en su tabla; no hay migración ni cambio de finanzas. Al leer Home, Descubrimientos o Tu espacio se derivan los hitos que el estado actual permite reconstruir antes de actualizar la etapa.
+
+## D-023 — Bienvenida inicial omitible y estado educativo local
+
+- **Estado:** Aceptada; autorizada por ONB-02.
+- **Contexto:** La primera experiencia debe explicar Disponible real sin añadir ejemplos a los datos reales. `HELP_SYSTEM.md` excluía ventanas automáticas.
+- **Decisión:** Se permite una única bienvenida automática omitible para instalaciones sin perfil. La migración forward-only `011_onboarding` guarda estado educativo independiente y marca como `legacy` las instalaciones que ya tienen `financial_profile`. La configuración financiera existente sigue siendo necesaria aunque se omita el tutorial. La demostración usa sólo estado de React; Ayuda permite repetirla sin escribir estado histórico.
+- **Consecuencias:** No cambian fórmulas, perfil, movimientos, planificación, logros ni personalización. No se introduce una regla general para ventanas automáticas, telemetría ni servicios externos.

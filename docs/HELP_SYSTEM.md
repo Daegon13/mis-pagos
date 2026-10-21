@@ -16,6 +16,8 @@ PLAY-01 agrega **Privacidad** como entrada informativa independiente al final de
 
 BETA-FEEDBACK-01 agrega **Ayudanos a decidir** como entrada destacada. Sus respuestas y comentario opcional quedan en SQLite local hasta que la persona abra y envíe explícitamente un borrador de correo. Puede revisar el contenido antes de enviarlo; cancelar el correo conserva las respuestas. El registro y el contrato están en `docs/BETA_FEEDBACK_SYSTEM.md`. No altera las cinco categorías educativas, el glosario ni los cálculos financieros.
 
+ONB-02 agrega una bienvenida automática sólo a instalaciones nuevas sin perfil financiero, siempre omitible, seguida de la configuración financiera existente. Tras guardar el perfil, el recorrido educativo usa importes ficticios en memoria. Las instalaciones que ya tienen perfil pasan directamente a Home. Ayuda ofrece **Ver tutorial de Mis Pagos** para repetirlo voluntariamente sin cambiar el estado histórico ni los datos financieros. Esta es la excepción aprobada a la regla anterior sobre tutorial automático; no habilita otras ventanas automáticas.
+
 ## Significado de los términos
 
 - **Saldo actual**: cifra registrada como disponible hoy; se actualiza manualmente o al completar un movimiento eligiendo ajustar el saldo.
@@ -33,7 +35,7 @@ BETA-FEEDBACK-01 agrega **Ayudanos a decidir** como entrada destacada. Sus respu
 
 ## Voz y límites
 
-Usar español rioplatense claro, humano y breve. La persona debe poder encontrar un concepto, entenderlo en segundos y regresar a su tarea. No introducir tutorial obligatorio, ventanas automáticas, búsqueda remota, API, CMS ni dependencia. No prometer funciones futuras, recompensas específicas ni renombrar conceptos centrales sin decisión de producto. Los contratos financieros y de planificación siguen siendo la autoridad para cálculos y reglas; la ayuda solo los explica.
+Usar español rioplatense claro, humano y breve. La persona debe poder encontrar un concepto, entenderlo en segundos y regresar a su tarea. Sólo se permite la bienvenida inicial omitible de ONB-02; no introducir otros tutoriales obligatorios, ventanas automáticas, búsqueda remota, API, CMS ni dependencia. No prometer funciones futuras, recompensas específicas ni renombrar conceptos centrales sin decisión de producto. Los contratos financieros y de planificación siguen siendo la autoridad para cálculos y reglas; la ayuda solo los explica.
 
 ## Verificación
 

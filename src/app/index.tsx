@@ -1,4 +1,4 @@
-import { Stack, useLocalSearchParams, useRouter, type Href } from "expo-router";
+import { Redirect, Stack, useLocalSearchParams, useRouter, type Href } from "expo-router";
 import { Pressable, ScrollView, Text, View, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -6,18 +6,26 @@ import { FinancialSetup } from "@/features/financial-profile/FinancialSetup";
 import { Home } from "@/features/home/Home";
 import { useFinancialProfile } from "@/features/financial-profile/useFinancialProfile";
 import { usePersonalization } from "@/features/personalization/PersonalizationProvider";
+import { useOnboardingState } from "@/features/onboarding/useOnboardingState";
+import { entryFor } from "@/features/onboarding/onboardingFlow";
+import { Welcome } from "@/features/onboarding/Welcome";
 
 export default function Index() {
   const router = useRouter();
   const { paymentSaved, balanceSaved, discovery } = useLocalSearchParams<{ paymentSaved?: string; balanceSaved?: string; discovery?: string }>();
   const { profile, isLoading, isSaving, loadError, saveError, retry, save } = useFinancialProfile();
   const { theme } = usePersonalization();
+  const onboarding = useOnboardingState();
+  const entry = !isLoading && !loadError && !onboarding.isLoading && !onboarding.error
+    ? entryFor(profile !== null, onboarding.state) : null;
+
+  if (entry === "demo") return <Redirect href={"/onboarding" as Href} />;
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
       <Stack.Screen options={{ headerShown: false }} />
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-        <View style={styles.header}>
+        {entry !== "welcome" && <View style={styles.header}>
           <Text accessibilityRole="header" style={[styles.brand, { color: theme.primary }]}>Mis Pagos</Text>
           {profile && <Pressable accessibilityRole="button" accessibilityLabel="Cómo funciona Mis Pagos"
             onPress={() => router.push("/help")}
@@ -28,19 +36,22 @@ export default function Index() {
             onPress={() => router.push("/notifications" as Href)} style={[styles.notifications, { borderColor: theme.border }]}>
             <Text style={{ color: theme.primary, fontSize: 13, fontWeight: "600" }}>Notificaciones</Text>
           </Pressable>}
-        </View>
-        {isLoading ? (
+        </View>}
+        {isLoading || onboarding.isLoading ? (
           <Text accessibilityLiveRegion="polite" style={[styles.description, { color: theme.textSecondary }]}>Cargando...</Text>
-        ) : loadError ? (
+        ) : loadError || onboarding.error ? (
           <View style={styles.section}>
-            <Text accessibilityRole="alert" style={[styles.description, { color: theme.textSecondary }]}>{loadError}</Text>
-            <Pressable accessibilityRole="button" onPress={retry} style={[styles.retry, { backgroundColor: theme.primary }]}>
+            <Text accessibilityRole="alert" style={[styles.description, { color: theme.textSecondary }]}>{loadError || onboarding.error}</Text>
+            <Pressable accessibilityRole="button" onPress={() => { retry(); onboarding.retry(); }} style={[styles.retry, { backgroundColor: theme.primary }]}>
               <Text style={[styles.retryText, { color: theme.textOnPrimary }]}>Reintentar</Text>
             </Pressable>
           </View>
-        ) : profile === null ? (
+        ) : entry === "welcome" ? (
+          <Welcome theme={theme} busy={onboarding.isSaving}
+            onBegin={() => { void onboarding.choose(false); }} onSkip={() => { void onboarding.choose(true); }} />
+        ) : entry === "setup" ? (
           <FinancialSetup isSaving={isSaving} error={saveError} onSave={save} />
-        ) : (
+        ) : profile ? (
           <Home profile={profile} paymentSaved={paymentSaved} balanceSaved={balanceSaved} discovery={discovery === "1"}
             onAll={() => router.push("/payments")}
             onOpen={id => router.push({ pathname: "/payments/[id]", params: { id: String(id) } })}
@@ -52,7 +63,7 @@ export default function Index() {
             onBetaFeedback={() => router.push("/help/beta-feedback")}
             onPlan={() => router.push("./plan")}
             onAdd={() => router.push("/payments/new")} />
-        )}
+        ) : null}
       </ScrollView>
     </SafeAreaView>
   );
