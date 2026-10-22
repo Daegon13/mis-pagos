@@ -2,7 +2,7 @@
   "expo": {
     "name": "Mis Pagos",
     "slug": "mis-pagos",
-    "version": "0.5.1",
+    "version": "0.5.2",
     "orientation": "portrait",
     "icon": "./assets/branding/runtime/app-icon-1024.png",
     "scheme": "mispagos",
@@ -13,7 +13,7 @@
     "android": {
       "icon": "./assets/branding/runtime/app-icon-1024.png",
       "package": "com.diegomarin.mispagos",
-      "versionCode": 6,
+      "versionCode": 7,
       "blockedPermissions": [
         "android.permission.READ_EXTERNAL_STORAGE",
         "android.permission.WRITE_EXTERNAL_STORAGE",
